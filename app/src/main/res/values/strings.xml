@@ -1,0 +1,59 @@
+<resources>
+    <!-- App Information -->
+    <string name="app_name">OBD2 AI Pro</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Welcome to OBD2 AI Pro</string>
+    <string name="onboarding_description">Diagnose vehicle issues by reading fault codes and get AI-driven insights and repair advice.</string>
+    <string name="onboarding_button_get_started">Get Started</string>
+    <string name="onboarding_button_skip">OK</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">Permissions Required</string>
+    <string name="permissions_description">To scan for your OBD2 adapter, the app needs Bluetooth and Location permissions. Location is required by Android to discover nearby Bluetooth devices.</string>
+    <string name="permissions_button_grant">Grant Permissions</string>
+    <string name="permissions_bluetooth_required">Bluetooth is required to connect to an OBD2 device.</string>
+
+    <!-- Device Connection -->
+    <string name="connect_title">Connect to OBD2 Device</string>
+    <string name="connect_select_device">Select your OBD2 device</string>
+    <string name="connect_scanning_for_devices">Scanning for devices…</string>
+    <string name="connect_button">Connect</string>
+    <string name="connected_to">Selected: %1$s</string>
+    <string name="could_not_connect_to_obd2_adapter">Could not connect to OBD2 adapter: %1$s</string>
+    <string name="connect_no_devices_found">Could not get paired devices: %1$s</string>
+
+    <!-- Error Codes -->
+    <string name="error_overview_title">Diagnostic Report</string>
+    <string name="error_overview_scan_button">Scan for Fault Codes</string>
+    <string name="error_overview_error_counts">Low: %1$d | Med: %2$d | High: %3$d</string>
+    <string name="error_overview_no_errors">No Fault Codes Found</string>
+    <string name="error_detail_title">Fault Code Details</string>
+    <string name="error_details_code_label">Severity: %1$s</string>
+    <string name="error_details_description_label">Details</string>
+    <string name="error_details_implications_label">Implications</string>
+    <string name="error_details_solutions_label">Potential Solutions</string>
+    <string name="error_details_ai_suggestions_label">AI Generated Suggestions</string>
+    <string name="no_errors_found">Operation failed: %1$s</string>
+
+    <!-- Live Data -->
+    <string name="live_data_title">Live Data</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_category_general">General</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_mute_sound">Mute RPM-based sound</string>
+    <string name="settings_speed_source_title">Speed Source</string>
+    <string name="settings_speed_source_gps">This Device (GPS)</string>
+    <string name="settings_speed_source_obd">OBD2 Device</string>
+    <string name="settings_category_api">API Settings</string>
+    <string name="settings_api_key_hint">OpenAI API Key (Optional)</string>
+    <string name="settings_model_id_hint">OpenAI Model ID</string>
+    <string name="settings_button_save">Save Settings</string>
+    <string name="settings_saved">Settings saved</string>
+
+    <!-- Generic Dialogs & Messages -->
+    <string name="dialog_error_title">Error</string>
+
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "833850168937",
+    "project_id": "obd2ai-01",
+    "storage_bucket": "obd2ai-01.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833850168937:android:d07f8407d4b8fa268174f8",
+        "android_client_info": {
+          "package_name": "com.catsmoker.obd2ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrxL__2Yb3UOg4ipnOgWifE5jUT4-AWKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

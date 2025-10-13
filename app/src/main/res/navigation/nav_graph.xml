@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/onboardingFragment">
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.catsmoker.obd2ai.OnboardingFragment"
+        android:label="fragment_onboarding"
+        tools:layout="@layout/fragment_onboarding" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_permissionsFragment"
+            app:destination="@id/permissionsFragment"/>
+        <action
+            android:id="@+id/action_onboardingFragment_to_connectFragment"
+            app:destination="@id/connectFragment"/>
+        <action
+            android:id="@+id/action_onboardingFragment_to_liveDataFragment"
+            app:destination="@id/liveDataFragment"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/permissionsFragment"
+        android:name="com.catsmoker.obd2ai.PermissionsFragment"
+        android:label="fragment_permissions"
+        tools:layout="@layout/fragment_permissions" >
+        <action
+            android:id="@+id/action_permissions_to_connectFragment"
+            app:destination="@id/connectFragment"
+            app:popUpTo="@id/permissionsFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/connectFragment"
+        android:name="com.catsmoker.obd2ai.ConnectFragment"
+        android:label="fragment_connect"
+        tools:layout="@layout/fragment_connect" >
+        <action
+            android:id="@+id/action_connectFragment_to_errorOverviewFragment"
+            app:destination="@id/errorOverviewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/errorOverviewFragment"
+        android:name="com.catsmoker.obd2ai.ErrorOverviewFragment"
+        android:label="fragment_error_overview"
+        tools:layout="@layout/fragment_error_overview" >
+        <action
+            android:id="@+id/action_errorOverviewFragment_to_errorDetailFragment"
+            app:destination="@id/errorDetailFragment" />
+        <action
+            android:id="@+id/action_errorOverviewFragment_to_liveDataFragment"
+            app:destination="@id/liveDataFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/errorDetailFragment"
+        android:name="com.catsmoker.obd2ai.ErrorDetailFragment"
+        android:label="fragment_error_detail"
+        tools:layout="@layout/fragment_error_detail" >
+        <argument
+            android:name="errorCode"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/liveDataFragment"
+        android:name="com.catsmoker.obd2ai.LiveDataFragment"
+        android:label="fragment_live_data"
+        tools:layout="@layout/fragment_live_data" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.catsmoker.obd2ai.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

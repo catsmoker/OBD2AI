@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Theme Colors (Primary & Secondary) for Dark Theme -->
+    <color name="colorPrimary">#7986CB</color> <!-- Lighter Indigo for dark theme -->
+    <color name="colorSecondary">#4DD0E1</color> <!-- Lighter Cyan for dark theme -->
+
+    <!-- Material Design Dark Theme Colors -->
+    <color name="surface">#121212</color>
+    <color name="background">#121212</color>
+    <color name="error">#CF6679</color>
+    <color name="on_primary">#000000</color>
+    <color name="on_secondary">#000000</color>
+    <color name="on_surface">#FFFFFF</color>
+    <color name="on_background">#FFFFFF</color>
+    <color name="on_error">#000000</color>
+</resources>
