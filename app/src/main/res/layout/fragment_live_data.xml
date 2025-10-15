@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.anastr.speedviewlib.DeluxeSpeedView
+    <com.github.anastr.speedviewlib.TubeSpeedometer
         android:id="@+id/speedView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -36,7 +36,7 @@
         app:sv_unitTextColor="?attr/colorOnSurface"
         app:sv_withTremble="false" />
 
-    <com.github.anastr.speedviewlib.DeluxeSpeedView
+    <com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/rpmView"
         android:layout_width="0dp"
         android:layout_height="0dp"
