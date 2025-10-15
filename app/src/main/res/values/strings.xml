@@ -1,6 +1,6 @@
 <resources>
     <!-- App Information -->
-    <string name="app_name">OBD2 AI Pro</string>
+    <string name="app_name">OBD2AI</string>
 
     <!-- Onboarding -->
     <string name="onboarding_title">Welcome to OBD2 AI Pro</string>

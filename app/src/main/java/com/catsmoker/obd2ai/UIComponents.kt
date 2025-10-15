@@ -42,7 +42,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.anastr.speedviewlib.DeluxeSpeedView
+import com.github.anastr.speedviewlib.TubeSpeedometer
 import com.github.anastr.speedviewlib.SpeedView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -504,7 +504,7 @@ class LiveDataFragment : Fragment(), LocationListener {
     private var originalRpmColor = Color.BLACK
 
     private lateinit var locationManager: LocationManager
-    private lateinit var speedView: DeluxeSpeedView
+    private lateinit var speedView: TubeSpeedometer
     private lateinit var batteryTempView: TextView
     private lateinit var coolantTempView: TextView
 
@@ -524,8 +524,8 @@ class LiveDataFragment : Fragment(), LocationListener {
         super.onViewCreated(view, savedInstanceState)
         obdHelper = (activity as MainActivity).obdHelper
 
-        speedView = view.findViewById<DeluxeSpeedView>(R.id.speedView2)
-        val rpmView = view.findViewById<DeluxeSpeedView>(R.id.rpmView)
+        speedView = view.findViewById<TubeSpeedometer>(R.id.speedView2)
+        val rpmView = view.findViewById<SpeedView>(R.id.rpmView)
         batteryTempView = view.findViewById<TextView>(R.id.batteryTempView)
         coolantTempView = view.findViewById<TextView>(R.id.coolantTempView)
 
