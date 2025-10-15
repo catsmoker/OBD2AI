@@ -41,6 +41,7 @@
         app:adUnitId="ca-app-pub-3940256099942544/9214589741"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layerType="software"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
