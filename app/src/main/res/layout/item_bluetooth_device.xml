@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A single TextView is lighter than a LinearLayout for a simple list item -->
+<!-- A single TextView is lighter than a LinearLayout for a simple list item.
+     This version is improved with a consistent minimum height and text truncation. -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/deviceNameTextView"
@@ -7,9 +8,13 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
+    android:ellipsize="end"
     android:focusable="true"
+    android:gravity="center_vertical"
+    android:maxLines="1"
+    android:minHeight="?attr/listPreferredItemHeightSmall"
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp"
     android:textAppearance="?attr/textAppearanceBodyLarge"
     android:textColor="?attr/colorOnSurface"
-    tools:text="OBD II Bluetooth Device" />
+    tools:text="A Very Long Bluetooth Device Name That Needs to Be Truncated" />
