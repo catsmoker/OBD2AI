@@ -1,15 +1,42 @@
+# Gradle
+.gradle/
+build/
+
+# IDE - Android Studio / IntelliJ
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/httpRequests/
+.idea/shelf/
+
+# Local configuration (SDK path, API keys - machine specific)
+local.properties
+secrets.properties
+
+# Kotlin
+.kotlin/
+
+# Android build artifacts
+/captures/
 .externalNativeBuild
 .cxx
-local.properties
+*.hprof
+
+# Signing (never commit keystores)
+*.jks
+*.keystore
+keystore.properties
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# AI
+.claude/settings.local.json
+AGENTS.md

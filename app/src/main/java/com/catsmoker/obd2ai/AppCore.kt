@@ -88,6 +88,17 @@ object ObdDataHolder {
     val coolantTempFlow = MutableStateFlow("-- °C")
 }
 
+object PrefsKeys {
+    const val PREFS_NAME = "app_prefs"
+    const val OPENAI_API_KEY = "openai_api_key"
+    const val OPENAI_MODEL_ID = "openai_model_id"
+    const val SPEED_SOURCE = "speed_source"
+    const val SPEED_SOURCE_DEVICE = "this_device"
+    const val SPEED_SOURCE_OBD = "obd2_device"
+    const val DARK_MODE = "dark_mode"
+    const val MUTE_SOUND = "mute_sound"
+}
+
 
 // =================================================================================
 // CUSTOM OBD COMMANDS WITH CORRECTED PARSING LOGIC
@@ -343,7 +354,6 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
         val result = runCommand(PermanentTroubleCodesCommand()).value
         splitErrors(result)
     }
-
     fun disconnectFromObdDevice() {
         bluetoothHelper.disconnectFromDevice()
         obdConnection = null
@@ -351,11 +361,13 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
         outputStream = null
     }
 
-    private fun splitErrors(errors: String): List<String> {
-        if (errors.isBlank() || errors.equals("NO DATA", ignoreCase = true)) {
-            return emptyList()
+    companion object {
+        fun splitErrors(errors: String): List<String> {
+            if (errors.isBlank() || errors.equals("NO DATA", ignoreCase = true)) {
+                return emptyList()
+            }
+            return errors.split(Regex("\\s+|,")).map { it.trim() }.filter { it.isNotEmpty() }
         }
-        return errors.split(Regex("\\s+|,")).map { it.trim() }.filter { it.isNotEmpty() }
     }
 
     suspend fun startLiveDataMonitoring() = withContext(Dispatchers.IO) {
@@ -398,19 +410,34 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
 }
 
 class OpenAIService(private val context: Context) {
-    private val openAI: OpenAI
     private var modelId: String = "gpt-5-mini"
 
-    init {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val apiKey = prefs.getString("openai_api_key", "")
-        val token = if (apiKey.isNullOrEmpty()) BuildConfig.OPENAI_API_KEY else apiKey
-        modelId = prefs.getString("openai_model_id", "gpt-5-mini") ?: "gpt-5-mini"
+    private var openAI: OpenAI? = null
+    private var openAIKey: String? = null
 
-        openAI = OpenAI(
-            token = token,
+    private fun getOpenAIClient(): OpenAI {
+        val prefs = context.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val apiKey = prefs.getString(PrefsKeys.OPENAI_API_KEY, "")
+
+        if (apiKey.isNullOrEmpty()) {
+            throw IllegalStateException("No OpenAI API key configured. Set one in Settings.")
+        }
+
+        modelId = prefs.getString(PrefsKeys.OPENAI_MODEL_ID, "gpt-5-mini") ?: "gpt-5-mini"
+
+        val cached = openAI
+        if (cached != null && openAIKey == apiKey) {
+            return cached
+        }
+
+        cached?.close()
+        val client = OpenAI(
+            token = apiKey,
             timeout = Timeout(socket = 60.seconds)
         )
+        openAI = client
+        openAIKey = apiKey
+        return client
     }
 
     suspend fun getDtpCodeAssessment(dtpCode: String): DtpCodeDTO {
@@ -432,24 +459,26 @@ class OpenAIService(private val context: Context) {
                 )
             )
         )
-        val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
+        val completion: ChatCompletion = getOpenAIClient().chatCompletion(chatCompletionRequest)
         return completion.choices.first().message.content ?: "{}"
     }
 
-    private fun parseErrorInfo(jsonString: String): DtpCodeDTO {
-        return try {
-            val jsonObject = JSONObject(jsonString)
-            val errorCode = jsonObject.getString("errorCode")
-            val severity = ErrorSeverity.fromInt(jsonObject.getInt("severity"))
-            val title = jsonObject.getString("title")
-            val detail = jsonObject.getString("detail")
-            val implications = jsonObject.getString("implications")
-            val actionsArray = jsonObject.getJSONArray("suggestedActions")
-            val suggestedActions = (0 until actionsArray.length()).map { actionsArray.getString(it) }
-            DtpCodeDTO(errorCode, severity, title, detail, implications, suggestedActions)
-        } catch (e: Exception) {
-            Log.e("OpenAIService", "Failed to parse JSON response: $jsonString", e)
-            DtpCodeDTO("Error", ErrorSeverity.LOW, "Parsing Error", "Could not parse server response.", "Invalid data.", listOf("Try again."))
+    companion object {
+        internal fun parseErrorInfo(jsonString: String): DtpCodeDTO {
+            return try {
+                val jsonObject = JSONObject(jsonString)
+                val errorCode = jsonObject.getString("errorCode")
+                val severity = ErrorSeverity.fromInt(jsonObject.getInt("severity"))
+                val title = jsonObject.getString("title")
+                val detail = jsonObject.getString("detail")
+                val implications = jsonObject.getString("implications")
+                val actionsArray = jsonObject.getJSONArray("suggestedActions")
+                val suggestedActions = (0 until actionsArray.length()).map { actionsArray.getString(it) }
+                DtpCodeDTO(errorCode, severity, title, detail, implications, suggestedActions)
+            } catch (e: Exception) {
+                Log.e("OpenAIService", "Failed to parse JSON response: $jsonString", e)
+                DtpCodeDTO("Error", ErrorSeverity.LOW, "Parsing Error", "Could not parse server response.", "Invalid data.", listOf("Try again."))
+            }
         }
     }
 }

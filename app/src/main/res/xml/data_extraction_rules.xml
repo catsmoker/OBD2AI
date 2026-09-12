@@ -5,15 +5,11 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Exclude SharedPreferences containing the user's OpenAI API key -->
+        <exclude domain="sharedpref" path="app_prefs.xml"/>
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- Exclude SharedPreferences containing the user's OpenAI API key -->
+        <exclude domain="sharedpref" path="app_prefs.xml"/>
     </device-transfer>
-    -->
 </data-extraction-rules>

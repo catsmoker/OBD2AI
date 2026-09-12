@@ -31,13 +31,14 @@
     <string name="error_detail_title">Fault Code Details</string>
     <string name="error_details_code_label">Severity: %1$s</string>
     <string name="error_details_description_label">Details</string>
-    <string name="error_details_implications_label">Implications</string>
     <string name="error_details_solutions_label">Potential Solutions</string>
     <string name="error_details_ai_suggestions_label">AI Generated Suggestions</string>
     <string name="no_errors_found">Operation failed: %1$s</string>
 
     <!-- Live Data -->
     <string name="live_data_title">Live Data</string>
+    <string name="device_temp">Device Temp: %1$.1f°C</string>
+    <string name="coolant_value">Coolant: %1$s</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -55,5 +56,6 @@
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>
+    <string name="suggestion_bullet" translatable="false">•</string>
 
 </resources>

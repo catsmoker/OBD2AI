@@ -9,7 +9,7 @@ This README explains how to configure, build and run the project locally, how to
 - Discover and connect to Bluetooth OBD-II adapters (classic SPP and BLE-aware permissions).
 - Read stored, pending and permanent DTCs from the vehicle.
 - Monitor live data such as vehicle speed, engine RPM and coolant temperature.
-- Use OpenAI (configured via `BuildConfig.OPENAI_API_KEY`) to generate a JSON assessment for each DTC with severity, title, details, implications and suggested actions.
+- Use OpenAI (key configured at runtime in Settings) to generate a JSON assessment for each DTC with severity, title, details, implications and suggested actions.
 - Integrates with Google Mobile Ads and Firebase Analytics (optional / demo ad id included).
 
 ## Repository layout (important files)
@@ -17,7 +17,7 @@ This README explains how to configure, build and run the project locally, how to
 - `app/` — Android application module
 	- `src/main/java/com/catsmoker/obd2ai/` — main Kotlin sources (Bluetooth & OBD helpers, UI fragments, OpenAI service)
 	- `src/main/AndroidManifest.xml` — app manifest, permissions and features
-	- `build.gradle.kts` — module Gradle configuration (reads OPENAI_API_KEY from `local.properties`)
+ 	- `build.gradle.kts` — module Gradle configuration
 - `build.gradle.kts`, `settings.gradle.kts`, `gradle/` — project build configuration
 
 ## Prerequisites
@@ -30,15 +30,17 @@ This README explains how to configure, build and run the project locally, how to
 
 ## Configure OpenAI API Key
 
-The app reads the OpenAI API key at build time from `local.properties` and places it into `BuildConfig.OPENAI_API_KEY`.
+The app no longer embeds an API key in the build. Instead, the key is entered at runtime in the app's **Settings** screen and stored only on the device (excluded from cloud backups and device transfers).
 
-1. In the project root create or edit `local.properties` and add the key:
+1. Install and open the app.
+2. Open **Settings** from the gear icon.
+3. Paste your OpenAI API key and (optionally) a model id, then tap **Save**.
 
-	 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+If no key is set, OpenAI-powered DTC assessments are unavailable and the app will report that no key is configured; Bluetooth/OBD functionality is unaffected.
 
-2. The app's Gradle config (`app/build.gradle.kts`) will read this value and inject it as a build config field for both `debug` and `release` builds. If the key is missing, an empty string will be injected and OpenAI calls will fail.
-
-Security note: Do NOT commit `local.properties` or your API key to source control. Use environment-specific secret storage for CI and production.
+Security notes:
+- The key is stored in the app's private `SharedPreferences`, which is not accessible to other apps and is excluded from Android cloud backup and device-to-device transfer.
+- Do NOT commit API keys to source control.
 
 ## Build and run
 
@@ -81,7 +83,7 @@ If you do not want to use OpenAI, you can stub or bypass `OpenAIService` in the 
 	- If using classic SPP, verify the adapter supports RFCOMM; many ELM327 clones do.
 
 - OpenAI requests fail:
-	- Verify `local.properties` contains a valid key.
+	- Verify a valid API key is set in the app's Settings screen.
 	- Check device network connectivity.
 	- Review logcat output for HTTP/SDK errors.
 

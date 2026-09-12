@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,28 +7,19 @@ plugins {
 
 android {
     namespace = "com.catsmoker.obd2ai"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.catsmoker.obd2ai"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig = signingConfigs.getByName("debug")
     }
-
-    // Load API key from local.properties
-    val localProperties = Properties().apply {
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            load(localPropertiesFile.inputStream())
-        }
-    }
-    val apiKey = localProperties.getProperty("OPENAI_API_KEY", "")
 
     buildTypes {
         release {
@@ -45,11 +34,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "OPENAI_API_KEY", "\"$apiKey\"")
             signingConfig = signingConfigs.getByName("debug")
-        }
-        debug {
-            buildConfigField("String", "OPENAI_API_KEY", "\"$apiKey\"")
         }
     }
 
@@ -58,8 +43,16 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
+    testOptions {
+        // android.util.Log is not mocked on the JVM; make it a no-op so pure
+        // logic can be unit tested without Robolectric.
+        unitTests.isReturnDefaultValues = true
     }
 
     buildFeatures {
@@ -100,6 +93,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
+    // Real org.json for JVM unit tests (the android.jar stubs throw "not mocked")
+    testImplementation(libs.org.json)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

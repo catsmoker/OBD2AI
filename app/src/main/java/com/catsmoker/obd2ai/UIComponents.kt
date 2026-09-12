@@ -48,6 +48,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.material.switchmaterial.SwitchMaterial
 import androidx.appcompat.app.AppCompatDelegate
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -212,10 +214,10 @@ class OnboardingFragment : Fragment() {
         view.findViewById<Button>(R.id.button_get_started).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 
-            val prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-            val speedSource = prefs.getString("speed_source", "obd2_device")
+            val prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            val speedSource = prefs.getString(PrefsKeys.SPEED_SOURCE, PrefsKeys.SPEED_SOURCE_OBD)
 
-            if (speedSource == "this_device") {
+            if (speedSource == PrefsKeys.SPEED_SOURCE_DEVICE) {
                 findNavController().navigate(R.id.action_onboardingFragment_to_liveDataFragment)
             } else {
                 val bluetoothHelper = (activity as MainActivity).bluetoothHelper
@@ -289,7 +291,7 @@ class ConnectFragment : Fragment() {
         }
     }
 
-    inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? = when {
+    private inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
@@ -421,7 +423,11 @@ class ErrorOverviewFragment : Fragment() {
                     updateUI(emptyList())
                     return@launch
                 }
-                val results = allCodes.map { openAIService.getDtpCodeAssessment(it) }
+                // Assess each DTC concurrently. Results keep input order regardless
+                // of completion order; a failed request fails the batch as before.
+                val results = allCodes.map { code ->
+                    async { openAIService.getDtpCodeAssessment(code) }
+                }.awaitAll()
                 ObdDataHolder.dtpResults = results
                 updateUI(results)
             } catch (e: Exception) {
@@ -511,7 +517,7 @@ class LiveDataFragment : Fragment(), LocationListener {
     private val batteryTempReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val temperature = intent?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)?.div(10f)
-            batteryTempView.text = "Device Temp: $temperature°C"
+            batteryTempView.text = getString(R.string.device_temp, temperature)
         }
     }
 
@@ -531,10 +537,10 @@ class LiveDataFragment : Fragment(), LocationListener {
 
         originalRpmColor = rpmView.speedTextColor
 
-        val prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val speedSource = prefs.getString("speed_source", "obd2_device")
+        val prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val speedSource = prefs.getString(PrefsKeys.SPEED_SOURCE, PrefsKeys.SPEED_SOURCE_OBD)
 
-        if (speedSource == "this_device") {
+        if (speedSource == PrefsKeys.SPEED_SOURCE_DEVICE) {
             rpmView.visibility = View.GONE
             batteryTempView.visibility = View.VISIBLE
             coolantTempView.visibility = View.GONE
@@ -606,7 +612,7 @@ class LiveDataFragment : Fragment(), LocationListener {
 
             lifecycleScope.launch {
                 ObdDataHolder.coolantTempFlow.collect { coolantTempString ->
-                    coolantTempView.text = "Coolant: $coolantTempString"
+                    coolantTempView.text = getString(R.string.coolant_value, coolantTempString)
                 }
             }
         }
@@ -621,19 +627,23 @@ class LiveDataFragment : Fragment(), LocationListener {
 
     override fun onProviderEnabled(provider: String) {}
 
+    @Deprecated("Deprecated in Java")
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
     private fun playSound(soundResId: Int) {
-        val prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        if (prefs.getBoolean("mute_sound", false)) {
+        val prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        if (prefs.getBoolean(PrefsKeys.MUTE_SOUND, false)) {
             return
         }
 
-        mediaPlayer?.stop()
+        // release() only — stop() on an already-released player throws IllegalStateException
         mediaPlayer?.release()
-        mediaPlayer = MediaPlayer.create(context, soundResId).apply {
+        mediaPlayer = MediaPlayer.create(context, soundResId)?.apply {
             start()
-            setOnCompletionListener { it.release() }
+            setOnCompletionListener {
+                mediaPlayer = null
+                it.release()
+            }
         }
     }
 
@@ -642,9 +652,9 @@ class LiveDataFragment : Fragment(), LocationListener {
         if (::locationManager.isInitialized) {
             locationManager.removeUpdates(this)
         }
-        val prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val speedSource = prefs.getString("speed_source", "obd2_device")
-        if (speedSource == "this_device") {
+        val prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val speedSource = prefs.getString(PrefsKeys.SPEED_SOURCE, PrefsKeys.SPEED_SOURCE_OBD)
+        if (speedSource == PrefsKeys.SPEED_SOURCE_DEVICE) {
             requireContext().unregisterReceiver(batteryTempReceiver)
         }
         obdHelper.disconnectFromObdDevice()
@@ -667,13 +677,13 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val switchDarkMode = view.findViewById<SwitchMaterial>(R.id.switchDarkMode)
-        val prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
-        switchDarkMode.isChecked = prefs.getBoolean("dark_mode", false)
+        switchDarkMode.isChecked = prefs.getBoolean(PrefsKeys.DARK_MODE, false)
 
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit {
-                putBoolean("dark_mode", isChecked)
+                putBoolean(PrefsKeys.DARK_MODE, isChecked)
             }
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -683,27 +693,25 @@ class SettingsFragment : Fragment() {
         }
 
         val apiKeyEditText = view.findViewById<TextInputEditText>(R.id.apiKeyEditText)
-        apiKeyEditText.setText(prefs.getString("openai_api_key", ""))
-
         val modelIdEditText = view.findViewById<TextInputEditText>(R.id.modelIdEditText)
         val saveButton = view.findViewById<Button>(R.id.saveButton)
 
-        apiKeyEditText.setText(prefs.getString("openai_api_key", ""))
-        modelIdEditText.setText(prefs.getString("openai_model_id", "gpt-5-mini"))
+        apiKeyEditText.setText(prefs.getString(PrefsKeys.OPENAI_API_KEY, ""))
+        modelIdEditText.setText(prefs.getString(PrefsKeys.OPENAI_MODEL_ID, "gpt-5-mini"))
 
         val switchMuteSound = view.findViewById<SwitchMaterial>(R.id.switchMuteSound)
 
-        switchMuteSound.isChecked = prefs.getBoolean("mute_sound", false)
+        switchMuteSound.isChecked = prefs.getBoolean(PrefsKeys.MUTE_SOUND, false)
 
         switchMuteSound.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit {
-                putBoolean("mute_sound", isChecked)
+                putBoolean(PrefsKeys.MUTE_SOUND, isChecked)
             }
         }
 
         val radioGroupSpeedSource = view.findViewById<RadioGroup>(R.id.radioGroupSpeedSource)
-        val savedSpeedSource = prefs.getString("speed_source", "obd2_device")
-        if (savedSpeedSource == "this_device") {
+        val savedSpeedSource = prefs.getString(PrefsKeys.SPEED_SOURCE, PrefsKeys.SPEED_SOURCE_OBD)
+        if (savedSpeedSource == PrefsKeys.SPEED_SOURCE_DEVICE) {
             radioGroupSpeedSource.check(R.id.radioButtonGps)
         } else {
             radioGroupSpeedSource.check(R.id.radioButtonObd2)
@@ -711,11 +719,11 @@ class SettingsFragment : Fragment() {
 
         saveButton.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            val selectedSpeedSource = if (radioGroupSpeedSource.checkedRadioButtonId == R.id.radioButtonGps) "this_device" else "obd2_device"
+            val selectedSpeedSource = if (radioGroupSpeedSource.checkedRadioButtonId == R.id.radioButtonGps) PrefsKeys.SPEED_SOURCE_DEVICE else PrefsKeys.SPEED_SOURCE_OBD
             prefs.edit {
-                putString("openai_api_key", apiKeyEditText.text.toString())
-                putString("openai_model_id", modelIdEditText.text.toString())
-                putString("speed_source", selectedSpeedSource)
+                putString(PrefsKeys.OPENAI_API_KEY, apiKeyEditText.text.toString())
+                putString(PrefsKeys.OPENAI_MODEL_ID, modelIdEditText.text.toString())
+                putString(PrefsKeys.SPEED_SOURCE, selectedSpeedSource)
             }
             Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_SHORT).show()
         }
