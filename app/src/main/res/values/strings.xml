@@ -22,12 +22,31 @@
     <string name="connected_to">Selected: %1$s</string>
     <string name="could_not_connect_to_obd2_adapter">Could not connect to OBD2 adapter: %1$s</string>
     <string name="connect_no_devices_found">Could not get paired devices: %1$s</string>
+    <string name="connect_demo_button">Try demo mode (no adapter needed)</string>
+    <string name="connect_wifi_title">Wi-Fi adapter</string>
+    <string name="connect_wifi_host_hint">Adapter IP (e.g. 192.168.0.10)</string>
+    <string name="connect_wifi_port_hint">Port</string>
+    <string name="connect_wifi_button">Connect via Wi-Fi</string>
+    <string name="connect_wifi_invalid">Enter a valid IP address and port</string>
 
     <!-- Error Codes -->
     <string name="error_overview_title">Diagnostic Report</string>
     <string name="error_overview_scan_button">Scan for Fault Codes</string>
     <string name="error_overview_error_counts">Low: %1$d | Med: %2$d | High: %3$d</string>
     <string name="error_overview_no_errors">No Fault Codes Found</string>
+    <string name="error_overview_mil_on">Engine light: ON · %1$d stored code(s) reported by ECU</string>
+    <string name="error_overview_mil_off">Engine light: OFF</string>
+    <string name="error_overview_mil_unknown">Engine light: unknown</string>
+    <string name="error_overview_offline_note">offline info — add an API key in Settings for AI assessments</string>
+    <string name="error_overview_clear_button">Clear Fault Codes</string>
+    <string name="error_overview_clear_confirm_title">Clear fault codes?</string>
+    <string name="error_overview_clear_confirm_message">This tells the ECU to erase stored fault codes and switch the engine light off. Note the codes first — only clear after a repair or on a mechanic\'s advice.</string>
+    <string name="error_overview_clear_done">Clear command sent. Re-scan to verify.</string>
+    <string name="error_offline_suffix">%1$s · offline info</string>
+    <string name="error_detail_gone">Saved result for %1$s is no longer available. Please scan again.</string>
+    <string name="error_overview_demo_badge">Demo mode — simulated data</string>
+    <string name="error_overview_adapter_health">Adapter: %1$s · ECU: %2$s · Protocol: %3$s</string>
+    <string name="error_overview_vehicle_info">VIN: %1$s · Since clear: %2$s / %3$s</string>
     <string name="error_detail_title">Fault Code Details</string>
     <string name="error_details_code_label">Severity: %1$s</string>
     <string name="error_details_description_label">Details</string>
@@ -35,27 +54,167 @@
     <string name="error_details_ai_suggestions_label">AI Generated Suggestions</string>
     <string name="no_errors_found">Operation failed: %1$s</string>
 
+    <!-- Ask AI follow-up chat -->
+    <string name="ask_ai_title">Ask AI</string>
+    <string name="ask_ai_button">Ask AI</string>
+    <string name="ask_ai_welcome">Questions about %1$s? Ask below — answers use the diagnosis above.</string>
+    <string name="ask_ai_hint">Ask about %1$s…</string>
+    <string name="ask_ai_send">Send</string>
+    <string name="ask_ai_thinking">Thinking…</string>
+    <string name="ask_ai_no_key">Add an AI API key in Settings to chat about this fault.</string>
+    <string name="ask_ai_failed">Could not get an answer: %1$s</string>
+
+    <!-- Code-source pills -->
+    <string name="dtc_source_stored">Stored</string>
+    <string name="dtc_source_pending">Pending</string>
+    <string name="dtc_source_permanent">Permanent</string>
+    <string name="error_detail_sources">Sources: %1$s</string>
+
+    <!-- OBD console -->
+    <string name="error_overview_console_button">OBD Console</string>
+    <string name="obd_console_title">OBD Console</string>
+    <string name="obd_console_hint">Type an AT command or PID (e.g. 010C)</string>
+    <string name="obd_console_send">Send</string>
+    <string name="obd_console_clear">Clear</string>
+    <string name="obd_console_not_connected">Not connected to an adapter.</string>
+
+    <!-- Freeze frame -->
+    <string name="freeze_title">Freeze frame</string>
+    <string name="freeze_unavailable">Freeze frame not available.</string>
+    <string name="freeze_dtc">Fault: %1$s</string>
+    <string name="freeze_rpm">RPM: %1$d</string>
+    <string name="freeze_speed">Speed: %1$d km/h</string>
+    <string name="freeze_coolant">Coolant: %1$d °C</string>
+    <string name="freeze_load">Load: %1$d %%</string>
+
+    <!-- Share -->
+    <string name="error_detail_share">Share report</string>
+
+    <!-- Display units -->
+    <string name="settings_units_title">Units</string>
+    <string name="settings_units_metric">Metric (km/h, °C)</string>
+    <string name="settings_units_imperial">Imperial (mph, °F)</string>
+    <string name="settings_keep_screen">Keep screen on while driving</string>
+    <string name="settings_engine_sound">Engine sound</string>
+    <string name="demo_speed_mph">Speed: %1$d mph</string>
+    <string name="demo_coolant_f">Coolant: %1$d °F</string>
+    <string name="live_data_coolant_warning_f">Coolant overheat: %1$d °F — stop safely and check cooling</string>
+
+    <!-- Trip computer -->
+    <string name="trip_title">Trip computer</string>
+    <string name="trip_overview_button">Trip computer</string>
+    <string name="trip_start">Start trip</string>
+    <string name="trip_stop">Stop</string>
+    <string name="trip_reset">Reset</string>
+    <string name="trip_duration">Time: %1$s</string>
+    <string name="trip_distance">Distance: %1$s</string>
+    <string name="trip_avg_speed">Average: %1$s</string>
+    <string name="trip_max_speed">Top speed: %1$s</string>
+    <string name="trip_max_rpm">Top RPM: %1$d</string>
+    <string name="trip_idle">Idle: %1$s</string>
+    <string name="trip_dist_km">%1$.1f km</string>
+    <string name="trip_dist_mi">%1$.1f mi</string>
+    <string name="trip_speed_kmh">%1$d km/h</string>
+    <string name="trip_speed_mph">%1$d mph</string>
+
     <!-- Live Data -->
     <string name="live_data_title">Live Data</string>
     <string name="device_temp">Device Temp: %1$.1f°C</string>
     <string name="coolant_value">Coolant: %1$s</string>
+    <string name="voltage_value">Voltage: %1$s</string>
+    <string name="fuel_value">Fuel: %1$s</string>
+    <string name="live_data_gps_permission">Location permission is required for GPS speed. Grant it and try again.</string>
+    <!-- Offline AI: short spoken driving cues -->
+    <string name="offline_ai_name">Offline AI</string>
+    <string name="offline_ai_online">Offline AI ready. Drive safe.</string>
+    <string name="offline_ai_shift_up">Shift up now.</string>
+    <string name="offline_ai_coolant_ok">Coolant temperature back to normal.</string>
+    <string name="live_data_mute">Mute</string>
+    <string name="live_data_unmute">Unmute</string>
+    <string name="live_data_coolant_warning">Coolant overheat: %1$d °C — stop safely and check cooling</string>
+
+    <!-- Demo controls -->
+    <string name="demo_panel_title">Demo controls — drag to simulate</string>
+    <string name="demo_speed_label">Speed: %1$d km/h</string>
+    <string name="demo_rpm_label">RPM: %1$d</string>
+    <string name="demo_coolant_label">Coolant: %1$d °C</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_category_general">General</string>
-    <string name="settings_dark_mode">Dark Mode</string>
-    <string name="settings_mute_sound">Mute RPM-based sound</string>
+    <string name="settings_category_driving">Driving alerts</string>
+    <string name="settings_theme_title">Appearance</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_mute_sound">Mute driving alerts</string>
+    <string name="settings_shift_rpm_title">Shift point</string>
+    <string name="settings_shift_rpm_value">%1$d RPM</string>
     <string name="settings_speed_source_title">Speed Source</string>
     <string name="settings_speed_source_gps">This Device (GPS)</string>
     <string name="settings_speed_source_obd">OBD2 Device</string>
-    <string name="settings_category_api">API Settings</string>
-    <string name="settings_api_key_hint">OpenAI API Key (Optional)</string>
-    <string name="settings_model_id_hint">OpenAI Model ID</string>
+    <string name="settings_ai_provider">AI provider</string>
+    <string name="settings_api_key_hint">AI API Key</string>
+    <string name="settings_api_key_hint_custom">API key (only if server needs one)</string>
+    <string name="settings_api_key_missing">No API key for %1$s — AI answers will be offline info only</string>
+    <string name="settings_base_url_hint">Server URL (Custom provider, e.g. http://192.168.1.10:11434/v1)</string>
+    <string name="settings_model_id_hint">Model ID</string>
     <string name="settings_button_save">Save Settings</string>
     <string name="settings_saved">Settings saved</string>
+    <string name="settings_offline_ai_title">Offline AI</string>
+    <string name="settings_offline_ai_desc">Works fully offline using predefined vehicle events and prerecorded audio. No internet needed.</string>
+    <string name="settings_online_ai_desc">Uses a real AI service over the internet. Requires API configuration.</string>
+    <string name="settings_alert_output">Alert Output</string>
+    <string name="settings_voice_alerts">Voice Alerts</string>
+    <string name="settings_text_alerts">Text Alerts</string>
+    <string name="settings_voice_volume">Voice Volume</string>
+    <string name="settings_alert_high_rpm">High RPM</string>
+    <string name="settings_alert_high_speed">High Speed</string>
+    <string name="settings_speed_value">%1$d km/h</string>
+    <string name="settings_alert_coolant">Coolant Temperature</string>
+    <string name="settings_temp_value">%1$d °C</string>
+    <string name="settings_alert_new_fault">New Fault Code</string>
+    <string name="settings_alert_conn_lost">Connection Lost</string>
+    <string name="settings_alert_conn_restored">Connection Restored</string>
+    <string name="settings_alert_engine_start">Engine Started</string>
+    <string name="settings_alert_engine_stop">Engine Stopped</string>
+    <string name="settings_easter_eggs">Easter eggs</string>
+    <string name="settings_easter_desc">Occasional jokes from Offline AI. Never replaces safety warnings.</string>
+    <string name="settings_ai_config">AI Configuration</string>
+    <string name="settings_ai_behavior">AI Behavior</string>
+    <string name="offline_ai_high_rpm">Easy there, you are pushing it.</string>
+    <string name="offline_ai_high_speed">Slow down a little.</string>
+    <string name="offline_ai_coolant_high">Coolant is getting hot.</string>
+    <string name="offline_ai_new_fault">New fault code detected.</string>
+    <string name="offline_ai_conn_lost">OBD2 connection lost.</string>
+    <string name="offline_ai_conn_restored">OBD2 connection restored.</string>
+    <string name="offline_ai_engine_start">Engine started.</string>
+    <string name="offline_ai_engine_stop">Engine stopped.</string>
+    <string name="offline_ai_test_line">This is the Offline AI speaking.</string>
+    <string name="settings_online_ai_title">Online AI assistant</string>
+    <string name="settings_ai_status_ok">AI API: configured (%1$s · %2$s)</string>
+    <string name="settings_ai_status_missing">AI API: not configured — key needed for fault explanations</string>
+    <string name="settings_ai_frequency">Response frequency</string>
+    <string name="settings_ai_personality">Personality</string>
+    <string name="settings_ai_volume">Voice volume</string>
+    <string name="settings_ai_volume_value">%1$d%%</string>
+    <string name="settings_device_voice">Device voice</string>
+    <string name="settings_device_voice_note">Online AI speaks using the device\'s built-in voice. No API key needed.</string>
+    <string name="online_ai_card_title">Online AI Diagnostic Assistant</string>
+    <string name="ai_no_key_hint">Online AI is on but has no AI API key — add one in Settings for spoken diagnostics.</string>
+    <string name="settings_test_voice">Test voice</string>
+    <string name="settings_tts_system">Device voice settings</string>
+    <string name="ai_test_line">Hello, I\'m your Online AI. Your car seems to be doing just fine.</string>
+    <string name="ai_test_ok_device">Device voice playing.</string>
+    <string name="ai_test_failed">Voice test failed: %1$s</string>
+    <string name="ai_test_off">Voice is turned off in Settings.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>
+    <string name="dialog_clear">Clear</string>
     <string name="suggestion_bullet" translatable="false">•</string>
+    <string name="popup_skip">Skip</string>
+    <string name="countdown_value">%1$d</string>
 
 </resources>

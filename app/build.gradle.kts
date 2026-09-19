@@ -14,7 +14,7 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -86,9 +86,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.kotlin.obd.api)
-    implementation(libs.openai.client)
-    implementation(libs.ktor.client.okhttp)
-    implementation(libs.slf4j.nop)
     implementation(libs.play.services.ads)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.splashscreen)

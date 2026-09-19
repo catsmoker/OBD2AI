@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing scale shared by every layout so element sizes stay consistent
+         across phones, tablets and densities. -->
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_xlarge">24dp</dimen>
+    <dimen name="spacing_xxlarge">32dp</dimen>
+
+    <dimen name="button_min_height">48dp</dimen>
+
+    <dimen name="card_corner_radius">12dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="badge_vertical_padding">6dp</dimen>
+
+    <dimen name="row_icon_size">24dp</dimen>
+    <dimen name="row_icon_gap">16dp</dimen>
+    <dimen name="detail_icon_size">48dp</dimen>
+    <dimen name="settings_button_size">48dp</dimen>
+</resources>

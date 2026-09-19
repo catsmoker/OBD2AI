@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name">OBD2AI</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Te damos la bienvenida a OBD2 AI Pro</string>
+    <string name="onboarding_description">Diagnostica problemas del vehículo leyendo códigos de falla y obtén análisis con IA y consejos de reparación.</string>
+    <string name="onboarding_button_get_started">Comenzar</string>
+    <string name="onboarding_button_skip">Aceptar</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">Permisos necesarios</string>
+    <string name="permissions_description">Para buscar tu adaptador OBD2, la app necesita permisos de Bluetooth y ubicación. Android exige la ubicación para descubrir dispositivos Bluetooth cercanos.</string>
+    <string name="permissions_button_grant">Otorgar permisos</string>
+    <string name="permissions_bluetooth_required">Se necesita Bluetooth para conectarse a un dispositivo OBD2.</string>
+
+    <!-- Device Connection -->
+    <string name="connect_title">Conectar al dispositivo OBD2</string>
+    <string name="connect_select_device">Selecciona tu dispositivo OBD2</string>
+    <string name="connect_scanning_for_devices">Buscando dispositivos…</string>
+    <string name="connect_button">Conectar</string>
+    <string name="connected_to">Seleccionado: %1$s</string>
+    <string name="could_not_connect_to_obd2_adapter">No se pudo conectar al adaptador OBD2: %1$s</string>
+    <string name="connect_no_devices_found">No se pudieron obtener los dispositivos emparejados: %1$s</string>
+    <string name="connect_demo_button">Probar modo demo (sin adaptador)</string>
+    <string name="connect_wifi_title">Adaptador Wi-Fi</string>
+    <string name="connect_wifi_host_hint">IP del adaptador (p. ej. 192.168.0.10)</string>
+    <string name="connect_wifi_port_hint">Puerto</string>
+    <string name="connect_wifi_button">Conectar por Wi-Fi</string>
+    <string name="connect_wifi_invalid">Ingresa una dirección IP y un puerto válidos</string>
+
+    <!-- Error Codes -->
+    <string name="error_overview_title">Informe de diagnóstico</string>
+    <string name="error_overview_scan_button">Buscar códigos de falla</string>
+    <string name="error_overview_error_counts">Leves: %1$d | Medios: %2$d | Graves: %3$d</string>
+    <string name="error_overview_no_errors">No se encontraron códigos de falla</string>
+    <string name="error_overview_mil_on">Testigo del motor: ENCENDIDO · %1$d código(s) reportados por la ECU</string>
+    <string name="error_overview_mil_off">Testigo del motor: APAGADO</string>
+    <string name="error_overview_mil_unknown">Testigo del motor: desconocido</string>
+    <string name="error_overview_offline_note">info sin conexión — agrega una clave API en Ajustes para análisis con IA</string>
+    <string name="error_overview_clear_button">Borrar códigos de falla</string>
+    <string name="error_overview_clear_confirm_title">¿Borrar los códigos de falla?</string>
+    <string name="error_overview_clear_confirm_message">Esto ordena a la ECU borrar los códigos almacenados y apagar el testigo del motor. Anota los códigos primero — bórralos solo tras una reparación o por consejo de un mecánico.</string>
+    <string name="error_overview_clear_done">Comando de borrado enviado. Vuelve a escanear para verificar.</string>
+    <string name="error_offline_suffix">%1$s · info sin conexión</string>
+    <string name="error_detail_gone">El resultado guardado de %1$s ya no está disponible. Escanea de nuevo.</string>
+    <string name="error_overview_demo_badge">Modo demo — datos simulados</string>
+    <string name="error_overview_adapter_health">Adaptador: %1$s · ECU: %2$s · Protocolo: %3$s</string>
+    <string name="error_overview_vehicle_info">VIN: %1$s · Desde el borrado: %2$s / %3$s</string>
+    <string name="error_detail_title">Detalles del código de falla</string>
+    <string name="error_details_code_label">Gravedad: %1$s</string>
+    <string name="error_details_description_label">Detalles</string>
+    <string name="error_details_solutions_label">Posibles soluciones</string>
+    <string name="error_details_ai_suggestions_label">Sugerencias generadas por IA</string>
+    <string name="no_errors_found">La operación falló: %1$s</string>
+
+    <!-- Ask AI follow-up chat -->
+    <string name="ask_ai_title">Preguntar a la IA</string>
+    <string name="ask_ai_button">Preguntar a la IA</string>
+    <string name="ask_ai_welcome">¿Preguntas sobre %1$s? Escribe abajo — las respuestas usan el diagnóstico anterior.</string>
+    <string name="ask_ai_hint">Pregunta sobre %1$s…</string>
+    <string name="ask_ai_send">Enviar</string>
+    <string name="ask_ai_thinking">Pensando…</string>
+    <string name="ask_ai_no_key">Agrega una clave de API de IA en Ajustes para conversar sobre esta falla.</string>
+    <string name="ask_ai_failed">No se pudo obtener una respuesta: %1$s</string>
+
+    <!-- Code-source pills -->
+    <string name="dtc_source_stored">Almacenado</string>
+    <string name="dtc_source_pending">Pendiente</string>
+    <string name="dtc_source_permanent">Permanente</string>
+    <string name="error_detail_sources">Origen: %1$s</string>
+
+    <!-- OBD console -->
+    <string name="error_overview_console_button">Consola OBD</string>
+    <string name="obd_console_title">Consola OBD</string>
+    <string name="obd_console_hint">Escribe un comando AT o PID (p. ej. 010C)</string>
+    <string name="obd_console_send">Enviar</string>
+    <string name="obd_console_clear">Borrar</string>
+    <string name="obd_console_not_connected">Sin conexión al adaptador.</string>
+
+    <!-- Freeze frame -->
+    <string name="freeze_title">Datos congelados</string>
+    <string name="freeze_unavailable">Datos congelados no disponibles.</string>
+    <string name="freeze_dtc">Falla: %1$s</string>
+    <string name="freeze_rpm">RPM: %1$d</string>
+    <string name="freeze_speed">Velocidad: %1$d km/h</string>
+    <string name="freeze_coolant">Refrigerante: %1$d °C</string>
+    <string name="freeze_load">Carga: %1$d %%</string>
+
+    <!-- Share -->
+    <string name="error_detail_share">Compartir informe</string>
+
+    <!-- Display units -->
+    <string name="settings_units_title">Unidades</string>
+    <string name="settings_units_metric">Métrico (km/h, °C)</string>
+    <string name="settings_units_imperial">Imperial (mph, °F)</string>
+    <string name="settings_keep_screen">Mantener la pantalla encendida al conducir</string>
+    <string name="settings_engine_sound">Sonido del motor</string>
+    <string name="demo_speed_mph">Velocidad: %1$d mph</string>
+    <string name="demo_coolant_f">Refrigerante: %1$d °F</string>
+    <string name="live_data_coolant_warning_f">Sobrecalentamiento: %1$d °F — detente con seguridad y revisa la refrigeración</string>
+
+    <!-- Trip computer -->
+    <string name="trip_title">Computadora de viaje</string>
+    <string name="trip_overview_button">Viaje</string>
+    <string name="trip_start">Iniciar viaje</string>
+    <string name="trip_stop">Detener</string>
+    <string name="trip_reset">Reiniciar</string>
+    <string name="trip_duration">Tiempo: %1$s</string>
+    <string name="trip_distance">Distancia: %1$s</string>
+    <string name="trip_avg_speed">Promedio: %1$s</string>
+    <string name="trip_max_speed">Velocidad máxima: %1$s</string>
+    <string name="trip_max_rpm">RPM máximas: %1$d</string>
+    <string name="trip_idle">Ralentí: %1$s</string>
+    <string name="trip_dist_km">%1$.1f km</string>
+    <string name="trip_dist_mi">%1$.1f mi</string>
+    <string name="trip_speed_kmh">%1$d km/h</string>
+    <string name="trip_speed_mph">%1$d mph</string>
+
+    <!-- Live Data -->
+    <string name="live_data_title">Datos en vivo</string>
+    <string name="device_temp">Temp. del dispositivo: %1$.1f°C</string>
+    <string name="coolant_value">Refrigerante: %1$s</string>
+    <string name="voltage_value">Voltaje: %1$s</string>
+    <string name="fuel_value">Combustible: %1$s</string>
+    <string name="live_data_gps_permission">Se necesita el permiso de ubicación para la velocidad por GPS. Otórgalo e inténtalo de nuevo.</string>
+    <!-- Offline AI: short spoken driving cues -->
+    <string name="offline_ai_name">IA sin conexión</string>
+    <string name="offline_ai_online">IA sin conexión lista. Conduce con cuidado.</string>
+    <string name="offline_ai_shift_up">Cambia a una marcha superior.</string>
+    <string name="offline_ai_coolant_ok">La temperatura del refrigerante volvió a la normalidad.</string>
+    <string name="live_data_mute">Silenciar</string>
+    <string name="live_data_unmute">Activar sonido</string>
+    <string name="live_data_coolant_warning">Sobrecalentamiento: %1$d °C — detente con seguridad y revisa la refrigeración</string>
+
+    <!-- Demo controls -->
+    <string name="demo_panel_title">Controles demo — arrastra para simular</string>
+    <string name="demo_speed_label">Velocidad: %1$d km/h</string>
+    <string name="demo_rpm_label">RPM: %1$d</string>
+    <string name="demo_coolant_label">Refrigerante: %1$d °C</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_category_general">General</string>
+    <string name="settings_category_driving">Alertas de conducción</string>
+    <string name="settings_theme_title">Apariencia</string>
+    <string name="settings_language_title">Idioma</string>
+    <string name="settings_theme_system">Predeterminado del sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_mute_sound">Silenciar alertas de conducción</string>
+    <string name="settings_offline_ai_desc">Funciona sin internet con eventos predefinidos del vehículo y audio grabado.</string>
+    <string name="settings_online_ai_desc">Usa un servicio real de IA por internet. Requiere configuración de API.</string>
+    <string name="settings_alert_output">Salida de alertas</string>
+    <string name="settings_voice_alerts">Alertas de voz</string>
+    <string name="settings_text_alerts">Alertas de texto</string>
+    <string name="settings_voice_volume">Volumen de voz</string>
+    <string name="settings_alert_high_rpm">RPM altas</string>
+    <string name="settings_alert_high_speed">Velocidad alta</string>
+    <string name="settings_speed_value">%1$d km/h</string>
+    <string name="settings_alert_coolant">Temperatura del refrigerante</string>
+    <string name="settings_temp_value">%1$d °C</string>
+    <string name="settings_alert_new_fault">Nuevo código de falla</string>
+    <string name="settings_alert_conn_lost">Conexión perdida</string>
+    <string name="settings_alert_conn_restored">Conexión restablecida</string>
+    <string name="settings_alert_engine_start">Motor encendido</string>
+    <string name="settings_alert_engine_stop">Motor apagado</string>
+    <string name="settings_easter_eggs">Bromas ocultas</string>
+    <string name="settings_easter_desc">Bromas ocasionales de la IA sin conexión. Nunca reemplazan las advertencias.</string>
+    <string name="settings_ai_config">Configuración de IA</string>
+    <string name="settings_ai_behavior">Comportamiento de IA</string>
+    <string name="offline_ai_high_rpm">Con calma, estás forzando el motor.</string>
+    <string name="offline_ai_high_speed">Reduce un poco la velocidad.</string>
+    <string name="offline_ai_coolant_high">El refrigerante se está calentando.</string>
+    <string name="offline_ai_new_fault">Nuevo código de falla detectado.</string>
+    <string name="offline_ai_conn_lost">Conexión OBD2 perdida.</string>
+    <string name="offline_ai_conn_restored">Conexión OBD2 restablecida.</string>
+    <string name="offline_ai_engine_start">Motor encendido.</string>
+    <string name="offline_ai_engine_stop">Motor apagado.</string>
+    <string name="offline_ai_test_line">Esta es la IA sin conexión hablando.</string>
+    <string name="settings_shift_rpm_title">Punto de cambio</string>
+    <string name="settings_shift_rpm_value">%1$d RPM</string>
+    <string name="settings_speed_source_title">Fuente de velocidad</string>
+    <string name="settings_speed_source_gps">Este dispositivo (GPS)</string>
+    <string name="settings_speed_source_obd">Dispositivo OBD2</string>
+    <string name="settings_ai_provider">Proveedor de IA</string>
+    <string name="settings_api_key_hint">Clave API de IA</string>
+    <string name="settings_api_key_hint_custom">Clave API (solo si tu servidor la necesita)</string>
+    <string name="settings_api_key_missing">Sin clave API para %1$s — la IA responderá solo con info sin conexión</string>
+    <string name="settings_base_url_hint">URL del servidor (proveedor personalizado, p. ej. http://192.168.1.10:11434/v1)</string>
+    <string name="settings_model_id_hint">ID del modelo</string>
+    <string name="settings_button_save">Guardar ajustes</string>
+    <string name="settings_saved">Ajustes guardados</string>
+    <string name="settings_offline_ai_title">IA sin conexión</string>
+    <string name="settings_online_ai_title">Asistente IA en línea</string>
+    <string name="settings_ai_status_ok">API de IA: configurada (%1$s · %2$s)</string>
+    <string name="settings_ai_status_missing">API de IA: sin configurar — se necesita clave para explicar fallas</string>
+    <string name="settings_ai_frequency">Frecuencia de respuestas</string>
+    <string name="settings_ai_personality">Personalidad</string>
+    <string name="settings_ai_volume">Volumen de voz</string>
+    <string name="settings_ai_volume_value">%1$d%%</string>
+    <string name="settings_device_voice">Voz del dispositivo</string>
+    <string name="settings_device_voice_note">La IA en línea habla con la voz integrada del dispositivo. No necesita clave API.</string>
+    <string name="online_ai_card_title">Asistente de diagnóstico IA en línea</string>
+    <string name="ai_no_key_hint">La IA en línea está activada pero no tiene clave API — agrega una en Ajustes para diagnósticos por voz.</string>
+    <string name="settings_test_voice">Probar voz</string>
+    <string name="settings_tts_system">Ajustes de voz del dispositivo</string>
+    <string name="ai_test_line">Hola, soy tu IA en línea. Tu coche parece estar bien.</string>
+    <string name="ai_test_ok_device">Reproduciendo voz del dispositivo.</string>
+    <string name="ai_test_failed">La prueba de voz falló: %1$s</string>
+    <string name="ai_test_off">La voz está desactivada en Ajustes.</string>
+
+    <!-- Generic Dialogs & Messages -->
+    <string name="dialog_error_title">Error</string>
+    <string name="dialog_clear">Borrar</string>
+
+    <string name="popup_skip">Omitir</string>
+    <string name="countdown_value">%1$d</string>
+
+</resources>

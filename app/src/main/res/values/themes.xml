@@ -16,12 +16,19 @@
         <item name="colorOnBackground">@color/on_background</item>
         <item name="colorOnSurface">@color/on_surface</item>
         <item name="colorOnError">@color/on_error</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
     </style>
 
     <!-- Splash Screen Theme -->
     <style name="Theme.OBD2AI.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/colorSecondary</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.OBD2AI</item>
     </style>
 </resources>

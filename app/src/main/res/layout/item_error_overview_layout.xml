@@ -7,24 +7,24 @@
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:padding="16dp">
+    android:padding="@dimen/spacing_large">
 
     <ImageView
         android:id="@+id/imageView_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/row_icon_size"
+        android:layout_height="@dimen/row_icon_size"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_error_indicator"
+        app:srcCompat="@drawable/ic_warning"
         app:tint="?attr/colorError" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/row_icon_gap"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
         app:layout_constraintBottom_toTopOf="@+id/detail"
@@ -38,15 +38,70 @@
         android:id="@+id/detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/spacing_tiny"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="?attr/colorOnSurface"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="Indicates that the oxygen levels in the exhaust are not as expected, suggesting an issue with the catalyst system." />
+
+    <LinearLayout
+        android:id="@+id/pill_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/detail"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/pill_stored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_tiny"
+            android:background="@drawable/bg_badge"
+            android:paddingHorizontal="@dimen/spacing_small"
+            android:paddingVertical="@dimen/badge_vertical_padding"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:visibility="gone"
+            tools:text="Stored"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/pill_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_tiny"
+            android:background="@drawable/bg_badge"
+            android:paddingHorizontal="@dimen/spacing_small"
+            android:paddingVertical="@dimen/badge_vertical_padding"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:visibility="gone"
+            tools:text="Pending"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/pill_permanent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge"
+            android:paddingHorizontal="@dimen/spacing_small"
+            android:paddingVertical="@dimen/badge_vertical_padding"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:visibility="gone"
+            tools:text="Permanent"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

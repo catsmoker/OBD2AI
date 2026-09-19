@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name">OBD2AI</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">مرحبًا بك في OBD2 AI Pro</string>
+    <string name="onboarding_description">شخّص مشاكل السيارة بقراءة رموز الأعطال واحصل على تحليلات بالذكاء الاصطناعي ونصائح للإصلاح.</string>
+    <string name="onboarding_button_get_started">ابدأ</string>
+    <string name="onboarding_button_skip">حسنًا</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">الأذونات مطلوبة</string>
+    <string name="permissions_description">للبحث عن محوّل OBD2 يحتاج التطبيق إلى إذني البلوتوث والموقع. يتطلب أندرويد إذن الموقع لاكتشاف أجهزة البلوتوث القريبة.</string>
+    <string name="permissions_button_grant">منح الأذونات</string>
+    <string name="permissions_bluetooth_required">البلوتوث مطلوب للاتصال بجهاز OBD2.</string>
+
+    <!-- Device Connection -->
+    <string name="connect_title">الاتصال بجهاز OBD2</string>
+    <string name="connect_select_device">اختر جهاز OBD2</string>
+    <string name="connect_scanning_for_devices">جارٍ البحث عن الأجهزة…</string>
+    <string name="connect_button">اتصال</string>
+    <string name="connected_to">المحدد: %1$s</string>
+    <string name="could_not_connect_to_obd2_adapter">تعذّر الاتصال بمحوّل OBD2: %1$s</string>
+    <string name="connect_no_devices_found">تعذّر الحصول على الأجهزة المقترنة: %1$s</string>
+    <string name="connect_demo_button">جرّب الوضع التجريبي (بدون محوّل)</string>
+    <string name="connect_wifi_title">محوّل Wi-Fi</string>
+    <string name="connect_wifi_host_hint">عنوان IP للمحوّل (مثال 192.168.0.10)</string>
+    <string name="connect_wifi_port_hint">المنفذ</string>
+    <string name="connect_wifi_button">اتصال عبر Wi-Fi</string>
+    <string name="connect_wifi_invalid">أدخل عنوان IP ومنفذًا صالحين</string>
+
+    <!-- Error Codes -->
+    <string name="error_overview_title">تقرير التشخيص</string>
+    <string name="error_overview_scan_button">فحص رموز الأعطال</string>
+    <string name="error_overview_error_counts">طفيفة: %1$d | متوسطة: %2$d | خطيرة: %3$d</string>
+    <string name="error_overview_no_errors">لا توجد رموز أعطال</string>
+    <string name="error_overview_mil_on">مصباح المحرك: يعمل · %1$d رمز مخزّن مبلغ عنه من وحدة التحكم</string>
+    <string name="error_overview_mil_off">مصباح المحرك: مطفأ</string>
+    <string name="error_overview_mil_unknown">مصباح المحرك: غير معروف</string>
+    <string name="error_overview_offline_note">معلومات دون اتصال — أضف مفتاح API في الإعدادات لتحليلات الذكاء الاصطناعي</string>
+    <string name="error_overview_clear_button">مسح رموز الأعطال</string>
+    <string name="error_overview_clear_confirm_title">مسح رموز الأعطال؟</string>
+    <string name="error_overview_clear_confirm_message">سيطلب هذا من وحدة التحكم مسح الرموز المخزنة وإطفاء مصباح المحرك. سجّل الرموز أولًا — لا تمسح إلا بعد الإصلاح أو بنصيحة ميكانيكي.</string>
+    <string name="error_overview_clear_done">تم إرسال أمر المسح. أعد الفحص للتحقق.</string>
+    <string name="error_offline_suffix">%1$s · معلومات دون اتصال</string>
+    <string name="error_detail_gone">النتيجة المحفوظة لـ %1$s لم تعد متاحة. يرجى الفحص مجددًا.</string>
+    <string name="error_overview_demo_badge">الوضع التجريبي — بيانات محاكاة</string>
+    <string name="error_overview_adapter_health">المحوّل: %1$s · ECU: %2$s · البروتوكول: %3$s</string>
+    <string name="error_overview_vehicle_info">رقم الهيكل: %1$s · منذ المسح: %2$s / %3$s</string>
+    <string name="error_detail_title">تفاصيل رمز العطل</string>
+    <string name="error_details_code_label">الخطورة: %1$s</string>
+    <string name="error_details_description_label">التفاصيل</string>
+    <string name="error_details_solutions_label">الحلول المحتملة</string>
+    <string name="error_details_ai_suggestions_label">اقتراحات الذكاء الاصطناعي</string>
+    <string name="no_errors_found">فشلت العملية: %1$s</string>
+
+    <!-- Ask AI follow-up chat -->
+    <string name="ask_ai_title">اسأل الذكاء الاصطناعي</string>
+    <string name="ask_ai_button">اسأل الذكاء الاصطناعي</string>
+    <string name="ask_ai_welcome">هل لديك أسئلة عن %1$s؟ اكتب أدناه — تستند الإجابات إلى التشخيص أعلاه.</string>
+    <string name="ask_ai_hint">اسأل عن %1$s…</string>
+    <string name="ask_ai_send">إرسال</string>
+    <string name="ask_ai_thinking">جارٍ التفكير…</string>
+    <string name="ask_ai_no_key">أضف مفتاح API للذكاء الاصطناعي في الإعدادات للدردشة حول هذا العطل.</string>
+    <string name="ask_ai_failed">تعذر الحصول على إجابة: %1$s</string>
+
+    <!-- Code-source pills -->
+    <string name="dtc_source_stored">مخزنة</string>
+    <string name="dtc_source_pending">معلقة</string>
+    <string name="dtc_source_permanent">دائمة</string>
+    <string name="error_detail_sources">المصادر: %1$s</string>
+
+    <!-- OBD console -->
+    <string name="error_overview_console_button">وحدة تحكم OBD</string>
+    <string name="obd_console_title">وحدة تحكم OBD</string>
+    <string name="obd_console_hint">اكتب أمر AT أو PID (مثال 010C)</string>
+    <string name="obd_console_send">إرسال</string>
+    <string name="obd_console_clear">مسح</string>
+    <string name="obd_console_not_connected">غير متصل بالمحول.</string>
+
+    <!-- Freeze frame -->
+    <string name="freeze_title">الإطار المتجمد</string>
+    <string name="freeze_unavailable">الإطار المتجمد غير متاح.</string>
+    <string name="freeze_dtc">العطل: %1$s</string>
+    <string name="freeze_rpm">RPM: %1$d</string>
+    <string name="freeze_speed">السرعة: %1$d كم/س</string>
+    <string name="freeze_coolant">سائل التبريد: %1$d °م</string>
+    <string name="freeze_load">الحمل: %1$d %%</string>
+
+    <!-- Share -->
+    <string name="error_detail_share">مشاركة التقرير</string>
+
+    <!-- Display units -->
+    <string name="settings_units_title">الوحدات</string>
+    <string name="settings_units_metric">متري (كم/س، °م)</string>
+    <string name="settings_units_imperial">إمبراطوري (ميل/س، °ف)</string>
+    <string name="settings_keep_screen">إبقاء الشاشة مضيئة أثناء القيادة</string>
+    <string name="settings_engine_sound">صوت المحرك</string>
+    <string name="demo_speed_mph">السرعة: %1$d ميل/س</string>
+    <string name="demo_coolant_f">سائل التبريد: %1$d °ف</string>
+    <string name="live_data_coolant_warning_f">ارتفاع حرارة سائل التبريد: %1$d °ف — توقف بأمان وافحص التبريد</string>
+
+    <!-- Trip computer -->
+    <string name="trip_title">كمبيوتر الرحلة</string>
+    <string name="trip_overview_button">الرحلة</string>
+    <string name="trip_start">بدء الرحلة</string>
+    <string name="trip_stop">إيقاف</string>
+    <string name="trip_reset">تصفير</string>
+    <string name="trip_duration">المدة: %1$s</string>
+    <string name="trip_distance">المسافة: %1$s</string>
+    <string name="trip_avg_speed">المتوسط: %1$s</string>
+    <string name="trip_max_speed">السرعة القصوى: %1$s</string>
+    <string name="trip_max_rpm">أقصى RPM: %1$d</string>
+    <string name="trip_idle">التوقف: %1$s</string>
+    <string name="trip_dist_km">%1$.1f كم</string>
+    <string name="trip_dist_mi">%1$.1f ميل</string>
+    <string name="trip_speed_kmh">%1$d كم/س</string>
+    <string name="trip_speed_mph">%1$d ميل/س</string>
+
+    <!-- Live Data -->
+    <string name="live_data_title">بيانات حية</string>
+    <string name="device_temp">حرارة الجهاز: %1$.1f°م</string>
+    <string name="coolant_value">سائل التبريد: %1$s</string>
+    <string name="voltage_value">الجهد: %1$s</string>
+    <string name="fuel_value">الوقود: %1$s</string>
+    <string name="live_data_gps_permission">إذن الموقع مطلوب لسرعة GPS. امنحه ثم حاول مجددًا.</string>
+    <!-- Offline AI: short spoken driving cues -->
+    <string name="offline_ai_name">الذكاء الاصطناعي دون اتصال</string>
+    <string name="offline_ai_online">المساعد دون اتصال جاهز. قد بأمان.</string>
+    <string name="offline_ai_shift_up">انتقل إلى غيار أعلى الآن.</string>
+    <string name="offline_ai_coolant_ok">عادت حرارة سائل التبريد إلى طبيعتها.</string>
+    <string name="live_data_mute">كتم</string>
+    <string name="live_data_unmute">إلغاء الكتم</string>
+    <string name="live_data_coolant_warning">ارتفاع حرارة سائل التبريد: %1$d °م — توقف بأمان وافحص التبريد</string>
+
+    <!-- Demo controls -->
+    <string name="demo_panel_title">أدوات التحكم التجريبية — اسحب للمحاكاة</string>
+    <string name="demo_speed_label">السرعة: %1$d كم/س</string>
+    <string name="demo_rpm_label">RPM: %1$d</string>
+    <string name="demo_coolant_label">سائل التبريد: %1$d °م</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_category_general">عام</string>
+    <string name="settings_category_driving">تنبيهات القيادة</string>
+    <string name="settings_theme_title">المظهر</string>
+    <string name="settings_language_title">اللغة</string>
+    <string name="settings_theme_system">افتراضي النظام</string>
+    <string name="settings_theme_light">فاتح</string>
+    <string name="settings_theme_dark">داكن</string>
+    <string name="settings_mute_sound">كتم تنبيهات القيادة</string>
+    <string name="settings_offline_ai_desc">يعمل دون إنترنت باستخدام أحداث محددة مسبقًا للمركبة ومقاطع صوتية مسجلة.</string>
+    <string name="settings_online_ai_desc">يستخدم خدمة ذكاء اصطناعي حقيقية عبر الإنترنت. يتطلب إعداد API.</string>
+    <string name="settings_alert_output">مخرجات التنبيه</string>
+    <string name="settings_voice_alerts">تنبيهات صوتية</string>
+    <string name="settings_text_alerts">تنبيهات نصية</string>
+    <string name="settings_voice_volume">مستوى صوت التنبيه</string>
+    <string name="settings_alert_high_rpm">دوران مرتفع</string>
+    <string name="settings_alert_high_speed">سرعة عالية</string>
+    <string name="settings_speed_value">%1$d km/h</string>
+    <string name="settings_alert_coolant">حرارة سائل التبريد</string>
+    <string name="settings_temp_value">%1$d °C</string>
+    <string name="settings_alert_new_fault">رمز عطل جديد</string>
+    <string name="settings_alert_conn_lost">انقطع الاتصال</string>
+    <string name="settings_alert_conn_restored">تمت استعادة الاتصال</string>
+    <string name="settings_alert_engine_start">بدء تشغيل المحرك</string>
+    <string name="settings_alert_engine_stop">إيقاف المحرك</string>
+    <string name="settings_easter_eggs">مفاجآت مخفية</string>
+    <string name="settings_easter_desc">دعابات عرضية من الذكاء الاصطناعي دون اتصال. لا تحل محل تحذيرات السلامة أبدًا.</string>
+    <string name="settings_ai_config">إعدادات الذكاء الاصطناعي</string>
+    <string name="settings_ai_behavior">سلوك الذكاء الاصطناعي</string>
+    <string name="offline_ai_high_rpm">تمهل، أنت تضغط على المحرك.</string>
+    <string name="offline_ai_high_speed">خفف السرعة قليلًا.</string>
+    <string name="offline_ai_coolant_high">سائل التبريد يسخن.</string>
+    <string name="offline_ai_new_fault">تم رصد رمز عطل جديد.</string>
+    <string name="offline_ai_conn_lost">انقطع اتصال OBD2.</string>
+    <string name="offline_ai_conn_restored">تمت استعادة اتصال OBD2.</string>
+    <string name="offline_ai_engine_start">بدأ المحرك بالعمل.</string>
+    <string name="offline_ai_engine_stop">توقف المحرك.</string>
+    <string name="offline_ai_test_line">هذا هو الذكاء الاصطناعي دون اتصال يتحدث.</string>
+    <string name="settings_shift_rpm_title">نقطة التبديل</string>
+    <string name="settings_shift_rpm_value">%1$d RPM</string>
+    <string name="settings_speed_source_title">مصدر السرعة</string>
+    <string name="settings_speed_source_gps">هذا الجهاز (GPS)</string>
+    <string name="settings_speed_source_obd">جهاز OBD2</string>
+    <string name="settings_ai_provider">مزود الذكاء الاصطناعي</string>
+    <string name="settings_api_key_hint">مفتاح API للذكاء الاصطناعي</string>
+    <string name="settings_api_key_hint_custom">مفتاح API (فقط إذا كان الخادم يتطلبه)</string>
+    <string name="settings_api_key_missing">لا يوجد مفتاح API لـ %1$s — ستقتصر الإجابات على معلومات دون اتصال</string>
+    <string name="settings_base_url_hint">رابط الخادم (للمزود المخصص، مثال http://192.168.1.10:11434/v1)</string>
+    <string name="settings_model_id_hint">معرّف النموذج</string>
+    <string name="settings_button_save">حفظ الإعدادات</string>
+    <string name="settings_saved">تم حفظ الإعدادات</string>
+    <string name="settings_offline_ai_title">الذكاء الاصطناعي دون اتصال</string>
+    <string name="settings_online_ai_title">مساعد الذكاء الاصطناعي عبر الإنترنت</string>
+    <string name="settings_ai_status_ok">واجهة الذكاء الاصطناعي: مضبوطة (%1$s · %2$s)</string>
+    <string name="settings_ai_status_missing">واجهة الذكاء الاصطناعي: غير مضبوطة — يلزم مفتاح لشرح الأعطال</string>
+    <string name="settings_ai_frequency">تكرار الردود</string>
+    <string name="settings_ai_personality">الشخصية</string>
+    <string name="settings_ai_volume">مستوى الصوت</string>
+    <string name="settings_ai_volume_value">%1$d%%</string>
+    <string name="settings_device_voice">صوت الجهاز</string>
+    <string name="settings_device_voice_note">يتحدث الذكاء الاصطناعي عبر الإنترنت بصوت الجهاز المدمج. لا حاجة لمفتاح API.</string>
+    <string name="online_ai_card_title">مساعد التشخيص الذكي عبر الإنترنت</string>
+    <string name="ai_no_key_hint">الذكاء الاصطناعي عبر الإنترنت مفعّل لكن بدون مفتاح API — أضف واحدًا في الإعدادات للتشخيص الصوتي.</string>
+    <string name="settings_test_voice">اختبار الصوت</string>
+    <string name="settings_tts_system">إعدادات صوت الجهاز</string>
+    <string name="ai_test_line">مرحبًا، أنا مساعدك الذكي عبر الإنترنت. يبدو أن سيارتك بخير.</string>
+    <string name="ai_test_ok_device">يتم تشغيل صوت الجهاز.</string>
+    <string name="ai_test_failed">فشل اختبار الصوت: %1$s</string>
+    <string name="ai_test_off">الصوت متوقف في الإعدادات.</string>
+
+    <!-- Generic Dialogs & Messages -->
+    <string name="dialog_error_title">خطأ</string>
+    <string name="dialog_clear">مسح</string>
+
+    <string name="popup_skip">تخطي</string>
+    <string name="countdown_value">%1$d</string>
+
+</resources>

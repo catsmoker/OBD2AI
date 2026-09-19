@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A single TextView is lighter than a LinearLayout for a simple list item.
-     This version is improved with a consistent minimum height and text truncation. -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Icon + name row: fixed 24dp icon keeps rows aligned on all densities. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/deviceNameTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:ellipsize="end"
     android:focusable="true"
     android:gravity="center_vertical"
-    android:maxLines="1"
     android:minHeight="?attr/listPreferredItemHeightSmall"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="12dp"
-    android:textAppearance="?attr/textAppearanceBodyLarge"
-    android:textColor="?attr/colorOnSurface"
-    tools:text="A Very Long Bluetooth Device Name That Needs to Be Truncated" />
+    android:paddingHorizontal="@dimen/spacing_large"
+    android:paddingVertical="@dimen/spacing_medium">
+
+    <ImageView
+        android:layout_width="@dimen/row_icon_size"
+        android:layout_height="@dimen/row_icon_size"
+        android:contentDescription="@null"
+        app:srcCompat="@drawable/ic_bluetooth"
+        app:tint="?attr/colorPrimary" />
+
+    <TextView
+        android:id="@+id/deviceNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/row_icon_gap"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="OBD-II Adapter" />
+
+</LinearLayout>

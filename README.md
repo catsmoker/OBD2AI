@@ -1,166 +1,171 @@
-# OBD2AI
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:050505,50:0ea5e9,100:22c55e&height=260&section=header&text=OBD2AI&fontSize=64&fontColor=ffffff&fontAlignY=35&desc=Android%20OBD-II%20Diagnostics%20%2B%20AI&descAlignY=58&animation=twinkling&stroke=22c55e&strokeWidth=2" alt="OBD2AI banner" width="100%" />
+</p>
 
-OBD2AI is an Android app that connects to a vehicle's OBD-II adapter over Bluetooth, reads diagnostic trouble codes (DTCs) and live telemetry (speed, RPM, coolant temperature), and uses the OpenAI API to provide human-friendly assessments and suggested actions for detected fault codes.
+<div align="center">
 
-This README explains how to configure, build and run the project locally, how to provide the OpenAI API key used by the app, and includes notes on permissions and troubleshooting.
+**Android car diagnostics with AI-powered fault-code explanations.**
 
-## Features
+[![GitHub stars](https://img.shields.io/github/stars/catsmoker/OBD2AI?style=flat-square&logo=github)](https://github.com/catsmoker/OBD2AI/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/catsmoker/OBD2AI?style=flat-square&logo=github)](https://github.com/catsmoker/OBD2AI/network/members)
+[![Open issues](https://img.shields.io/github/issues/catsmoker/OBD2AI?style=flat-square&logo=github)](https://github.com/catsmoker/OBD2AI/issues)
+[![Last commit](https://img.shields.io/github/last-commit/catsmoker/OBD2AI?style=flat-square&logo=git)](https://github.com/catsmoker/OBD2AI/commits/main)
+[![Repository size](https://img.shields.io/github/repo-size/catsmoker/OBD2AI?style=flat-square)](https://github.com/catsmoker/OBD2AI)
+[![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)](https://www.android.com/)
+[![Min SDK](https://img.shields.io/badge/min%20SDK-24-546E7A?style=flat-square)](https://developer.android.com/studio/releases/platforms)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4%2B-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Latest release](https://img.shields.io/github/v/release/catsmoker/OBD2AI?style=flat-square&label=release)](https://github.com/catsmoker/OBD2AI/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-0ea5e9?style=flat-square&logo=apache&logoColor=white)](LICENSE)
 
-- Discover and connect to Bluetooth OBD-II adapters (classic SPP and BLE-aware permissions).
-- Read stored, pending and permanent DTCs from the vehicle.
-- Monitor live data such as vehicle speed, engine RPM and coolant temperature.
-- Use OpenAI (key configured at runtime in Settings) to generate a JSON assessment for each DTC with severity, title, details, implications and suggested actions.
-- Integrates with Google Mobile Ads and Firebase Analytics (optional / demo ad id included).
+[![OBD-II](https://img.shields.io/badge/OBD--II-ELM327-22c55e?style=flat-square&logo=car&logoColor=white)](docs/OBD_CONNECTION.md)
+[![AI](https://img.shields.io/badge/AI-OpenAI%20%7C%20Gemini%20%7C%20Anthropic%20%7C%20Ollama-8E44AD?style=flat-square&logo=openai&logoColor=white)](docs/AI_PROVIDERS.md)
+[![Gradle](https://img.shields.io/badge/build-Gradle-02303A?style=flat-square&logo=gradle&logoColor=white)](https://gradle.org/)
+[![Bluetooth](https://img.shields.io/badge/connect-Bluetooth%20SPP%20%7C%20WiFi%20%7C%20Demo-2E7D32?style=flat-square&logo=bluetooth&logoColor=white)](docs/OBD_CONNECTION.md)
+[![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?style=flat-square&logo=telegram&logoColor=white)](https://t.me/CATSM0KER)
+[![PayPal](https://img.shields.io/badge/support-PayPal-00457C?style=flat-square&logo=paypal&logoColor=white)](https://www.paypal.me/catsmoker)
 
-## Repository layout (important files)
+[![Typing effect](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2800&pause=900&color=0EA5E9&center=true&vCenter=true&width=620&lines=Read+your+car.+Understand+every+code.;Live+OBD-II+data+with+AI+insight.;Bluetooth,+WiFi+or+demo+%E2%80%94+your+choice.)](https://github.com/catsmoker/OBD2AI)
 
-- `app/` — Android application module
-	- `src/main/java/com/catsmoker/obd2ai/` — main Kotlin sources (Bluetooth & OBD helpers, UI fragments, OpenAI service)
-	- `src/main/AndroidManifest.xml` — app manifest, permissions and features
- 	- `build.gradle.kts` — module Gradle configuration
-- `build.gradle.kts`, `settings.gradle.kts`, `gradle/` — project build configuration
+[Download](https://github.com/catsmoker/OBD2AI/releases) · [Report an issue](https://github.com/catsmoker/OBD2AI/issues)
+</div>
 
-## Prerequisites
+**OBD2AI** connects to your car's OBD-II adapter over Bluetooth or WiFi, reads diagnostic trouble codes (DTCs) and live telemetry (speed, RPM, coolant temperature), and uses AI to turn cryptic fault codes into human-friendly assessments with severity and suggested actions.
 
-- JDK 17 or newer (project is configured for Java 17 / Kotlin jvmTarget = 17).
-- Android SDK with API level 36 (compileSdk = 36) and matching build-tools (36.1.0).
-- Android Studio (Arctic Fox / Bumblebee or newer recommended) or command-line Gradle.
-- A physical Android device with Bluetooth (recommended) or an emulator with Bluetooth passthrough (emulators generally don't support Bluetooth hardware well).
-- An OpenAI API key if you want the DTC assessments to be generated by OpenAI.
+---
 
-## Configure OpenAI API Key
+## 🚀 Key Features
 
-The app no longer embeds an API key in the build. Instead, the key is entered at runtime in the app's **Settings** screen and stored only on the device (excluded from cloud backups and device transfers).
+### 🔧 Core Diagnostics
+- **DTC Reading**: Read stored, pending and permanent trouble codes (SAE J2012) from the vehicle.
+- **Bluetooth & WiFi**: Connect over classic Bluetooth SPP or WiFi TCP to ELM327-compatible adapters.
+- **Demo Mode**: Explore the full app with a simulated adapter — no car required.
+- and more...
 
-1. Install and open the app.
-2. Open **Settings** from the gear icon.
-3. Paste your OpenAI API key and (optionally) a model id, then tap **Save**.
+### 🤖 AI Assessments
+- **Plain-Language Explanations**: Every code gets severity, title, details, implications and suggested actions as structured JSON.
+- **4 Providers**: OpenAI, Google Gemini, Anthropic, or any OpenAI-compatible local server (Ollama, LM Studio, llama.cpp, OpenRouter).
+- **Offline Fallback**: No key or no network? You still get a system/generic-origin assessment per code — never an error wall.
+- and more...
 
-If no key is set, OpenAI-powered DTC assessments are unavailable and the app will report that no key is configured; Bluetooth/OBD functionality is unaffected.
+### 📊 Live Data & Experience
+- **Real-Time Gauges**: Speedometer-style gauges for speed, RPM and coolant temperature.
+- **AI Voice Insight**: Spoken plain-text driving insight via TTS on the live-data screen.
+- **GPS Speed Source**: Use the OBD adapter or the phone's GPS for speed.
+- **5 Languages & 3 Themes**: English, Spanish, Arabic, Chinese + system/light/dark themes.
+- and more...
 
-Security notes:
-- The key is stored in the app's private `SharedPreferences`, which is not accessible to other apps and is excluded from Android cloud backup and device-to-device transfer.
-- Do NOT commit API keys to source control.
+## 📋 Table of Contents
 
-## Build and run
+- [Features](#-key-features)
+- [How It Works](#-how-it-works)
+- [Installation Guide](#-installation-guide)
+- [Supported Adapters](#-supported-adapters)
+- [Device Compatibility](#-device-compatibility)
+- [Build From Source](#build-from-source)
+- [Star History](#-star-history)
+- [License](#-license)
+- [Contributing & Support](#-contributing--support)
 
-Using Android Studio:
+---
 
-1. Open the project in Android Studio.
-2. Let Gradle sync and download dependencies.
-3. Build and run the app on a physical device (recommended).
+## 🔍 How It Works
 
-From the command line (Unix/macOS/Linux):
+OBD2AI bridges the gap between raw OBD-II bytes and something a driver can actually act on.
+
+### Connection (Bluetooth / WiFi / Demo)
+- **Bluetooth**: Classic SPP socket (`00001101-0000-1000-8000-00805F9B34FB`) to your ELM327 adapter.
+- **WiFi**: Plain TCP to the adapter's host/port — the same stream pipeline as Bluetooth.
+- **Demo**: A simulated `DemoObdSource` with sliders driving the live data — perfect for trying the app indoors.
+
+### ELM327 Init
+On connect the app sends a fixed init sequence — `ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0, ATAT1`. Spaces off and headers off make responses deterministic across ELM327 clones, which the parsers rely on. See [docs/OBD_CONNECTION.md](docs/OBD_CONNECTION.md).
+
+### DTCs + AI
+Stored/pending/permanent codes are read from the vehicle, cached to `dtc_results.json`, and each code is assessed **in parallel** by the provider you picked in Settings. Parsing is deliberately lenient (strips code fences and prose) because local models ramble. Results without AI are marked `offline=true` instead of failing. See [docs/AI_PROVIDERS.md](docs/AI_PROVIDERS.md).
+
+---
+
+## 📥 Installation Guide
+
+### Download OBD2AI: [Releases](https://github.com/catsmoker/OBD2AI/releases)
+
+### Connect your adapter
+1. **Plug in** your ELM327 adapter to the car's OBD-II port (usually under the dashboard) with the ignition on.
+2. **Pair it** in Android Bluetooth settings (classic adapters often use PIN `1234` or `0000`), or join the adapter's WiFi network.
+3. **Open OBD2AI** → grant Bluetooth/location permissions when asked → pick your adapter (or host/port for WiFi).
+4. **No adapter?** Use **Demo mode** from the connect screen to explore everything.
+
+### Configure AI (Settings)
+The app ships with **no API key in the build**. Open **Settings**, pick a provider, save your key (stored only on-device, excluded from backups). The key is **required** for AI assessments from cloud providers — without one you only get generic offline info:
+- **OpenAI** — API key, default `gpt-4o-mini` (cheapest; OpenAI has no free API tier).
+- **Google Gemini** — AI Studio key, default `gemini-3.1-flash-lite` (free tier, no card needed).
+- **Anthropic** — API key, default `claude-haiku-4-5` (cheapest Claude tier; paid-only API).
+- **Custom (OpenAI-compatible)** — base URL + model id, default `llama3.2` (e.g. `http://192.168.1.10:11434/v1`). Leave the key blank for keyless local servers.
+
+> **Permissions note:** Bluetooth discovery needs location permission on older Android versions, and `BLUETOOTH_SCAN` / `BLUETOOTH_CONNECT` on Android 12+. Emulators generally lack Bluetooth hardware — use a physical device or demo mode.
+
+---
+
+## 🚗 Supported Adapters
+
+OBD2AI works with **ELM327-compatible** OBD-II adapters (genuine or clones), including:
+- **Bluetooth SPP** adapters (most common ELM327 clones).
+- **WiFi** ELM327 adapters (TCP connection).
+- *And any adapter speaking the ELM327 AT command set...*
+
+> [!TIP]
+> Having trouble with a specific adapter? Open an [issue](https://github.com/catsmoker/OBD2AI/issues) with the adapter model, connection type (Bluetooth/WiFi), and a logcat snippet of the failure.
+
+---
+
+## 📱 Device Compatibility
+
+- **Android Version**: 7.0 (API 24) and newer (target SDK 36).
+- **Tested**: Physical devices with Bluetooth are recommended; emulators generally don't support Bluetooth hardware (use demo mode there).
+- **Languages**: English, Spanish, Arabic, Chinese (Simplified) + system default.
+- **Themes**: System / light / dark.
+
+---
+
+## Build From Source
+
+Requirements: Android Studio, Java 17, Android SDK (compileSdk 37, build-tools 36.1.0).
 
 ```bash
 ./gradlew assembleDebug
-adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Notes:
-- The app requires runtime permissions for Bluetooth and location. The manifest requests the necessary permissions for API levels up to and including modern scopes (`BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT`, etc.).
-- When targeting Android 12+ you may need to grant location and background location depending on how discovery is implemented and whether you want background scanning.
+The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. Full details (versions, tests, troubleshooting) in [docs/BUILD.md](docs/BUILD.md).
 
-## Runtime permissions and Bluetooth
+---
 
-The app requests Bluetooth and location permissions at runtime. On devices running Android 12+ the manifest includes `BLUETOOTH_SCAN` and `BLUETOOTH_CONNECT`. On older devices it includes legacy `BLUETOOTH` and `BLUETOOTH_ADMIN` entries (with maxSdkVersion where appropriate).
+## 🛡️ Disclaimer
+**Warning**: Never interact with the app while driving — set it up while parked. AI assessments are advisory only and **not** a substitute for a qualified mechanic. Clearing codes without fixing the underlying fault can hide real problems. The developers are not responsible for misdiagnosis, vehicle damage, or traffic incidents.
 
-When connecting to an OBD-II adapter, the app uses SPP UUID `00001101-0000-1000-8000-00805F9B34FB` and creates an RFCOMM socket to exchange OBD commands.
+---
 
-## How the OpenAI integration works
+## 📄 License
+Licensed under the **Apache License, Version 2.0**. See [LICENSE](LICENSE) for details.
 
-- The `OpenAIService` class constructs prompts to ask the OpenAI API to return a JSON object describing a DTC (severity, title, detail, implications, suggestedActions).
-- The service uses the `aallam/openai-kotlin` client library and the model id default is set to `gpt-5-mini` in the code; you can change it in the `OpenAIService` initializer if desired.
-- The app expects a strictly-structured JSON response and parses it into the `DtpCodeDTO` model.
+---
 
-If you do not want to use OpenAI, you can stub or bypass `OpenAIService` in the app.
+## 🤝 Contributing & Support
 
-## Troubleshooting
+- **Donate**: Support the project via [PayPal](https://www.paypal.me/catsmoker)
+- **Report Bugs**: [GitHub Issues](https://github.com/catsmoker/OBD2AI/issues)
+- **Security**: please read [SECURITY.md](SECURITY.md) before reporting vulnerabilities.
+- Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue before starting a large change.
 
-- Bluetooth connection fails:
-	- Ensure the device has Bluetooth enabled and the app has the required permissions.
-	- Make sure the OBD-II adapter is powered and in pairing mode.
-	- If using classic SPP, verify the adapter supports RFCOMM; many ELM327 clones do.
+---
 
-- OpenAI requests fail:
-	- Verify a valid API key is set in the app's Settings screen.
-	- Check device network connectivity.
-	- Review logcat output for HTTP/SDK errors.
+## 📊 Star History
 
-- Gradle/SDK issues:
-	- Ensure your Android SDK has API 36 and build-tools 36.1.0 installed.
-	- If Kotlin or plugin versions differ, follow Gradle sync errors to update tools.
+Track the growth and community adoption of OBD2AI over time. Click the chart to explore detailed analytics on GitHub Star History.
 
-## Developer notes & architecture
-
-- The project is primarily Kotlin + Android Views/Fragments (no Jetpack Compose).
-- Key classes:
-	- `BluetoothHelper` — permission handling, discovery, pairing and establishing RFCOMM sockets.
-	- `ObdHelper` — wraps the OBD connection and commands (uses `kotlin-obd` library).
-	- `OpenAIService` — wraps calls to OpenAI and parses structured JSON into `DtpCodeDTO`.
-	- `UIComponents.kt` — contains fragments and RecyclerView adapters for connection flow, error overview/detail and live data display.
-
-The code is designed with coroutines and uses `Dispatchers.IO` for blocking I/O operations.
-
-## Contributing
-
-Contributions are welcome. If you open a pull request, please:
-
-- Include a clear description of the change and why it is needed.
-- Keep the changes focused and add tests where appropriate.
-- Do not commit secrets (API keys) to the repository.
-
-If you'd like to contribute, please follow these steps:
-
-1. Fork the repository and create a feature branch using a descriptive name, for example:
-
-	`git checkout -b feat/add-new-obd-command`
-
-2. Make changes in your branch. Keep commits small and focused. Use clear commit messages.
-
-3. Run the project locally and ensure your changes don't break existing functionality.
-
-4. Open a pull request against `main` with a concise description of what you changed and why. Link any related issues.
-
-PR checklist (please ensure before requesting review):
-
-- [ ] The code builds and runs locally.
-- [ ] No sensitive data or secrets are included.
-- [ ] Unit tests or small integration tests are added for notable logic changes where appropriate.
-- [ ] Code follows the repository style and formatting.
-- [ ] Update documentation (README or inline docs) if public behavior changed.
-
-If you want to report a bug or request a feature, open an issue and include logs, device details and reproduction steps where possible. For larger features, it helps to open an issue first to discuss the design.
-
-Maintainers: when merging changes, squash small fixup commits and prefer clear single-commit histories for features.
-
-## License
-
-See `LICENSE` in the repository root.
-
-## Contact
-
-For questions or feedback, open an issue in this repository.
-
-
-## Open-source tools & libraries used
-
-This project uses (or references) several open-source libraries and tools. Below is a non-exhaustive list driven by the Gradle module dependencies and project sources:
-
-- Kotlin Standard Library and Kotlin Coroutines (via AndroidX lifecycle/runtime and suspend usage)
-- AndroidX Core KTX (`androidx.core:core-ktx`) and AppCompat
-- AndroidX ConstraintLayout
-- Material Components for Android (`com.google.android.material:material`)
-- SpeedView library (`com.github.anastr:speedviewlib`) for the speedometer UI
-- androidx.swiperefreshlayout for pull-to-refresh
-- androidx.navigation (fragment and ui KTX) for navigation between fragments
-- kotlin-obd (`com.github.eltonvs:kotlin-obd` or similar) — OBD-II command and connection helpers
-- aallam/openai-kotlin (`com.aallam.openai:client`) — OpenAI client library used to call the API
-- Ktor OkHttp engine (`io.ktor:ktor-client-okhttp`) used by the OpenAI client
-- slf4j nop (`org.slf4j:slf4j-nop`) — lightweight no-op logger binding used for dependencies that require SLF4J
-- Google Mobile Ads SDK (`com.google.android.gms:play-services-ads`) — for ad integration (demo app id used)
-- Firebase Analytics (`com.google.firebase:firebase-analytics-ktx`) — for basic analytics
-
-All of the above are installed and managed via Gradle. See `app/build.gradle.kts` and `gradle/libs.versions.toml` for exact artifacts and versions.
-
-If you depend on any of these libraries in your contributions, please follow each library's license (typically Apache-2.0, MIT or similar). If you need help identifying a license for a specific dependency, open an issue and include the dependency coordinates.
+<a href="https://www.star-history.com/?repos=catsmoker%2FOBD2AI&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=catsmoker/OBD2AI&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=catsmoker/OBD2AI&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=catsmoker/OBD2AI&type=date&legend=top-left" />
+ </picture>
+</a>

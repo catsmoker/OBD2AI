@@ -54,6 +54,12 @@
         <action
             android:id="@+id/action_errorOverviewFragment_to_liveDataFragment"
             app:destination="@id/liveDataFragment" />
+        <action
+            android:id="@+id/action_errorOverviewFragment_to_consoleFragment"
+            app:destination="@id/consoleFragment" />
+        <action
+            android:id="@+id/action_errorOverviewFragment_to_tripFragment"
+            app:destination="@id/tripFragment" />
     </fragment>
 
     <fragment
@@ -64,7 +70,32 @@
         <argument
             android:name="errorCode"
             app:argType="string" />
+        <action
+            android:id="@+id/action_errorDetailFragment_to_askAiFragment"
+            app:destination="@id/askAiFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/askAiFragment"
+        android:name="com.catsmoker.obd2ai.AskAiFragment"
+        android:label="fragment_ask_ai"
+        tools:layout="@layout/fragment_ask_ai" >
+        <argument
+            android:name="errorCode"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/consoleFragment"
+        android:name="com.catsmoker.obd2ai.ConsoleFragment"
+        android:label="fragment_console"
+        tools:layout="@layout/fragment_console" />
+
+    <fragment
+        android:id="@+id/tripFragment"
+        android:name="com.catsmoker.obd2ai.TripFragment"
+        android:label="fragment_trip"
+        tools:layout="@layout/fragment_trip" />
 
     <fragment
         android:id="@+id/liveDataFragment"

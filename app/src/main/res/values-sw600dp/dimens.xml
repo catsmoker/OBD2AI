@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tablets (smallest width >= 600dp): roomier spacing, taller touch targets. -->
+<resources>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+    <dimen name="button_min_height">56dp</dimen>
+</resources>

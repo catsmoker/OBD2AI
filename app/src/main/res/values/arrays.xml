@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Offline AI Easter-egg library (Offline AI ONLY — never Online AI).
+
+  Community-driven joke pools. To contribute a line:
+  1. Add one <item> to the matching pool below (keep it short, TTS-friendly,
+     no profanity, no % signs, use ’ for apostrophes so nothing needs escaping).
+  2. Never joke about a specific fault code or mimic a safety warning —
+     Easter eggs play IN ADDITION to the normal warning, never instead of it.
+  3. Tune odds in LiveDataFragment.easterPoolConfig, not here.
+  4. To retire a line, delete its <item> (recent-play tracking is in memory,
+     so nothing else needs cleanup).
+
+  Kept English-only on purpose (translatable="false"): meme/racing humor
+  does not survive translation, and the locale-parity unit test only pins
+  <string> keys, so these arrays never break it.
+-->
+<resources>
+
+    <!-- Rising edge across 130 km/h. -->
+    <string-array name="easter_speed_130" translatable="false">
+        <item>Yo, speed racer, relax.</item>
+        <item>Alright, I see you.</item>
+        <item>Someone’s in a hurry.</item>
+        <item>Bro thinks this is qualifying.</item>
+        <item>Okay, Lightning McQueen.</item>
+        <item>Yo, easy there.</item>
+        <item>Alright, speed racer.</item>
+        <item>You woke up and chose speed.</item>
+    </string-array>
+
+    <!-- Rising edge across 140 km/h. -->
+    <string-array name="easter_speed_140" translatable="false">
+        <item>Okay, Schumacher, relax.</item>
+        <item>Easy, Formula One.</item>
+        <item>Bro thinks he’s on the grid.</item>
+        <item>Alright, we’re getting serious now.</item>
+        <item>I see what you’re doing.</item>
+        <item>Okay, I see you, racer.</item>
+    </string-array>
+
+    <!-- Rising edge across 150 km/h. Much rarer by config, not by pool size. -->
+    <string-array name="easter_speed_150" translatable="false">
+        <item>Ladies and gentlemen, we have a racer.</item>
+        <item>And there he goes.</item>
+        <item>The need for speed is strong with this one.</item>
+        <item>Yo! What are you doing?</item>
+        <item>Okay… this got interesting.</item>
+        <item>Bro really said, ’full send.’</item>
+    </string-array>
+
+    <!-- Same rising edge as the normal High RPM warning (plays ~4 s later). -->
+    <string-array name="easter_rpm_high" translatable="false">
+        <item>Easy, Tiger.</item>
+        <item>Okay, she’s singing now.</item>
+        <item>Someone’s waking up the engine.</item>
+        <item>That RPM is getting spicy.</item>
+        <item>Okay, she’s screaming.</item>
+        <item>Bro is really making that engine work.</item>
+        <item>Yeah… she’s definitely awake now.</item>
+    </string-array>
+
+    <!-- High RPM and high speed at the same time. -->
+    <string-array name="easter_rpm_speed_combo" translatable="false">
+        <item>Okay, now we’re cooking.</item>
+        <item>Bro, the engine’s singing today.</item>
+        <item>Someone’s having fun.</item>
+        <item>Alright, I hear you.</item>
+        <item>Okay… we’re really doing this.</item>
+        <item>Everything looks suspiciously calm.</item>
+    </string-array>
+
+    <!-- ONLY on the recovery edge, after the real coolant warning already spoke. -->
+    <string-array name="easter_coolant_after" translatable="false">
+        <item>Uh oh, the engine’s having a hot day.</item>
+        <item>Someone turned up the heat.</item>
+        <item>Yeah… she’s getting a little warm.</item>
+        <item>Okay, things are getting toasty.</item>
+        <item>The engine is not enjoying this.</item>
+        <item>Well, that temperature is getting spicy.</item>
+        <item>She’s running a little hot today.</item>
+    </string-array>
+
+    <!-- Brand-new fault code (normal diagnostic handling still runs first). -->
+    <string-array name="easter_fault_new" translatable="false">
+        <item>Uh… we have a situation.</item>
+        <item>Well, that’s new.</item>
+        <item>Guess what? We found something.</item>
+        <item>Uh oh. That wasn’t there before.</item>
+        <item>Well, somebody just showed up.</item>
+        <item>We’ve got a new guest.</item>
+        <item>Okay… that’s interesting.</item>
+        <item>I found something you probably weren’t looking for.</item>
+        <item>Uh… your car has something to say.</item>
+        <item>Well, that’s not supposed to be there.</item>
+    </string-array>
+
+    <!-- A code that cleared and then came back. -->
+    <string-array name="easter_fault_return" translatable="false">
+        <item>Oh, it’s you again.</item>
+        <item>You again? Seriously?</item>
+        <item>I remember you.</item>
+        <item>Bro came back.</item>
+        <item>We meet again.</item>
+        <item>Oh no… not this guy again.</item>
+        <item>Apparently, we’re doing this again.</item>
+        <item>Yeah, this looks familiar.</item>
+    </string-array>
+
+    <!-- New fault while already speeding. -->
+    <string-array name="easter_fault_speeding" translatable="false">
+        <item>Seriously? Right now?</item>
+        <item>Bro, really? While we’re doing this?</item>
+        <item>Okay… that’s interesting timing.</item>
+        <item>You picked an interesting time to have a problem.</item>
+        <item>Uh… we might have a situation.</item>
+        <item>The car has entered the chat.</item>
+        <item>Okay, the car just said something.</item>
+    </string-array>
+
+    <!-- Global rare roll on top of any other egg. Keep the odds tiny. -->
+    <string-array name="easter_ultra_rare" translatable="false">
+        <item>I’m not saying anything… but I saw that.</item>
+        <item>Okay, I’m definitely saving that one.</item>
+        <item>Well… that happened.</item>
+        <item>I was not expecting that.</item>
+        <item>Okay. Respect.</item>
+        <item>You know what? I’ll allow that.</item>
+        <item>Interesting choice.</item>
+        <item>I’m starting to think you actually like speed.</item>
+        <item>The car and I have some concerns.</item>
+        <item>Alright… I’m gonna pretend I didn’t see that.</item>
+    </string-array>
+
+</resources>

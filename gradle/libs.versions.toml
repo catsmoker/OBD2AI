@@ -8,9 +8,6 @@ material = "1.14.0"
 navigation = "2.10.1"
 lifecycle = "2.11.0"
 obdApi = "1.4.1"
-openaiClient = "4.1.0"
-ktor = "3.5.2"
-slf4j = "2.0.19"
 junit = "4.13.2"
 orgJson = "20260814"
 junitVersion = "1.3.0"
@@ -40,9 +37,6 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 
 # 3rd Party Libraries
 kotlin-obd-api = { group = "com.github.eltonvs", name = "kotlin-obd-api", version.ref = "obdApi" }
-openai-client = { group = "com.aallam.openai", name = "openai-client", version.ref = "openaiClient" }
-ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
-slf4j-nop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j" }
 speedviewlib = { group = "com.github.anastr", name = "speedviewlib", version.ref = "speedview" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "play-services-ads" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx", version.ref = "firebase-analytics" }

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdListener
@@ -16,22 +18,55 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
-import java.util.Arrays
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var bluetoothHelper: BluetoothHelper
     lateinit var obdHelper: ObdHelper
-    lateinit var openAIService: OpenAIService
+    lateinit var aiService: AiService
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
+    fun currentThemeMode(prefs: android.content.SharedPreferences): ThemeMode {
+        if (prefs.contains(PrefsKeys.THEME_MODE)) {
+            return ThemeMode.fromPref(prefs.getString(PrefsKeys.THEME_MODE, null))
+        }
+        // One-time migration from the legacy dark-mode switch.
+        val legacy = ThemeMode.fromLegacyDarkMode(prefs.getBoolean(PrefsKeys.DARK_MODE, false))
+        prefs.edit { putString(PrefsKeys.THEME_MODE, legacy.prefValue) }
+        return legacy
+    }
+
+    fun applyThemeMode(mode: ThemeMode) {
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+            when (mode) {
+                ThemeMode.LIGHT -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+                ThemeMode.DARK -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+                ThemeMode.SYSTEM -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        )
+    }
+
+    fun applyAppLanguage(tag: String) {
+        val locales = if (AppLanguage.fromTag(tag) == AppLanguage.SYSTEM) {
+            androidx.core.os.LocaleListCompat.getEmptyLocaleList()
+        } else {
+            androidx.core.os.LocaleListCompat.create(java.util.Locale.forLanguageTag(tag))
+        }
+        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(locales)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val prefs = getSharedPreferences(PrefsKeys.PREFS_NAME, MODE_PRIVATE)
+        applyThemeMode(currentThemeMode(prefs))
+        applyAppLanguage(prefs.getString(PrefsKeys.APP_LANGUAGE, null).orEmpty())
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        findViewById<View>(R.id.activityRoot).applySystemBarInsets()
 
         MobileAds.initialize(this) {
-            val testDeviceIds = Arrays.asList("AB065C801A1B4DA9FCCDBC44E5483FDD")
+            val testDeviceIds = listOf("AB065C801A1B4DA9FCCDBC44E5483FDD")
             val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
             MobileAds.setRequestConfiguration(configuration)
 
@@ -64,7 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         bluetoothHelper = BluetoothHelper(this)
         obdHelper = ObdHelper(bluetoothHelper)
-        openAIService = OpenAIService(this)
+        aiService = AiService(this)
         firebaseAnalytics = Firebase.analytics
 
         val settingsButton = findViewById<ImageButton>(R.id.button_settings_global)

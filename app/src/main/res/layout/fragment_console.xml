@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_large"
+    tools:context=".ConsoleFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/obd_console_title"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface" />
+
+    <ScrollView
+        android:id="@+id/scrollConsole"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textViewConsoleLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurface"
+            android:textIsSelectable="true"
+            tools:text="> 010C&#10;410C1AF8" />
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editConsoleInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:hint="@string/obd_console_hint"
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:minHeight="@dimen/button_min_height" />
+
+        <Button
+            android:id="@+id/buttonConsoleSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/button_min_height"
+            android:text="@string/obd_console_send" />
+
+        <Button
+            android:id="@+id/buttonConsoleClear"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:minHeight="@dimen/button_min_height"
+            android:text="@string/obd_console_clear" />
+
+    </LinearLayout>
+</LinearLayout>

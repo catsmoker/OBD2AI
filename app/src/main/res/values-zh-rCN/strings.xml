@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name">OBD2AI</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">欢迎使用 OBD2 AI Pro</string>
+    <string name="onboarding_description">读取故障码诊断车辆问题，获取 AI 解析和维修建议。</string>
+    <string name="onboarding_button_get_started">开始使用</string>
+    <string name="onboarding_button_skip">确定</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">需要权限</string>
+    <string name="permissions_description">要搜索 OBD2 适配器，本应用需要蓝牙和位置权限。安卓系统要求位置权限才能发现附近的蓝牙设备。</string>
+    <string name="permissions_button_grant">授予权限</string>
+    <string name="permissions_bluetooth_required">连接 OBD2 设备需要蓝牙。</string>
+
+    <!-- Device Connection -->
+    <string name="connect_title">连接到 OBD2 设备</string>
+    <string name="connect_select_device">选择你的 OBD2 设备</string>
+    <string name="connect_scanning_for_devices">正在搜索设备…</string>
+    <string name="connect_button">连接</string>
+    <string name="connected_to">已选择：%1$s</string>
+    <string name="could_not_connect_to_obd2_adapter">无法连接到 OBD2 适配器：%1$s</string>
+    <string name="connect_no_devices_found">无法获取已配对设备：%1$s</string>
+    <string name="connect_demo_button">试用演示模式（无需适配器）</string>
+    <string name="connect_wifi_title">Wi-Fi 适配器</string>
+    <string name="connect_wifi_host_hint">适配器 IP（例如 192.168.0.10）</string>
+    <string name="connect_wifi_port_hint">端口</string>
+    <string name="connect_wifi_button">通过 Wi-Fi 连接</string>
+    <string name="connect_wifi_invalid">请输入有效的 IP 地址和端口</string>
+
+    <!-- Error Codes -->
+    <string name="error_overview_title">诊断报告</string>
+    <string name="error_overview_scan_button">扫描故障码</string>
+    <string name="error_overview_error_counts">轻微：%1$d | 中等：%2$d | 严重：%3$d</string>
+    <string name="error_overview_no_errors">未发现故障码</string>
+    <string name="error_overview_mil_on">发动机故障灯：亮 · ECU 报告 %1$d 个存储故障码</string>
+    <string name="error_overview_mil_off">发动机故障灯：灭</string>
+    <string name="error_overview_mil_unknown">发动机故障灯：未知</string>
+    <string name="error_overview_offline_note">离线信息 — 请在设置中添加 API 密钥以获取 AI 解析</string>
+    <string name="error_overview_clear_button">清除故障码</string>
+    <string name="error_overview_clear_confirm_title">清除故障码？</string>
+    <string name="error_overview_clear_confirm_message">这将要求 ECU 擦除存储的故障码并关闭发动机故障灯。请先记下故障码 — 仅在维修后或听从技师建议时清除。</string>
+    <string name="error_overview_clear_done">清除指令已发送，请重新扫描确认。</string>
+    <string name="error_offline_suffix">%1$s · 离线信息</string>
+    <string name="error_detail_gone">%1$s 的已保存结果不再可用，请重新扫描。</string>
+    <string name="error_overview_demo_badge">演示模式 — 模拟数据</string>
+    <string name="error_overview_adapter_health">适配器：%1$s · ECU：%2$s · 协议：%3$s</string>
+    <string name="error_overview_vehicle_info">车架号：%1$s · 清除后：%2$s / %3$s</string>
+    <string name="error_detail_title">故障码详情</string>
+    <string name="error_details_code_label">严重程度：%1$s</string>
+    <string name="error_details_description_label">详情</string>
+    <string name="error_details_solutions_label">可能的解决方案</string>
+    <string name="error_details_ai_suggestions_label">AI 生成的建议</string>
+    <string name="no_errors_found">操作失败：%1$s</string>
+
+    <!-- Ask AI follow-up chat -->
+    <string name="ask_ai_title">咨询 AI</string>
+    <string name="ask_ai_button">咨询 AI</string>
+    <string name="ask_ai_welcome">对 %1$s 有疑问？请在下方提问——回答将基于上述诊断。</string>
+    <string name="ask_ai_hint">咨询关于 %1$s…</string>
+    <string name="ask_ai_send">发送</string>
+    <string name="ask_ai_thinking">思考中…</string>
+    <string name="ask_ai_no_key">请在设置中添加 AI API 密钥以咨询此故障。</string>
+    <string name="ask_ai_failed">无法获取回答：%1$s</string>
+
+    <!-- Code-source pills -->
+    <string name="dtc_source_stored">已存储</string>
+    <string name="dtc_source_pending">待定</string>
+    <string name="dtc_source_permanent">永久</string>
+    <string name="error_detail_sources">来源：%1$s</string>
+
+    <!-- OBD console -->
+    <string name="error_overview_console_button">OBD 控制台</string>
+    <string name="obd_console_title">OBD 控制台</string>
+    <string name="obd_console_hint">输入 AT 命令或 PID（例如 010C）</string>
+    <string name="obd_console_send">发送</string>
+    <string name="obd_console_clear">清空</string>
+    <string name="obd_console_not_connected">未连接到适配器。</string>
+
+    <!-- Freeze frame -->
+    <string name="freeze_title">冻结帧</string>
+    <string name="freeze_unavailable">无冻结帧数据。</string>
+    <string name="freeze_dtc">故障：%1$s</string>
+    <string name="freeze_rpm">转速：%1$d</string>
+    <string name="freeze_speed">车速：%1$d km/h</string>
+    <string name="freeze_coolant">冷却液：%1$d °C</string>
+    <string name="freeze_load">负荷：%1$d %%</string>
+
+    <!-- Share -->
+    <string name="error_detail_share">分享报告</string>
+
+    <!-- Display units -->
+    <string name="settings_units_title">单位</string>
+    <string name="settings_units_metric">公制 (km/h, °C)</string>
+    <string name="settings_units_imperial">英制 (mph, °F)</string>
+    <string name="settings_keep_screen">驾驶时保持屏幕常亮</string>
+    <string name="settings_engine_sound">引擎声效</string>
+    <string name="demo_speed_mph">车速：%1$d mph</string>
+    <string name="demo_coolant_f">冷却液：%1$d °F</string>
+    <string name="live_data_coolant_warning_f">冷却液过热：%1$d °F — 请安全停车并检查冷却系统</string>
+
+    <!-- Trip computer -->
+    <string name="trip_title">行程电脑</string>
+    <string name="trip_overview_button">行程</string>
+    <string name="trip_start">开始行程</string>
+    <string name="trip_stop">停止</string>
+    <string name="trip_reset">重置</string>
+    <string name="trip_duration">用时：%1$s</string>
+    <string name="trip_distance">里程：%1$s</string>
+    <string name="trip_avg_speed">平均：%1$s</string>
+    <string name="trip_max_speed">最高车速：%1$s</string>
+    <string name="trip_max_rpm">最高转速：%1$d</string>
+    <string name="trip_idle">怠速：%1$s</string>
+    <string name="trip_dist_km">%1$.1f km</string>
+    <string name="trip_dist_mi">%1$.1f 英里</string>
+    <string name="trip_speed_kmh">%1$d km/h</string>
+    <string name="trip_speed_mph">%1$d mph</string>
+
+    <!-- Live Data -->
+    <string name="live_data_title">实时数据</string>
+    <string name="device_temp">设备温度：%1$.1f°C</string>
+    <string name="coolant_value">冷却液：%1$s</string>
+    <string name="voltage_value">电压：%1$s</string>
+    <string name="fuel_value">燃油：%1$s</string>
+    <string name="live_data_gps_permission">GPS 车速需要位置权限，请授予后重试。</string>
+    <!-- Offline AI: short spoken driving cues -->
+    <string name="offline_ai_name">离线 AI</string>
+    <string name="offline_ai_online">离线 AI 已就绪，祝驾驶安全。</string>
+    <string name="offline_ai_shift_up">请立即升挡。</string>
+    <string name="offline_ai_coolant_ok">冷却液温度已恢复正常。</string>
+    <string name="live_data_mute">静音</string>
+    <string name="live_data_unmute">取消静音</string>
+    <string name="live_data_coolant_warning">冷却液过热：%1$d °C — 请安全停车并检查散热</string>
+
+    <!-- Demo controls -->
+    <string name="demo_panel_title">演示控制 — 拖动进行模拟</string>
+    <string name="demo_speed_label">车速：%1$d 公里/时</string>
+    <string name="demo_rpm_label">转速：%1$d</string>
+    <string name="demo_coolant_label">冷却液：%1$d °C</string>
+
+    <!-- Settings -->
+    <string name="settings_title">设置</string>
+    <string name="settings_category_general">通用</string>
+    <string name="settings_category_driving">驾驶提醒</string>
+    <string name="settings_theme_title">外观</string>
+    <string name="settings_language_title">语言</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_light">浅色</string>
+    <string name="settings_theme_dark">深色</string>
+    <string name="settings_mute_sound">静音驾驶提醒</string>
+    <string name="settings_offline_ai_desc">完全离线工作，使用预设车辆事件和录制音频，无需联网。</string>
+    <string name="settings_online_ai_desc">通过互联网使用真正的 AI 服务，需要配置 API。</string>
+    <string name="settings_alert_output">提醒输出</string>
+    <string name="settings_voice_alerts">语音提醒</string>
+    <string name="settings_text_alerts">文字提醒</string>
+    <string name="settings_voice_volume">语音音量</string>
+    <string name="settings_alert_high_rpm">高转速</string>
+    <string name="settings_alert_high_speed">高速</string>
+    <string name="settings_speed_value">%1$d km/h</string>
+    <string name="settings_alert_coolant">冷却液温度</string>
+    <string name="settings_temp_value">%1$d °C</string>
+    <string name="settings_alert_new_fault">新故障码</string>
+    <string name="settings_alert_conn_lost">连接断开</string>
+    <string name="settings_alert_conn_restored">连接恢复</string>
+    <string name="settings_alert_engine_start">发动机启动</string>
+    <string name="settings_alert_engine_stop">发动机熄火</string>
+    <string name="settings_easter_eggs">隐藏彩蛋</string>
+    <string name="settings_easter_desc">离线 AI 偶尔讲的笑话，绝不会取代安全警告。</string>
+    <string name="settings_ai_config">AI 配置</string>
+    <string name="settings_ai_behavior">AI 行为</string>
+    <string name="offline_ai_high_rpm">慢一点，转速太高了。</string>
+    <string name="offline_ai_high_speed">稍微减速。</string>
+    <string name="offline_ai_coolant_high">冷却液温度过高。</string>
+    <string name="offline_ai_new_fault">检测到新的故障码。</string>
+    <string name="offline_ai_conn_lost">OBD2 连接断开。</string>
+    <string name="offline_ai_conn_restored">OBD2 连接已恢复。</string>
+    <string name="offline_ai_engine_start">发动机已启动。</string>
+    <string name="offline_ai_engine_stop">发动机已熄火。</string>
+    <string name="offline_ai_test_line">这是离线 AI 在说话。</string>
+    <string name="settings_shift_rpm_title">换挡转速</string>
+    <string name="settings_shift_rpm_value">%1$d RPM</string>
+    <string name="settings_speed_source_title">车速来源</string>
+    <string name="settings_speed_source_gps">本机（GPS）</string>
+    <string name="settings_speed_source_obd">OBD2 设备</string>
+    <string name="settings_ai_provider">AI 提供商</string>
+    <string name="settings_api_key_hint">AI API 密钥</string>
+    <string name="settings_api_key_hint_custom">API 密钥（仅当服务器需要时）</string>
+    <string name="settings_api_key_missing">未填写 %1$s 的 API 密钥 — AI 将仅返回离线信息</string>
+    <string name="settings_base_url_hint">服务器地址（自定义提供商，例如 http://192.168.1.10:11434/v1）</string>
+    <string name="settings_model_id_hint">模型 ID</string>
+    <string name="settings_button_save">保存设置</string>
+    <string name="settings_saved">设置已保存</string>
+    <string name="settings_offline_ai_title">离线 AI</string>
+    <string name="settings_online_ai_title">在线 AI 助手</string>
+    <string name="settings_ai_status_ok">AI API：已配置（%1$s · %2$s）</string>
+    <string name="settings_ai_status_missing">AI API：未配置——需要密钥才能解读故障</string>
+    <string name="settings_ai_frequency">播报频率</string>
+    <string name="settings_ai_personality">风格</string>
+    <string name="settings_ai_volume">音量</string>
+    <string name="settings_ai_volume_value">%1$d%%</string>
+    <string name="settings_device_voice">设备语音</string>
+    <string name="settings_device_voice_note">在线 AI 使用设备内置语音，无需 API 密钥。</string>
+    <string name="online_ai_card_title">在线 AI 诊断助手</string>
+    <string name="ai_no_key_hint">在线 AI 已开启但未配置 API 密钥——请在设置中添加以启用语音诊断。</string>
+    <string name="settings_test_voice">试听语音</string>
+    <string name="settings_tts_system">设备语音设置</string>
+    <string name="ai_test_line">你好，我是你的在线 AI。你的车看起来状态不错。</string>
+    <string name="ai_test_ok_device">正在播放设备语音。</string>
+    <string name="ai_test_failed">语音测试失败：%1$s</string>
+    <string name="ai_test_off">语音已在设置中关闭。</string>
+
+    <!-- Generic Dialogs & Messages -->
+    <string name="dialog_error_title">错误</string>
+    <string name="dialog_clear">清除</string>
+
+    <string name="popup_skip">跳过</string>
+    <string name="countdown_value">%1$d</string>
+
+</resources>

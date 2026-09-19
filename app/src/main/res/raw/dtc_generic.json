@@ -1,0 +1,285 @@
+[
+  {
+    "code": "P0300",
+    "title": "Random or multiple cylinder misfire",
+    "detail": "The engine computer detected misfires on more than one cylinder (or could not tell which one). A misfire means fuel in a cylinder did not burn properly.",
+    "implications": "You may feel shaking, rough idle, power loss, or a flashing engine light. Driving with heavy misfires can overheat and ruin the catalytic converter.",
+    "actions": [
+      "Check spark plugs and ignition coils first; they are the most common cause",
+      "If the engine light flashes, reduce load and get it checked promptly",
+      "Ask a mechanic to check fuel delivery and compression if plugs and coils are fine"
+    ]
+  },
+  {
+    "code": "P0171",
+    "title": "System too lean, bank 1",
+    "detail": "The engine is getting too much air (or too little fuel) on bank 1, so the computer is adding extra fuel to compensate.",
+    "implications": "Possible rough idle, hesitation, or poor fuel economy. Long-term lean running can overheat engine parts.",
+    "actions": [
+      "Listen and look for vacuum or intake air leaks (hoses, gaskets)",
+      "Check the mass airflow sensor; cleaning it sometimes helps",
+      "Ask a mechanic to check fuel pressure and oxygen sensors"
+    ]
+  },
+  {
+    "code": "P0174",
+    "title": "System too lean, bank 2",
+    "detail": "Same lean condition as P0171 but on bank 2 (the other side of a V engine). Both banks lean at once usually points to a shared cause.",
+    "implications": "Rough idle, hesitation, poor fuel economy. Both banks affected means check shared parts first.",
+    "actions": [
+      "Check for intake air leaks affecting the whole engine",
+      "Check the mass airflow sensor and fuel pressure",
+      "Ask a mechanic to read live fuel-trim data at idle and cruise"
+    ]
+  },
+  {
+    "code": "P0172",
+    "title": "System too rich, bank 1",
+    "detail": "The engine is getting too much fuel (or too little air) on bank 1, so the computer is cutting fuel back.",
+    "implications": "Possible black exhaust smoke, fuel smell, fouled spark plugs, or failed emissions test.",
+    "actions": [
+      "Check the air filter and intake for blockages",
+      "A leaking fuel injector is a common cause; ask a mechanic to test them",
+      "Have oxygen sensors checked if the problem persists"
+    ]
+  },
+  {
+    "code": "P0175",
+    "title": "System too rich, bank 2",
+    "detail": "Same rich condition as P0172 but on bank 2. Both banks rich at once usually points to a shared cause.",
+    "implications": "Fuel smell, black smoke, fouled plugs, poor fuel economy.",
+    "actions": [
+      "Check the air filter and fuel pressure regulator",
+      "Ask a mechanic to test injectors and oxygen sensors"
+    ]
+  },
+  {
+    "code": "P0420",
+    "title": "Catalyst efficiency below threshold, bank 1",
+    "detail": "The catalytic converter on bank 1 is no longer cleaning exhaust gases well enough. The computer compares the two oxygen sensors to judge this.",
+    "implications": "Often no driving symptoms at first, but the car will fail an emissions inspection. A bad converter can be a symptom of an engine problem upstream.",
+    "actions": [
+      "Rule out exhaust leaks and faulty oxygen sensors before replacing the converter",
+      "Fix any misfire or rich-running codes first; they kill converters",
+      "Converter replacement is a mechanic job; get an emissions diagnosis"
+    ]
+  },
+  {
+    "code": "P0430",
+    "title": "Catalyst efficiency below threshold, bank 2",
+    "detail": "Same converter-efficiency problem as P0420 but on bank 2.",
+    "implications": "Emissions failure risk; usually no immediate driving symptoms.",
+    "actions": [
+      "Check oxygen sensors and exhaust leaks on bank 2 first",
+      "Fix upstream misfire or fuel codes before condemning the converter"
+    ]
+  },
+  {
+    "code": "P0401",
+    "title": "Exhaust gas recirculation flow insufficient",
+    "detail": "The EGR system, which feeds a little exhaust back into the engine to cut emissions, is not flowing enough gas.",
+    "implications": "Possible rough idle, pinging under load, or higher emissions. Often just carbon buildup.",
+    "actions": [
+      "EGR passages and valves clog with carbon; cleaning may fix it",
+      "Check EGR vacuum hoses and electrical connector",
+      "Ask a mechanic to test EGR valve operation"
+    ]
+  },
+  {
+    "code": "P0440",
+    "title": "Evaporative emission system malfunction",
+    "detail": "The system that traps fuel vapors from the tank has a general fault. Vapors should be stored and burned, not vented.",
+    "implications": "Usually no driving symptoms; fuel smell is possible. Emissions-related.",
+    "actions": [
+      "Check that the fuel cap is tight and its seal is not cracked",
+      "Look for cracked or disconnected vapor hoses near the tank",
+      "Ask a mechanic for a smoke test to find the leak"
+    ]
+  },
+  {
+    "code": "P0442",
+    "title": "Evaporative emission system small leak",
+    "detail": "A small leak was found in the fuel-vapor system, often as simple as a loose fuel cap.",
+    "implications": "Rarely affects driving; mainly an emissions fault.",
+    "actions": [
+      "Tighten or replace the fuel cap, then drive a few days and re-scan",
+      "Inspect vapor hoses for cracks if the code returns",
+      "A smoke test finds leaks a visual check misses"
+    ]
+  },
+  {
+    "code": "P0446",
+    "title": "Evaporative vent control circuit issue",
+    "detail": "The vent valve that lets the vapor system breathe is not responding as expected (stuck, blocked, or electrical fault).",
+    "implications": "Usually no symptoms; refueling may be slow if the vent is stuck shut.",
+    "actions": [
+      "Check the vent valve connector and wiring",
+      "Spider webs and dirt can block the vent filter; inspect it",
+      "Ask a mechanic to command the valve and test it"
+    ]
+  },
+  {
+    "code": "P0455",
+    "title": "Evaporative emission system large leak",
+    "detail": "A large leak in the fuel-vapor system: missing fuel cap, broken hose, or stuck-open purge valve.",
+    "implications": "Possible fuel smell; otherwise usually no driving symptoms.",
+    "actions": [
+      "Check the fuel cap first: present, tight, seal intact",
+      "Look for disconnected or split hoses around the tank and engine",
+      "Ask a mechanic for a smoke test if nothing is visible"
+    ]
+  },
+  {
+    "code": "P0456",
+    "title": "Evaporative emission system very small leak",
+    "detail": "A tiny leak in the fuel-vapor system, at the detection limit. Often a aging fuel-cap seal.",
+    "implications": "No driving symptoms; purely an emissions matter.",
+    "actions": [
+      "Replace the fuel cap if it is old; clear and re-scan after a few drives",
+      "A smoke test is the reliable way to find pinhole leaks"
+    ]
+  },
+  {
+    "code": "P0113",
+    "title": "Intake air temperature sensor high input",
+    "detail": "The intake-air temperature reading is impossibly high, which means the sensor circuit is likely open or unplugged.",
+    "implications": "The computer miscalculates air density, so fueling and performance suffer.",
+    "actions": [
+      "Find the sensor on the intake and check its connector",
+      "Check wiring for breaks or corrosion",
+      "The sensor itself is cheap; replace if the circuit is fine"
+    ]
+  },
+  {
+    "code": "P0118",
+    "title": "Engine coolant temperature sensor high input",
+    "detail": "The coolant-temperature reading is impossibly high, which means the sensor circuit is likely open or unplugged.",
+    "implications": "Wrong temperature data can cause hard starting, poor fueling, and the dashboard gauge reading wrong.",
+    "actions": [
+      "Check the coolant sensor connector and wiring",
+      "Do not confuse with real overheating: check the gauge and coolant level",
+      "Replace the sensor if the circuit tests fine"
+    ]
+  },
+  {
+    "code": "P0128",
+    "title": "Coolant thermostat below regulating temperature",
+    "detail": "The engine takes too long to warm up, usually because the thermostat is stuck open and coolant circulates too freely.",
+    "implications": "Higher fuel consumption, weak cabin heat, extra engine wear, possible emissions failure.",
+    "actions": [
+      "A stuck-open thermostat is the classic cause; replacement is routine",
+      "Check coolant level first; low coolant mimics this",
+      "Do not ignore: a cold-running engine wears faster"
+    ]
+  },
+  {
+    "code": "P0131",
+    "title": "Oxygen sensor low voltage, bank 1 sensor 1",
+    "detail": "The upstream oxygen sensor on bank 1 is stuck reading lean (low voltage). The sensor, its heater, or its wiring may have failed.",
+    "implications": "Poor fuel control, hesitation, worse economy, possible catalyst damage over time.",
+    "actions": [
+      "Check the sensor connector and wiring for damage",
+      "Exhaust leaks near the sensor fake a lean reading; rule those out",
+      "Replace the sensor if wiring and exhaust are fine"
+    ]
+  },
+  {
+    "code": "P0132",
+    "title": "Oxygen sensor high voltage, bank 1 sensor 1",
+    "detail": "The upstream oxygen sensor on bank 1 is stuck reading rich (high voltage).",
+    "implications": "The computer may over-lean the mixture; drivability and economy suffer.",
+    "actions": [
+      "Check for wiring shorts and connector contamination (coolant, oil)",
+      "Rule out genuinely rich running (see P0172 causes) first",
+      "Replace the sensor if the engine is actually running normally"
+    ]
+  },
+  {
+    "code": "P0141",
+    "title": "Oxygen sensor heater circuit, bank 1 sensor 2",
+    "detail": "The heater that brings the downstream oxygen sensor up to temperature quickly has an electrical fault.",
+    "implications": "Slow sensor warm-up; usually no driving symptoms. Emissions-related.",
+    "actions": [
+      "Check the heater fuse and the sensor connector",
+      "Measure heater resistance if you have a meter, or ask a mechanic",
+      "Sensor replacement fixes most cases"
+    ]
+  },
+  {
+    "code": "P0201",
+    "title": "Injector circuit malfunction, cylinder 1",
+    "detail": "The electrical circuit driving fuel injector 1 is open, shorted, or the injector coil failed.",
+    "implications": "That cylinder gets no (or uncontrolled) fuel: rough running, power loss, misfire codes alongside.",
+    "actions": [
+      "Check the injector connector and wiring on cylinder 1",
+      "An injector resistance test confirms a dead coil",
+      "Wiring repairs and injector replacement are mechanic jobs"
+    ]
+  },
+  {
+    "code": "P0351",
+    "title": "Ignition coil primary circuit, cylinder 1",
+    "detail": "The coil that fires cylinder 1 has a primary-circuit electrical fault.",
+    "implications": "Misfire on that cylinder: shaking, flashing engine light, catalyst risk.",
+    "actions": [
+      "Swap the coil with another cylinder and see if the misfire moves",
+      "Check the coil connector and wiring",
+      "Replace the faulty coil; consider plugs at the same time"
+    ]
+  },
+  {
+    "code": "P0506",
+    "title": "Idle speed lower than expected",
+    "detail": "The engine idles slower than the computer wants. Air is not getting past the throttle as expected.",
+    "implications": "Rough or stalling idle, vibration at stoplights.",
+    "actions": [
+      "Clean carbon from the throttle body and idle passages",
+      "Check for vacuum leaks and sticky idle valves",
+      "An idle relearn procedure may be needed after cleaning"
+    ]
+  },
+  {
+    "code": "P0507",
+    "title": "Idle speed higher than expected",
+    "detail": "The engine idles faster than the computer wants. Extra air is entering somewhere.",
+    "implications": "High idle, harsh gear engagement in automatics.",
+    "actions": [
+      "Check for vacuum leaks and a sticking throttle plate",
+      "Clean the throttle body and check the idle valve",
+      "An idle relearn procedure may be needed after repair"
+    ]
+  },
+  {
+    "code": "P0562",
+    "title": "System voltage low",
+    "detail": "Electrical system voltage dropped too low: weak battery, failing alternator, or bad connections.",
+    "implications": "Dim lights, slow cranking, random electronic glitches, possible stalling.",
+    "actions": [
+      "Check battery terminals for corrosion and tightness",
+      "Measure voltage: about 12.6 V off, 13.7-14.7 V running",
+      "Have the battery and alternator tested; replace as needed"
+    ]
+  },
+  {
+    "code": "P0700",
+    "title": "Transmission control system requested MIL",
+    "detail": "The transmission computer found a fault and asked the engine computer to switch the engine light on. The real detail lives in the transmission module.",
+    "implications": "Possible harsh or limited shifting; the transmission may enter limp mode.",
+    "actions": [
+      "Read transmission-specific codes with a capable scanner",
+      "Check transmission fluid level and condition",
+      "Transmission diagnosis is a specialist job; avoid hard driving"
+    ]
+  },
+  {
+    "code": "U0100",
+    "title": "Lost communication with engine computer",
+    "detail": "A module on the car network stopped talking to the engine computer. Often wiring, power, ground, or a failed module.",
+    "implications": "Warning lights, disabled assists, no-start in bad cases. Intermittent at first.",
+    "actions": [
+      "Check battery voltage and main grounds; low voltage scrambles networks",
+      "Look for damaged CAN wiring, especially after repairs or accidents",
+      "Network faults need wiring diagrams; involve a specialist early"
+    ]
+  }
+]
