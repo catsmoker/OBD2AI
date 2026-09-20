@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Top-level destinations for the tablet navigation rail (sw600dp).
+     Titles reuse the screens' own title strings. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/liveDataFragment"
+        android:icon="@drawable/ic_gauge"
+        android:title="@string/dashboard_title" />
+    <item
+        android:id="@+id/errorOverviewFragment"
+        android:icon="@drawable/ic_engine"
+        android:title="@string/error_overview_title" />
+    <item
+        android:id="@+id/tripFragment"
+        android:icon="@drawable/ic_route"
+        android:title="@string/trip_title" />
+    <item
+        android:id="@+id/consoleFragment"
+        android:icon="@drawable/ic_terminal"
+        android:title="@string/obd_console_title" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings_title" />
+    <item
+        android:id="@+id/aboutFragment"
+        android:icon="@drawable/ic_info"
+        android:title="@string/settings_about_title" />
+</menu>

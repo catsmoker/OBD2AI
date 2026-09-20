@@ -21,4 +21,11 @@
     <color name="tertiary">#006A60</color>
     <color name="tertiary_container">#6FF7EC</color>
     <color name="on_tertiary_container">#00201C</color>
+    <!-- OBD2 AI 2.0 gauge + status semantics (same in both themes) -->
+    <color name="gauge_ok">#43A047</color>
+    <color name="gauge_warn">#F9A825</color>
+    <color name="gauge_danger">#E53935</color>
+    <color name="gauge_sport">#FFA500</color>
+    <color name="gauge_neon">#00E5FF</color>
+    <color name="gauge_track">#3E3E3E</color>
 </resources>

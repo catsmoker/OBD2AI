@@ -7,6 +7,7 @@
     <string name="onboarding_title">欢迎使用 OBD2 AI Pro</string>
     <string name="onboarding_description">读取故障码诊断车辆问题，获取 AI 解析和维修建议。</string>
     <string name="onboarding_button_get_started">开始使用</string>
+    <string name="onboarding_try_demo">试用演示</string>
     <string name="onboarding_button_skip">确定</string>
 
     <!-- Permissions -->
@@ -64,6 +65,8 @@
     <string name="ask_ai_thinking">思考中…</string>
     <string name="ask_ai_no_key">请在设置中添加 AI API 密钥以咨询此故障。</string>
     <string name="ask_ai_failed">无法获取回答：%1$s</string>
+    <string name="chat_label_you">你</string>
+    <string name="chat_label_ai">AI 助手</string>
 
     <!-- Code-source pills -->
     <string name="dtc_source_stored">已存储</string>
@@ -120,10 +123,8 @@
 
     <!-- Live Data -->
     <string name="live_data_title">实时数据</string>
+    <string name="dashboard_title">仪表盘</string>
     <string name="device_temp">设备温度：%1$.1f°C</string>
-    <string name="coolant_value">冷却液：%1$s</string>
-    <string name="voltage_value">电压：%1$s</string>
-    <string name="fuel_value">燃油：%1$s</string>
     <string name="live_data_gps_permission">GPS 车速需要位置权限，请授予后重试。</string>
     <!-- Offline AI: short spoken driving cues -->
     <string name="offline_ai_name">离线 AI</string>
@@ -132,6 +133,8 @@
     <string name="offline_ai_coolant_ok">冷却液温度已恢复正常。</string>
     <string name="live_data_mute">静音</string>
     <string name="live_data_unmute">取消静音</string>
+    <string name="live_data_status_obd">OBD-II 实时</string>
+    <string name="live_data_status_gps">GPS 车速</string>
     <string name="live_data_coolant_warning">冷却液过热：%1$d °C — 请安全停车并检查散热</string>
 
     <!-- Demo controls -->
@@ -139,6 +142,20 @@
     <string name="demo_speed_label">车速：%1$d 公里/时</string>
     <string name="demo_rpm_label">转速：%1$d</string>
     <string name="demo_coolant_label">冷却液：%1$d °C</string>
+    <string name="demo_button">演示</string>
+    <string name="demo_controls_title">演示控制</string>
+    <string name="demo_start_car">启动车辆</string>
+    <string name="demo_stop_car">熄火</string>
+    <string name="demo_close">关闭</string>
+    <string name="demo_voltage_label">电压：%1$.1f V</string>
+    <string name="demo_fuel_label">燃油：%1$d %%</string>
+    <string name="demo_no_maps_app">未找到可搜索加油站的导航应用。</string>
+    <string name="warn_voltage_low">车辆电压过低。</string>
+    <string name="warn_voltage_critical">车辆电压严重过低。</string>
+    <string name="warn_coolant_high">发动机冷却液温度过高。</string>
+    <string name="warn_fuel_low">燃油油位过低。</string>
+    <string name="warn_fuel_critical">燃油即将耗尽，请寻找加油站。</string>
+    <string name="get_gas">找加油站</string>
 
     <!-- Settings -->
     <string name="settings_title">设置</string>
@@ -150,6 +167,8 @@
     <string name="settings_theme_light">浅色</string>
     <string name="settings_theme_dark">深色</string>
     <string name="settings_mute_sound">静音驾驶提醒</string>
+    <string name="settings_state_on">已开启</string>
+    <string name="settings_state_off">已关闭</string>
     <string name="settings_offline_ai_desc">完全离线工作，使用预设车辆事件和录制音频，无需联网。</string>
     <string name="settings_online_ai_desc">通过互联网使用真正的 AI 服务，需要配置 API。</string>
     <string name="settings_alert_output">提醒输出</string>
@@ -210,6 +229,35 @@
     <string name="ai_test_ok_device">正在播放设备语音。</string>
     <string name="ai_test_failed">语音测试失败：%1$s</string>
     <string name="ai_test_off">语音已在设置中关闭。</string>
+
+    <!-- Speedometer style picker (OBD2 AI 2.0) -->
+    <string name="settings_speedometer_title">车速表</string>
+    <string name="settings_speedometer_desc">选择驾驶显示。点按样式即可预览——仪表盘会立即使用。</string>
+    <string name="speedometer_selected">已选择</string>
+    <string name="speedometer_preview_desc">%1$s 预览</string>
+    <string name="speedometer_previous">上一个车速表</string>
+    <string name="speedometer_next">下一个车速表</string>
+    <string name="speedometer_digital">数字</string>
+    <string name="speedometer_digital_desc">超大高对比度读数，适合夜间驾驶。</string>
+    <string name="speedometer_classic">经典</string>
+    <string name="speedometer_classic_desc">圆形表盘，带刻度、指针和换挡区间。</string>
+    <string name="speedometer_minimal">极简</string>
+    <string name="speedometer_minimal_desc">细圆弧、安静刻度、平静的中央读数。</string>
+    <string name="speedometer_sport">运动</string>
+    <string name="speedometer_sport_desc">分段圆点弧，活动区域发光。</string>
+    <string name="speedometer_futuristic">未来</string>
+    <string name="speedometer_futuristic_desc">霓虹双弧加指针，HUD 风格。</string>
+    <string name="speedometer_performance">性能</string>
+    <string name="speedometer_performance_desc">外圈速度加内圈转速，一表双显。</string>
+    <string name="speedometer_automotive">汽车</string>
+    <string name="speedometer_automotive_desc">速度与转速双管仪表。</string>
+    <string name="speedometer_rpm_focused">转速优先</string>
+    <string name="speedometer_rpm_focused_desc">大型转速表加紧凑速度读数。</string>
+
+    <!-- About -->
+    <string name="settings_about_title">关于</string>
+    <string name="settings_about_desc">OBD2 AI 读取车辆故障码，并通过离线 AI（设备语音）和在线 AI（你的 AI 服务）进行解释。</string>
+    <string name="settings_about_version">版本 %1$s</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">错误</string>

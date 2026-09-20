@@ -7,6 +7,7 @@
     <string name="onboarding_title">Te damos la bienvenida a OBD2 AI Pro</string>
     <string name="onboarding_description">Diagnostica problemas del vehículo leyendo códigos de falla y obtén análisis con IA y consejos de reparación.</string>
     <string name="onboarding_button_get_started">Comenzar</string>
+    <string name="onboarding_try_demo">Probar demo</string>
     <string name="onboarding_button_skip">Aceptar</string>
 
     <!-- Permissions -->
@@ -64,6 +65,8 @@
     <string name="ask_ai_thinking">Pensando…</string>
     <string name="ask_ai_no_key">Agrega una clave de API de IA en Ajustes para conversar sobre esta falla.</string>
     <string name="ask_ai_failed">No se pudo obtener una respuesta: %1$s</string>
+    <string name="chat_label_you">Tú</string>
+    <string name="chat_label_ai">Asistente IA</string>
 
     <!-- Code-source pills -->
     <string name="dtc_source_stored">Almacenado</string>
@@ -120,10 +123,8 @@
 
     <!-- Live Data -->
     <string name="live_data_title">Datos en vivo</string>
+    <string name="dashboard_title">Tablero</string>
     <string name="device_temp">Temp. del dispositivo: %1$.1f°C</string>
-    <string name="coolant_value">Refrigerante: %1$s</string>
-    <string name="voltage_value">Voltaje: %1$s</string>
-    <string name="fuel_value">Combustible: %1$s</string>
     <string name="live_data_gps_permission">Se necesita el permiso de ubicación para la velocidad por GPS. Otórgalo e inténtalo de nuevo.</string>
     <!-- Offline AI: short spoken driving cues -->
     <string name="offline_ai_name">IA sin conexión</string>
@@ -132,6 +133,8 @@
     <string name="offline_ai_coolant_ok">La temperatura del refrigerante volvió a la normalidad.</string>
     <string name="live_data_mute">Silenciar</string>
     <string name="live_data_unmute">Activar sonido</string>
+    <string name="live_data_status_obd">OBD-II en vivo</string>
+    <string name="live_data_status_gps">Velocidad GPS</string>
     <string name="live_data_coolant_warning">Sobrecalentamiento: %1$d °C — detente con seguridad y revisa la refrigeración</string>
 
     <!-- Demo controls -->
@@ -139,6 +142,20 @@
     <string name="demo_speed_label">Velocidad: %1$d km/h</string>
     <string name="demo_rpm_label">RPM: %1$d</string>
     <string name="demo_coolant_label">Refrigerante: %1$d °C</string>
+    <string name="demo_button">Demo</string>
+    <string name="demo_controls_title">Controles demo</string>
+    <string name="demo_start_car">Arrancar</string>
+    <string name="demo_stop_car">Apagar</string>
+    <string name="demo_close">Cerrar</string>
+    <string name="demo_voltage_label">Voltaje: %1$.1f V</string>
+    <string name="demo_fuel_label">Combustible: %1$d %%</string>
+    <string name="demo_no_maps_app">No se encontró una app de navegación para buscar gasolineras.</string>
+    <string name="warn_voltage_low">El voltaje de tu vehículo está bajo.</string>
+    <string name="warn_voltage_critical">El voltaje de tu vehículo está críticamente bajo.</string>
+    <string name="warn_coolant_high">La temperatura del refrigerante de tu motor es demasiado alta.</string>
+    <string name="warn_fuel_low">Tu nivel de combustible está bajo.</string>
+    <string name="warn_fuel_critical">Tu combustible está casi agotado. Deberías buscar una gasolinera.</string>
+    <string name="get_gas">Buscar gasolina</string>
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
@@ -150,6 +167,8 @@
     <string name="settings_theme_light">Claro</string>
     <string name="settings_theme_dark">Oscuro</string>
     <string name="settings_mute_sound">Silenciar alertas de conducción</string>
+    <string name="settings_state_on">Activado</string>
+    <string name="settings_state_off">Desactivado</string>
     <string name="settings_offline_ai_desc">Funciona sin internet con eventos predefinidos del vehículo y audio grabado.</string>
     <string name="settings_online_ai_desc">Usa un servicio real de IA por internet. Requiere configuración de API.</string>
     <string name="settings_alert_output">Salida de alertas</string>
@@ -210,6 +229,35 @@
     <string name="ai_test_ok_device">Reproduciendo voz del dispositivo.</string>
     <string name="ai_test_failed">La prueba de voz falló: %1$s</string>
     <string name="ai_test_off">La voz está desactivada en Ajustes.</string>
+
+    <!-- Speedometer style picker (OBD2 AI 2.0) -->
+    <string name="settings_speedometer_title">Velocímetro</string>
+    <string name="settings_speedometer_desc">Elige la pantalla de conducción. Toca un estilo para previsualizarlo — el panel lo usa al instante.</string>
+    <string name="speedometer_selected">Seleccionado</string>
+    <string name="speedometer_preview_desc">Vista previa de %1$s</string>
+    <string name="speedometer_previous">Velocímetro anterior</string>
+    <string name="speedometer_next">Velocímetro siguiente</string>
+    <string name="speedometer_digital">Digital</string>
+    <string name="speedometer_digital_desc">Lectura gigante de alto contraste para conducir de noche.</string>
+    <string name="speedometer_classic">Clásico</string>
+    <string name="speedometer_classic_desc">Esfera circular con marcas, aguja y zonas de cambio.</string>
+    <string name="speedometer_minimal">Mínimo</string>
+    <string name="speedometer_minimal_desc">Arco fino, marcas discretas, lectura central tranquila.</string>
+    <string name="speedometer_sport">Deportivo</string>
+    <string name="speedometer_sport_desc">Arco punteado segmentado con zona activa brillante.</string>
+    <string name="speedometer_futuristic">Futurista</string>
+    <string name="speedometer_futuristic_desc">Doble arco neón con aguja, estilo HUD.</string>
+    <string name="speedometer_performance">Rendimiento</string>
+    <string name="speedometer_performance_desc">Anillo exterior de velocidad más anillo interior de RPM.</string>
+    <string name="speedometer_automotive">Automoción</string>
+    <string name="speedometer_automotive_desc">Manómetros de tubo emparejados para velocidad y RPM.</string>
+    <string name="speedometer_rpm_focused">Enfocado en RPM</string>
+    <string name="speedometer_rpm_focused_desc">Tacómetro grande con lectura compacta de velocidad.</string>
+
+    <!-- About -->
+    <string name="settings_about_title">Acerca de</string>
+    <string name="settings_about_desc">OBD2 AI lee los códigos de falla de tu coche y los explica con IA sin conexión (voz del dispositivo) e IA en línea (tu proveedor de IA).</string>
+    <string name="settings_about_version">Versión %1$s</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>

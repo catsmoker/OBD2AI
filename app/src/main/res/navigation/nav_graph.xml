@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/onboardingFragment"
-        android:name="com.catsmoker.obd2ai.OnboardingFragment"
+        android:name="com.catsmoker.obd2ai.ui.onboarding.OnboardingFragment"
         android:label="fragment_onboarding"
         tools:layout="@layout/fragment_onboarding" >
         <action
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/permissionsFragment"
-        android:name="com.catsmoker.obd2ai.PermissionsFragment"
+        android:name="com.catsmoker.obd2ai.ui.onboarding.PermissionsFragment"
         android:label="fragment_permissions"
         tools:layout="@layout/fragment_permissions" >
         <action
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/connectFragment"
-        android:name="com.catsmoker.obd2ai.ConnectFragment"
+        android:name="com.catsmoker.obd2ai.ui.connect.ConnectFragment"
         android:label="fragment_connect"
         tools:layout="@layout/fragment_connect" >
         <action
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/errorOverviewFragment"
-        android:name="com.catsmoker.obd2ai.ErrorOverviewFragment"
+        android:name="com.catsmoker.obd2ai.ui.diagnostics.ErrorOverviewFragment"
         android:label="fragment_error_overview"
         tools:layout="@layout/fragment_error_overview" >
         <action
@@ -64,7 +64,7 @@
 
     <fragment
         android:id="@+id/errorDetailFragment"
-        android:name="com.catsmoker.obd2ai.ErrorDetailFragment"
+        android:name="com.catsmoker.obd2ai.ui.diagnostics.ErrorDetailFragment"
         android:label="fragment_error_detail"
         tools:layout="@layout/fragment_error_detail" >
         <argument
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/askAiFragment"
-        android:name="com.catsmoker.obd2ai.AskAiFragment"
+        android:name="com.catsmoker.obd2ai.ui.diagnostics.AskAiFragment"
         android:label="fragment_ask_ai"
         tools:layout="@layout/fragment_ask_ai" >
         <argument
@@ -87,26 +87,36 @@
 
     <fragment
         android:id="@+id/consoleFragment"
-        android:name="com.catsmoker.obd2ai.ConsoleFragment"
+        android:name="com.catsmoker.obd2ai.ui.console.ConsoleFragment"
         android:label="fragment_console"
         tools:layout="@layout/fragment_console" />
 
     <fragment
         android:id="@+id/tripFragment"
-        android:name="com.catsmoker.obd2ai.TripFragment"
+        android:name="com.catsmoker.obd2ai.ui.trip.TripFragment"
         android:label="fragment_trip"
         tools:layout="@layout/fragment_trip" />
 
     <fragment
         android:id="@+id/liveDataFragment"
-        android:name="com.catsmoker.obd2ai.LiveDataFragment"
+        android:name="com.catsmoker.obd2ai.ui.dashboard.LiveDataFragment"
         android:label="fragment_live_data"
         tools:layout="@layout/fragment_live_data" />
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.catsmoker.obd2ai.SettingsFragment"
+        android:name="com.catsmoker.obd2ai.ui.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.catsmoker.obd2ai.ui.settings.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 
 </navigation>

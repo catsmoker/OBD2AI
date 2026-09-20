@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Demo control sheet: simulated telemetry for the shared dashboard UI.
+     Shown only in demo mode via the small Demo button; closing it restores
+     the full dashboard. Values flow through the same ObdDataHolder flows
+     the Live dashboard consumes. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_large">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/demo_controls_title"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorOnSurface" />
+
+    <Button
+        android:id="@+id/demoSheetStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:minHeight="@dimen/button_min_height"
+        android:text="@string/demo_start_car" />
+
+    <TextView
+        android:id="@+id/demoSheetSpeedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Speed: 0 km/h" />
+
+    <SeekBar
+        android:id="@+id/demoSheetSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="220" />
+
+    <TextView
+        android:id="@+id/demoSheetRpmLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="RPM: 0" />
+
+    <SeekBar
+        android:id="@+id/demoSheetRpm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="8000" />
+
+    <TextView
+        android:id="@+id/demoSheetCoolantLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Coolant: 89 °C" />
+
+    <SeekBar
+        android:id="@+id/demoSheetCoolant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="80" />
+
+    <TextView
+        android:id="@+id/demoSheetVoltageLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Voltage: 13.8 V" />
+
+    <SeekBar
+        android:id="@+id/demoSheetVoltage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="70" />
+
+    <TextView
+        android:id="@+id/demoSheetFuelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Fuel: 64 %" />
+
+    <SeekBar
+        android:id="@+id/demoSheetFuel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100" />
+
+    <Button
+        android:id="@+id/demoSheetClose"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:minHeight="@dimen/button_min_height"
+        android:text="@string/demo_close" />
+
+</LinearLayout>

@@ -21,16 +21,31 @@
         app:tint="?attr/colorError" />
 
     <TextView
+        android:id="@+id/codeBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_badge"
+        android:paddingHorizontal="@dimen/spacing_small"
+        android:paddingVertical="@dimen/badge_vertical_padding"
+        android:textAppearance="?attr/textAppearanceTitleSmall"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/imageView_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="P0301" />
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/row_icon_gap"
+        android:layout_marginTop="@dimen/spacing_tiny"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
         app:layout_constraintBottom_toTopOf="@+id/detail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageView_icon"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/codeBadge"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Catalyst System Efficiency" />
 

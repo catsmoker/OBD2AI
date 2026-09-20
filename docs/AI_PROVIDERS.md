@@ -92,7 +92,8 @@ Settings; each alert has its own enable switch and threshold.
 2. Add one `post*` method in `AiService` for its HTTP shape + response extraction.
 3. Wire it into the Settings provider spinner.
 4. Reuse the existing pref keys above; add a unit-testable pure function
-   (companion object) for any new parsing, with a test in `AppCoreTest.kt`.
+   (companion object) for any new parsing, with a test in the matching
+   package's test file (e.g. `ai/AiServiceTest.kt`).
 
 ## Troubleshooting
 

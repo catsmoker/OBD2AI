@@ -69,8 +69,8 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 Single class / method (backtick test names contain spaces — use a wildcard):
 
 ```powershell
-.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.AppCoreTest"
-.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.AppCoreTest.splitErrors*"
+.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.*"
+.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.ObdHelperLogicTest.splitErrors*"
 ```
 
 Full check:
@@ -79,8 +79,8 @@ Full check:
 .\gradlew.bat assembleDebug assembleRelease :app:testDebugUnitTest
 ```
 
-Tests live in `app/src/test/...` (`AppCoreTest.kt`) and cover pure parsing
-logic in companion objects. Notes:
+Tests mirror the source packages (`app/src/test/.../obd/ObdCommandsTest.kt`,
+etc.) and cover pure parsing logic in companion objects. Notes:
 
 - `android.util.Log` is a no-op on the JVM
   (`unitTests.isReturnDefaultValues = true`).

@@ -8,6 +8,91 @@
     android:background="?attr/colorSurface"
     tools:context=".MainActivity">
 
+    <!-- Phone top navigation: compact in-flow icon bar with the same six
+         destinations as the tablet rail. In-flow (never overlaid) so it can
+         never cover fragment controls like the dashboard mute/demo row.
+         Hidden during the first-run flow. -->
+    <LinearLayout
+        android:id="@+id/top_nav_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/button_min_height"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_small"
+        android:weightSum="6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/nav_dashboard"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/dashboard_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_gauge"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/nav_diagnostics"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/error_overview_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_engine"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/nav_trip"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/trip_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_route"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/nav_console"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/obd_console_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_terminal"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/nav_settings"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_settings"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/nav_about"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings_about_title"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_info"
+            app:tint="?attr/colorOnSurface" />
+
+    </LinearLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -16,24 +101,9 @@
         app:layout_constraintBottom_toTopOf="@id/adView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_nav_bar"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
-
-    <!-- This settings button is a global action, intentionally overlaid on top of the fragment content. -->
-    <ImageButton
-        android:id="@+id/button_settings_global"
-        android:layout_width="@dimen/settings_button_size"
-        android:layout_height="@dimen/settings_button_size"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:layout_marginEnd="@dimen/spacing_large"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/settings_title"
-        android:padding="@dimen/spacing_medium"
-        android:src="@drawable/ic_settings"
-        app:tint="?attr/colorOnSurface" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

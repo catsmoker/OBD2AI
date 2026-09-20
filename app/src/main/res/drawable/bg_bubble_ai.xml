@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OBD2 AI 2.0: AI-side chat bubble. Same 12dp geometry as bg_badge so the
+     two speakers feel like one system, but a neutral surface so the driver's
+     primary-container bubble stays distinct. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="12dp" />
+    <solid android:color="?attr/colorSurfaceVariant" />
+</shape>

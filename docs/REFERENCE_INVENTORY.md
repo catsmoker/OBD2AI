@@ -18,7 +18,7 @@ Single-module `:app`, Kotlin + Views/Fragments, 3 source files. Bluetooth SPP
 stored/pending/permanent DTC + MIL + `dtc_results.json` cache, 4 AI providers
 with offline fallback, Offline AI (fully offline voice+banner) + Online AI
 (network brain + chat card), LiveData gauges + shift cue + edge-flash + siren,
-4-card Settings, 5 locales, 3 themes, pure-logic unit tests in AppCoreTest.
+ 4-card Settings, 5 locales, 3 themes, pure-logic unit tests mirroring the packages.
 
 ---
 

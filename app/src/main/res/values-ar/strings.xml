@@ -7,6 +7,7 @@
     <string name="onboarding_title">مرحبًا بك في OBD2 AI Pro</string>
     <string name="onboarding_description">شخّص مشاكل السيارة بقراءة رموز الأعطال واحصل على تحليلات بالذكاء الاصطناعي ونصائح للإصلاح.</string>
     <string name="onboarding_button_get_started">ابدأ</string>
+    <string name="onboarding_try_demo">جرّب العرض</string>
     <string name="onboarding_button_skip">حسنًا</string>
 
     <!-- Permissions -->
@@ -64,6 +65,8 @@
     <string name="ask_ai_thinking">جارٍ التفكير…</string>
     <string name="ask_ai_no_key">أضف مفتاح API للذكاء الاصطناعي في الإعدادات للدردشة حول هذا العطل.</string>
     <string name="ask_ai_failed">تعذر الحصول على إجابة: %1$s</string>
+    <string name="chat_label_you">أنت</string>
+    <string name="chat_label_ai">مساعد الذكاء</string>
 
     <!-- Code-source pills -->
     <string name="dtc_source_stored">مخزنة</string>
@@ -120,10 +123,8 @@
 
     <!-- Live Data -->
     <string name="live_data_title">بيانات حية</string>
+    <string name="dashboard_title">لوحة القيادة</string>
     <string name="device_temp">حرارة الجهاز: %1$.1f°م</string>
-    <string name="coolant_value">سائل التبريد: %1$s</string>
-    <string name="voltage_value">الجهد: %1$s</string>
-    <string name="fuel_value">الوقود: %1$s</string>
     <string name="live_data_gps_permission">إذن الموقع مطلوب لسرعة GPS. امنحه ثم حاول مجددًا.</string>
     <!-- Offline AI: short spoken driving cues -->
     <string name="offline_ai_name">الذكاء الاصطناعي دون اتصال</string>
@@ -132,6 +133,8 @@
     <string name="offline_ai_coolant_ok">عادت حرارة سائل التبريد إلى طبيعتها.</string>
     <string name="live_data_mute">كتم</string>
     <string name="live_data_unmute">إلغاء الكتم</string>
+    <string name="live_data_status_obd">OBD-II مباشر</string>
+    <string name="live_data_status_gps">سرعة GPS</string>
     <string name="live_data_coolant_warning">ارتفاع حرارة سائل التبريد: %1$d °م — توقف بأمان وافحص التبريد</string>
 
     <!-- Demo controls -->
@@ -139,6 +142,20 @@
     <string name="demo_speed_label">السرعة: %1$d كم/س</string>
     <string name="demo_rpm_label">RPM: %1$d</string>
     <string name="demo_coolant_label">سائل التبريد: %1$d °م</string>
+    <string name="demo_button">تجريبي</string>
+    <string name="demo_controls_title">أدوات التحكم التجريبية</string>
+    <string name="demo_start_car">تشغيل السيارة</string>
+    <string name="demo_stop_car">إيقاف السيارة</string>
+    <string name="demo_close">إغلاق</string>
+    <string name="demo_voltage_label">الجهد: %1$.1f فولت</string>
+    <string name="demo_fuel_label">الوقود: %1$d %%</string>
+    <string name="demo_no_maps_app">لم يتم العثور على تطبيق ملاحة للبحث عن محطات الوقود.</string>
+    <string name="warn_voltage_low">جهد سيارتك منخفض.</string>
+    <string name="warn_voltage_critical">جهد سيارتك منخفض بشكل حرج.</string>
+    <string name="warn_coolant_high">حرارة سائل تبريد محركك مرتفعة جدًا.</string>
+    <string name="warn_fuel_low">مستوى الوقود لديك منخفض.</string>
+    <string name="warn_fuel_critical">وقودك يكاد ينفد. يجب أن تبحث عن محطة وقود.</string>
+    <string name="get_gas">جد وقودًا</string>
 
     <!-- Settings -->
     <string name="settings_title">الإعدادات</string>
@@ -150,6 +167,8 @@
     <string name="settings_theme_light">فاتح</string>
     <string name="settings_theme_dark">داكن</string>
     <string name="settings_mute_sound">كتم تنبيهات القيادة</string>
+    <string name="settings_state_on">مفعّل</string>
+    <string name="settings_state_off">معطّل</string>
     <string name="settings_offline_ai_desc">يعمل دون إنترنت باستخدام أحداث محددة مسبقًا للمركبة ومقاطع صوتية مسجلة.</string>
     <string name="settings_online_ai_desc">يستخدم خدمة ذكاء اصطناعي حقيقية عبر الإنترنت. يتطلب إعداد API.</string>
     <string name="settings_alert_output">مخرجات التنبيه</string>
@@ -210,6 +229,35 @@
     <string name="ai_test_ok_device">يتم تشغيل صوت الجهاز.</string>
     <string name="ai_test_failed">فشل اختبار الصوت: %1$s</string>
     <string name="ai_test_off">الصوت متوقف في الإعدادات.</string>
+
+    <!-- Speedometer style picker (OBD2 AI 2.0) -->
+    <string name="settings_speedometer_title">عداد السرعة</string>
+    <string name="settings_speedometer_desc">اختر شاشة القيادة. المس نمطًا لمعاينته — تستخدمه اللوحة فورًا.</string>
+    <string name="speedometer_selected">محدد</string>
+    <string name="speedometer_preview_desc">معاينة %1$s</string>
+    <string name="speedometer_previous">عداد السرعة السابق</string>
+    <string name="speedometer_next">عداد السرعة التالي</string>
+    <string name="speedometer_digital">رقمي</string>
+    <string name="speedometer_digital_desc">قراءة ضخمة عالية التباين للقيادة الليلية.</string>
+    <string name="speedometer_classic">كلاسيكي</string>
+    <string name="speedometer_classic_desc">قرص دائري مع علامات وإبرة ومناطق تبديل.</string>
+    <string name="speedometer_minimal">بسيط</string>
+    <string name="speedometer_minimal_desc">قوس رفيع وعلامات هادئة وقراءة مركزية مريحة.</string>
+    <string name="speedometer_sport">رياضي</string>
+    <string name="speedometer_sport_desc">قوس منقط مقسم مع منطقة نشطة متوهجة.</string>
+    <string name="speedometer_futuristic">مستقبلي</string>
+    <string name="speedometer_futuristic_desc">قوس نيون مزدوج مع إبرة بإحساس شاشة HUD.</string>
+    <string name="speedometer_performance">أداء</string>
+    <string name="speedometer_performance_desc">حلقة سرعة خارجية وحلقة RPM داخلية في قرص واحد.</string>
+    <string name="speedometer_automotive">سيارات</string>
+    <string name="speedometer_automotive_desc">مقياسان أنبوبيان مقترنان للسرعة وRPM.</string>
+    <string name="speedometer_rpm_focused">تركيز RPM</string>
+    <string name="speedometer_rpm_focused_desc">مقياس RPM كبير مع قراءة سرعة مدمجة.</string>
+
+    <!-- About -->
+    <string name="settings_about_title">حول</string>
+    <string name="settings_about_desc">يقرأ OBD2 AI رموز أعطال سيارتك ويشرحها بالذكاء الاصطناعي دون اتصال (صوت الجهاز) والذكاء الاصطناعي عبر الإنترنت (موفر الذكاء الخاص بك).</string>
+    <string name="settings_about_version">الإصدار %1$s</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">خطأ</string>

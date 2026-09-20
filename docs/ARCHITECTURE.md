@@ -18,15 +18,24 @@ A high-level map of the OBD2AI Android codebase and how the layers fit together.
 
 ## Module layout
 
-Single application module (`:app` only). The entire app lives in three
-Kotlin files — there is no `core`/`feature` Gradle split:
+Single application module (`:app` only). Sources are split by responsibility
+under `app/src/main/java/com/catsmoker/obd2ai/` — there is no `core`/`feature`
+Gradle split:
 
 ```
 app/src/main/java/com/catsmoker/obd2ai/
-├── AppCore.kt        # DTOs, custom OBD commands, BluetoothHelper,
-│                     # ObdHelper, AiService/AiProvider, PrefsKeys,
-│                     # DtcStore, ObdDataHolder, DemoObdSource
-├── UIComponents.kt   # all fragments + RecyclerView adapters
+├── prefs/            # PrefsKeys, Units, ThemeMode, AppLanguage
+├── obd/              # ObdCommands, PidRegistry, ElmProtocol, BluetoothHelper,
+│                     # ObdHelper, VehicleTelemetry (ObdDataHolder, DemoObdSource)
+├── diagnostics/      # DiagnosticModels, DtcStore
+├── vehicle/          # TripComputer
+├── ai/               # AiProviders (AiProvider, AiService), OnlineAi, SpeechQueue
+├── audio/            # EngineSound (isolated synth hum)
+├── speedometers/     # SpeedometerStyle, SpeedometerHost, BaseSpeedometerView + styles
+├── instruments/      # RpmGaugeView (tachometer), CoolantGaugeView,
+│                     # VoltageGaugeView, FuelGaugeView (cluster instruments)
+├── ui/               # dashboard|settings|connect|diagnostics|trip|console|
+│                     # onboarding|common (one fragment per file + its adapters)
 └── MainActivity.kt   # wires helpers together
 ```
 
@@ -35,61 +44,65 @@ Fragments reach the shared helpers via `(activity as MainActivity)`.
 ## App flow
 
 ```
-Onboarding → Permissions → ConnectFragment → ErrorOverviewFragment
-      (Bluetooth / WiFi / Demo)      (reads DTCs, assesses each
-                                      code via AI in parallel)
-                                             ↓
-                              ErrorDetailFragment ←→ LiveDataFragment
-                              (cached dtc_results.json   (gauges + AI
-                               fallback)                  voice insight)
+Onboarding ─┬─ Get Started → Permissions → ConnectFragment ─┬─► ErrorOverviewFragment
+            │      (Bluetooth / WiFi / Demo)                 │      (reads DTCs, assesses each
+            └─ Try Demo → LiveDataFragment (demo) ───────────┘       code via AI in parallel)
+                                              ↓
+                               ErrorDetailFragment ←→ LiveDataFragment
+                               (cached dtc_results.json   (gauges + AI
+                                fallback)                  voice insight)
 ```
+
+Tablets (sw600dp) navigate top-level destinations with a navigation rail
+(Dashboard, Diagnostics, Trip, Console, Settings); phones use the floating
+global settings shortcut. About is a standalone destination from Settings.
 
 Speed source can be the OBD device or the phone GPS (`speed_source` pref).
 
 ## Dependency direction
 
-UI fragments depend on the helpers in `AppCore.kt`, not the other way around:
+UI fragments depend on the helper packages, not the other way around:
 
 ```
-UIComponents.kt (fragments/adapters)  ──►  AppCore.kt (helpers/services)
-                MainActivity (wiring) ──►  AppCore.kt
-                                           ──►  Android framework + 3rd-party SDKs
+ui.* (fragments/adapters)  ──►  obd / ai / diagnostics / prefs / vehicle / audio / speedometers / instruments
+            MainActivity (wiring) ──►  obd / ai
+                                       ──►  Android framework + 3rd-party SDKs
 ```
 
 Pure parsing logic lives in companion objects so it runs as JVM unit tests
-without Android (`AppCoreTest.kt`).
+without Android (tests mirror the packages, e.g. `src/test/.../obd/ObdCommandsTest.kt`).
 
 ## Key components
 
-### `BluetoothHelper` (`AppCore.kt`)
+### `BluetoothHelper` (`obd/`)
 Permission handling, discovery, pairing and establishing the RFCOMM socket
 (SPP UUID `00001101-0000-1000-8000-00805F9B34FB`).
 
-### `ObdHelper` (`AppCore.kt`)
+### `ObdHelper` (`obd/`)
 Owns the OBD connection and commands. Sends the fixed ELM327 init sequence
 `ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0, ATAT1` — `ATS0`/`ATH0` make
 spaces/headers deterministic across clones, which the parsers assume; don't
 drop them. Custom commands (`MySpeedCommand`, …) cover speed/RPM/coolant.
 All reads branch on `demoMode`. See [OBD_CONNECTION.md](OBD_CONNECTION.md).
 
-### `AiService` / `AiProvider` (`AppCore.kt`)
+### `AiService` / `AiProvider` (`ai/`)
 Sends the same "expert mechanic" prompt to the selected provider and parses
 the JSON assessment into `DtpCodeDTO`. The API key is used ONLY for these
 fault-code explanations — driving-voice cues (Offline AI) are fully offline
 and never touch the network. See [AI_PROVIDERS.md](AI_PROVIDERS.md).
 
-### `ObdDataHolder` + `DtcStore` (`AppCore.kt`)
+### `ObdDataHolder` + `DtcStore` (`obd/` + `diagnostics/`)
 - `ObdDataHolder` — in-memory flows for live telemetry and DTC results.
 - `DtcStore` — persists assessments to internal file `dtc_results.json`;
   `ErrorDetailFragment` falls back to it when the holder is empty.
 - `DtpCodeDTO.offline=true` marks the no-key/offline fallback assessment.
 
-### `DemoObdSource` (`AppCore.kt`)
+### `DemoObdSource` (`obd/`)
 Simulated adapter. `setupDemo()` sets `ObdHelper.demoMode`; in demo, the
 LiveData sliders write `ObdDataHolder` flows directly — there is no demo
 polling loop.
 
-### Two assistants, kept independent (`AppCore.kt` + `LiveDataFragment`)
+### Two assistants, kept independent (`ai/` + `ui/dashboard/`)
 - **Offline AI** — offline event system: `OfflineAiEvent` (shift point, high
   RPM/speed, coolant, new fault codes, connection lost/restored, engine
   started/stopped) with per-event enable switches and thresholds, master

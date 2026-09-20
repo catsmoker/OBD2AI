@@ -6,6 +6,7 @@
     <string name="onboarding_title">Welcome to OBD2 AI Pro</string>
     <string name="onboarding_description">Diagnose vehicle issues by reading fault codes and get AI-driven insights and repair advice.</string>
     <string name="onboarding_button_get_started">Get Started</string>
+    <string name="onboarding_try_demo">Try Demo</string>
     <string name="onboarding_button_skip">OK</string>
 
     <!-- Permissions -->
@@ -63,6 +64,8 @@
     <string name="ask_ai_thinking">Thinking…</string>
     <string name="ask_ai_no_key">Add an AI API key in Settings to chat about this fault.</string>
     <string name="ask_ai_failed">Could not get an answer: %1$s</string>
+    <string name="chat_label_you">You</string>
+    <string name="chat_label_ai">AI assistant</string>
 
     <!-- Code-source pills -->
     <string name="dtc_source_stored">Stored</string>
@@ -119,10 +122,8 @@
 
     <!-- Live Data -->
     <string name="live_data_title">Live Data</string>
+    <string name="dashboard_title">Dashboard</string>
     <string name="device_temp">Device Temp: %1$.1f°C</string>
-    <string name="coolant_value">Coolant: %1$s</string>
-    <string name="voltage_value">Voltage: %1$s</string>
-    <string name="fuel_value">Fuel: %1$s</string>
     <string name="live_data_gps_permission">Location permission is required for GPS speed. Grant it and try again.</string>
     <!-- Offline AI: short spoken driving cues -->
     <string name="offline_ai_name">Offline AI</string>
@@ -131,6 +132,8 @@
     <string name="offline_ai_coolant_ok">Coolant temperature back to normal.</string>
     <string name="live_data_mute">Mute</string>
     <string name="live_data_unmute">Unmute</string>
+    <string name="live_data_status_obd">OBD-II live</string>
+    <string name="live_data_status_gps">GPS speed</string>
     <string name="live_data_coolant_warning">Coolant overheat: %1$d °C — stop safely and check cooling</string>
 
     <!-- Demo controls -->
@@ -138,6 +141,22 @@
     <string name="demo_speed_label">Speed: %1$d km/h</string>
     <string name="demo_rpm_label">RPM: %1$d</string>
     <string name="demo_coolant_label">Coolant: %1$d °C</string>
+    <string name="demo_button">Demo</string>
+    <string name="demo_controls_title">Demo controls</string>
+    <string name="demo_start_car">Start Car</string>
+    <string name="demo_stop_car">Stop Car</string>
+    <string name="demo_close">Close</string>
+    <string name="demo_voltage_label">Voltage: %1$.1f V</string>
+    <string name="demo_fuel_label">Fuel: %1$d %%</string>
+    <string name="demo_no_maps_app">No navigation app found to search for gas stations.</string>
+
+    <!-- Vehicle warnings (spoken + banner, transition-triggered, never spammed) -->
+    <string name="warn_voltage_low">Your vehicle voltage is low.</string>
+    <string name="warn_voltage_critical">Your vehicle voltage is critically low.</string>
+    <string name="warn_coolant_high">Your engine coolant temperature is too high.</string>
+    <string name="warn_fuel_low">Your fuel level is low.</string>
+    <string name="warn_fuel_critical">Your fuel is almost empty. You should find a gas station.</string>
+    <string name="get_gas">Get Gas</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -149,6 +168,8 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_mute_sound">Mute driving alerts</string>
+    <string name="settings_state_on">On</string>
+    <string name="settings_state_off">Off</string>
     <string name="settings_shift_rpm_title">Shift point</string>
     <string name="settings_shift_rpm_value">%1$d RPM</string>
     <string name="settings_speed_source_title">Speed Source</string>
@@ -209,6 +230,35 @@
     <string name="ai_test_ok_device">Device voice playing.</string>
     <string name="ai_test_failed">Voice test failed: %1$s</string>
     <string name="ai_test_off">Voice is turned off in Settings.</string>
+
+    <!-- Speedometer style picker (OBD2 AI 2.0) -->
+    <string name="settings_speedometer_title">Speedometer</string>
+    <string name="settings_speedometer_desc">Choose the driving display. Tap a style to preview it — the dashboard uses it immediately.</string>
+    <string name="speedometer_selected">Selected</string>
+    <string name="speedometer_preview_desc">%1$s preview</string>
+    <string name="speedometer_previous">Previous speedometer</string>
+    <string name="speedometer_next">Next speedometer</string>
+    <string name="speedometer_digital">Digital</string>
+    <string name="speedometer_digital_desc">Huge high-contrast readout for night driving.</string>
+    <string name="speedometer_classic">Classic</string>
+    <string name="speedometer_classic_desc">Circular dial with ticks, needle fill and shift zones.</string>
+    <string name="speedometer_minimal">Minimal</string>
+    <string name="speedometer_minimal_desc">Thin arc, quiet ticks, calm center readout.</string>
+    <string name="speedometer_sport">Sport</string>
+    <string name="speedometer_sport_desc">Segmented dotted arc with a glowing active zone.</string>
+    <string name="speedometer_futuristic">Futuristic</string>
+    <string name="speedometer_futuristic_desc">Neon dual arc with needle for a HUD feel.</string>
+    <string name="speedometer_performance">Performance</string>
+    <string name="speedometer_performance_desc">Outer speed ring plus inner RPM ring in one dial.</string>
+    <string name="speedometer_automotive">Automotive</string>
+    <string name="speedometer_automotive_desc">Paired tube gauges for speed and RPM.</string>
+    <string name="speedometer_rpm_focused">RPM focused</string>
+    <string name="speedometer_rpm_focused_desc">Big tachometer with a compact speed readout.</string>
+
+    <!-- About -->
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_desc">OBD2 AI reads your car\u2019s fault codes and explains them with Offline AI (on-device voice) and Online AI (your AI provider).</string>
+    <string name="settings_about_version">Version %1$s</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>

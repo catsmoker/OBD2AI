@@ -5,14 +5,15 @@ contributing so new code reads like the code around it.
 
 ## File organization
 
-- Single-module app (`:app` only); all Kotlin lives in
-  `app/src/main/java/com/catsmoker/obd2ai/` across exactly three files:
-  - `AppCore.kt` — DTOs, OBD commands, helpers, services, prefs keys.
-  - `UIComponents.kt` — fragments + RecyclerView adapters.
-  - `MainActivity.kt` — wiring; fragments reach helpers via
-    `(activity as MainActivity)`.
-- Do not split these files or introduce new layers without discussing it
-  in an issue first.
+- Single-module app (`:app` only); Kotlin lives in
+  `app/src/main/java/com/catsmoker/obd2ai/`, split by responsibility:
+  `prefs/`, `obd/`, `diagnostics/`, `vehicle/`, `ai/`, `audio/`,
+  `speedometers/`, `instruments/` (tachometer + coolant/voltage/fuel gauges),
+  `ui/` (dashboard, settings, connect, diagnostics, trip,
+  console, onboarding, common) + `MainActivity.kt` (wiring; fragments reach
+  helpers via `(activity as MainActivity)`).
+- Put new code in the package that owns it; one file per coherent
+  responsibility — no giant files, but no pointless micro-files either.
 
 ## Kotlin / Views
 
@@ -74,7 +75,8 @@ A reviewer will expect these:
 
 ## Testing
 
-- Pure logic gets a **unit test** in `AppCoreTest.kt`, with no Android
+- Pure logic gets a **unit test** in the matching package's test file
+  (e.g. `src/test/.../obd/ObdCommandsTest.kt`), with no Android
   dependencies. Follow the existing companion-object patterns.
 - Test JVM cwd is the `app/` module dir — resource-file tests use
   `src/main/res/…` relative paths.

@@ -39,7 +39,8 @@ Background reading for new contributors:
 
 - Pure logic (parsers, DTO mapping, prompt/JSON handling) goes in a
   companion object with **no Android imports** and gets a **unit test** in
-  `AppCoreTest.kt`. There are existing patterns to copy in `AppCore.kt`.
+  the matching package's test file (e.g. `src/test/.../obd/ObdCommandsTest.kt`).
+  There are existing patterns to copy in `obd/` and `ai/`.
 - Follow the conventions in [docs/CODING_STYLE.md](docs/CODING_STYLE.md):
   no Jetpack Compose (Views/Fragments only), sizes in `dimens.xml`, strings
   in every locale file, and never report an invented `0` as a measurement.

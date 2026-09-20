@@ -19,4 +19,11 @@
     <dimen name="row_icon_gap">16dp</dimen>
     <dimen name="detail_icon_size">48dp</dimen>
     <dimen name="settings_button_size">48dp</dimen>
+
+    <!-- OBD2 AI 2.0 dashboard + speedometer system -->
+    <dimen name="speedometer_host_min_height">300dp</dimen>
+    <dimen name="speedometer_preview_height">190dp</dimen>
+    <dimen name="chat_bubble_max_width">300dp</dimen>
+    <!-- Twin-cluster secondary indicator row (coolant/voltage/fuel). -->
+    <dimen name="secondary_instruments_height">68dp</dimen>
 </resources>

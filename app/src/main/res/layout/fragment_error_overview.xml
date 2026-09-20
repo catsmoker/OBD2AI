@@ -40,16 +40,6 @@
             app:icon="@drawable/ic_refresh" />
 
         <Button
-            android:id="@+id/button_live_data"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:minHeight="@dimen/button_min_height"
-            android:text="@string/live_data_title"
-            app:icon="@drawable/ic_gauge" />
-
-        <Button
             android:id="@+id/button_clear_codes"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="match_parent"
@@ -58,24 +48,6 @@
             android:minHeight="@dimen/button_min_height"
             android:text="@string/error_overview_clear_button"
             app:icon="@drawable/ic_delete" />
-
-        <Button
-            android:id="@+id/button_console"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:minHeight="@dimen/button_min_height"
-            android:text="@string/error_overview_console_button" />
-
-        <Button
-            android:id="@+id/button_trip"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:minHeight="@dimen/button_min_height"
-            android:text="@string/trip_overview_button" />
 
     </LinearLayout>
 

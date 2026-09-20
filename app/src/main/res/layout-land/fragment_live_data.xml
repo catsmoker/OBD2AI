@@ -9,19 +9,60 @@
     android:background="?attr/colorSurface"
     tools:context=".LiveDataFragment">
 
+    <!-- Compact session status near the top; no page title. -->
     <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="0dp"
+        android:id="@+id/liveStatusPill"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing_large"
+        android:layout_marginStart="@dimen/spacing_large"
         android:layout_marginTop="@dimen/spacing_large"
-        android:text="@string/live_data_title"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:background="@drawable/bg_badge"
+        android:paddingHorizontal="@dimen/spacing_small"
+        android:paddingVertical="@dimen/badge_vertical_padding"
+        android:text="@string/live_data_status_obd"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
         android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="OBD-II live" />
+
+    <!-- Compact icon controls, upper-right and secondary to the gauges. -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/button_demo_controls"
+            android:layout_width="@dimen/button_min_height"
+            android:layout_height="@dimen/button_min_height"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/demo_button"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_tune"
+            android:tooltipText="@string/demo_button"
+            android:visibility="gone"
+            app:tint="?attr/colorOnSurface"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/button_mute"
+            android:layout_width="@dimen/button_min_height"
+            android:layout_height="@dimen/button_min_height"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/live_data_mute"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_volume_on"
+            android:tooltipText="@string/live_data_mute"
+            app:tint="?attr/colorOnSurface" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_v"
@@ -49,7 +90,7 @@
         app:layout_constraintEnd_toStartOf="@+id/rpmView"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@id/liveStatusPill"
         app:sv_maxSpeed="220"
         app:sv_speedTextColor="?attr/colorOnSurface"
         app:sv_unit="km/h"
@@ -65,12 +106,41 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/guideline_v"
         app:layout_constraintStart_toEndOf="@+id/speedView2"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@id/liveStatusPill"
         app:sv_maxSpeed="50"
         app:sv_speedTextColor="?attr/colorOnSurface"
         app:sv_unit="x100 RPM"
         app:sv_unitTextColor="?attr/colorOnSurface"
         app:sv_withTremble="false" />
+
+    <!-- OBD2 AI 2.0 host: same ID as portrait, left pane in landscape. -->
+    <FrameLayout
+        android:id="@+id/speedometerHost"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/spacing_large"
+        android:minHeight="@dimen/speedometer_host_min_height"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/rpmHost"
+        app:layout_constraintEnd_toStartOf="@id/guideline_v"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/liveStatusPill"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="visible" />
+
+    <!-- Twin tachometer host below the speed host in landscape. -->
+    <FrameLayout
+        android:id="@+id/rpmHost"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/spacing_large"
+        android:minHeight="@dimen/speedometer_host_min_height"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_v"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/speedometerHost"
+        tools:visibility="visible" />
 
     <ScrollView
         android:layout_width="0dp"
@@ -80,119 +150,54 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_v"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle">
+        app:layout_constraintTop_toBottomOf="@id/liveStatusPill">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/demoPanel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/demo_panel_title"
-                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                    android:textColor="?attr/colorOnSurface" />
-
-                <TextView
-                    android:id="@+id/demoSpeedLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurface"
-                    tools:text="Speed: 62 km/h" />
-
-                <SeekBar
-                    android:id="@+id/demoSpeedSlider"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="220" />
-
-                <TextView
-                    android:id="@+id/demoRpmLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurface"
-                    tools:text="RPM: 2300" />
-
-                <SeekBar
-                    android:id="@+id/demoRpmSlider"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="4200" />
-
-                <TextView
-                    android:id="@+id/demoCoolantLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurface"
-                    tools:text="Coolant: 89 °C" />
-
-                <SeekBar
-                    android:id="@+id/demoCoolantSlider"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="80" />
-
-            </LinearLayout>
-
+            <!-- Same compact secondary indicator row as portrait. -->
             <TextView
                 android:id="@+id/batteryTempView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurface"
-                tools:text="Battery: 25°C" />
-
-            <TextView
-                android:id="@+id/coolantTempView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurface"
-                tools:text="Coolant: 90°C" />
-
-            <TextView
-                android:id="@+id/voltageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurface"
-                tools:text="Voltage: 13.8 V" />
-
-            <TextView
-                android:id="@+id/fuelView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurface"
-                tools:text="Fuel: 64 %" />
-
-            <Button
-                android:id="@+id/button_mute"
-                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:minHeight="@dimen/button_min_height"
-                android:text="@string/live_data_mute" />
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:visibility="gone"
+                tools:text="Battery: 25°C"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/instrumentsRow"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/secondary_instruments_height"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <com.catsmoker.obd2ai.instruments.CoolantGaugeView
+                    android:id="@+id/coolantGauge"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.catsmoker.obd2ai.instruments.VoltageGaugeView
+                    android:id="@+id/voltageGauge"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.catsmoker.obd2ai.instruments.FuelGaugeView
+                    android:id="@+id/fuelGauge"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -255,7 +260,7 @@
 
                 <Button
                     android:id="@+id/onlineAiSkip"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
@@ -324,9 +329,21 @@
                 android:textColor="?attr/colorOnSurface"
                 tools:text="4" />
 
-            <Button
-                android:id="@+id/offlineAiSkip"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                <Button
+                    android:id="@+id/offlineAiAction"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="@dimen/spacing_small"
+                    android:text="@string/get_gas"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/offlineAiSkip"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"
