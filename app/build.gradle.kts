@@ -19,6 +19,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig = signingConfigs.getByName("debug")
+        // TODO(owner): replace the demo AdMob IDs with production IDs from
+        // your AdMob account before release. Banner unit lives in
+        // res/values/strings.xml (admob_banner_id, translatable=false).
+        // Then create the Funding Choices messages in AdMob (Privacy &
+        // messaging) so the UMP consent form can appear in regulated regions.
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
     }
 
     buildTypes {
@@ -87,6 +93,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.kotlin.obd.api)
     implementation(libs.play.services.ads)
+    implementation(libs.ump)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)

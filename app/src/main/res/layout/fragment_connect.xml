@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
+            android:accessibilityHeading="true"
             android:text="@string/connect_title"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="?attr/colorOnSurface"

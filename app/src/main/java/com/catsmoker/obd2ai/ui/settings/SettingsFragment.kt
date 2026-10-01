@@ -24,7 +24,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
+import com.google.android.ump.ConsentInformation
 import androidx.transition.TransitionManager
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
@@ -286,6 +288,13 @@ class SettingsFragment : Fragment() {
                 if (prefs.getString(PrefsKeys.APP_LANGUAGE, null) != tag) {
                     prefs.edit { putString(PrefsKeys.APP_LANGUAGE, tag) }
                     (activity as MainActivity).applyAppLanguage(tag)
+                    // Settings shows ~100 static strings: a full refresh is
+                    // the only correct update here. The manifest suppresses
+                    // the automatic recreation (so the setup flow never
+                    // flickers), therefore Settings recreates explicitly.
+                    // Theme intentionally does NOT recreate: DayNight
+                    // resources update in place via the uiMode config change.
+                    requireActivity().recreate()
                 }
             }
 
@@ -603,6 +612,72 @@ class SettingsFragment : Fragment() {
             applyOnlineOutputs(fromVoice = false)
         }
 
+        // -- Privacy: analytics + ad personalization (banner stays on) --------
+        // Switches show the stored choices (single source of truth, both
+        // default ON) and apply them to the SDKs immediately on change.
+        val switchAnalytics = view.findViewById<SwitchMaterial>(R.id.switchAnalytics)
+        val switchPersonalizedAds = view.findViewById<SwitchMaterial>(R.id.switchPersonalizedAds)
+        // First open records the choice implicitly: whatever the switches show
+        // is the stored consent.
+        if (!prefs.contains(PrefsKeys.CONSENT_SET)) {
+            prefs.edit { putBoolean(PrefsKeys.CONSENT_SET, true) }
+        }
+        switchAnalytics.isChecked = prefs.getBoolean(PrefsKeys.ANALYTICS_ENABLED, true)
+        switchPersonalizedAds.isChecked = prefs.getBoolean(PrefsKeys.PERSONALIZED_ADS, true)
+        switchAnalytics.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit { putBoolean(PrefsKeys.ANALYTICS_ENABLED, isChecked) }
+            (activity as MainActivity).applyPrivacyChoices()
+            updateSummaries()
+        }
+        switchPersonalizedAds.setOnCheckedChangeListener { _, isChecked ->
+            if (updatingSwitches) return@setOnCheckedChangeListener
+            prefs.edit { putBoolean(PrefsKeys.PERSONALIZED_ADS, isChecked) }
+            if (isChecked) {
+                // Opting into personalization may need the Google consent
+                // form first (EEA/UK). If it doesn't yield consent, the
+                // switch falls back to generic ads instead of lying.
+                (activity as MainActivity).syncAdsConsent { status ->
+                    if (!isAdded) return@syncAdsConsent
+                    if (status == ConsentInformation.ConsentStatus.REQUIRED) {
+                        prefs.edit { putBoolean(PrefsKeys.PERSONALIZED_ADS, false) }
+                        updatingSwitches = true
+                        switchPersonalizedAds.isChecked = false
+                        updatingSwitches = false
+                    }
+                    updateSummaries()
+                }
+            } else {
+                (activity as MainActivity).applyPrivacyChoices()
+            }
+            updateSummaries()
+        }
+        view.findViewById<Button>(R.id.buttonPrivacyPolicy).setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            findNavController().navigate(
+                SettingsFragmentDirections.actionSettingsFragmentToLegalFragment(
+                    LegalFragment.PAGE_PRIVACY
+                )
+            )
+        }
+        view.findViewById<Button>(R.id.buttonTerms).setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            findNavController().navigate(
+                SettingsFragmentDirections.actionSettingsFragmentToLegalFragment(
+                    LegalFragment.PAGE_TERMS
+                )
+            )
+        }
+        view.findViewById<Button>(R.id.buttonOnlineLegal).setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (!LegalFragment.openHostedLegal(requireContext())) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.no_errors_found, getString(R.string.legal_url)),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
         fun renderApiStatus() {
             val service = AiService(requireContext())
             val config = service.getConfig()
@@ -694,7 +769,8 @@ class SettingsFragment : Fragment() {
             Triple(R.id.headerDriving, R.id.contentDriving, R.id.chevronDriving),
             Triple(R.id.headerSpeedo, R.id.contentSpeedo, R.id.chevronSpeedo),
             Triple(R.id.headerOfflineAi, R.id.contentOfflineAi, R.id.chevronOfflineAi),
-            Triple(R.id.headerOnlineAi, R.id.contentOnlineAi, R.id.chevronOnlineAi)
+            Triple(R.id.headerOnlineAi, R.id.contentOnlineAi, R.id.chevronOnlineAi),
+            Triple(R.id.headerPrivacy, R.id.contentPrivacy, R.id.chevronPrivacy)
         )
         var expandedGroup = -1
 
@@ -722,6 +798,9 @@ class SettingsFragment : Fragment() {
                 stateText(switchOfflineAi.isChecked)
             view.findViewById<TextView>(R.id.summaryOnlineAi).text =
                 stateText(switchOnlineAi.isChecked)
+            val privacyOn = switchAnalytics.isChecked || switchPersonalizedAds.isChecked
+            view.findViewById<TextView>(R.id.summaryPrivacy).text =
+                stateText(privacyOn)
         }
 
         fun setGroupExpanded(index: Int, expand: Boolean, animate: Boolean) {

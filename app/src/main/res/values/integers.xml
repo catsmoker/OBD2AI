@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home menu grid columns (phones). Tablets override in values-sw600dp. -->
+    <integer name="home_grid_columns">2</integer>
+</resources>

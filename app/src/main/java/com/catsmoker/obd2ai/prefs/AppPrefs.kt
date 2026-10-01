@@ -85,6 +85,17 @@ object PrefsKeys {
     const val DEFAULT_AI_VOLUME = 80
     const val DEFAULT_WIFI_HOST = "192.168.0.10"
     const val DEFAULT_WIFI_PORT = 35000
+    // -- Privacy choices (single source of truth; both default ON) --------
+    /** True once the first-launch choice has been recorded. */
+    const val CONSENT_SET = "consent_set"
+    /** Explicit Terms-of-Service acceptance (recorded by the setup screen). */
+    const val TERMS_ACCEPTED = "terms_accepted"
+    /** Usage-analytics collection. Default ON; effective only after choice. */
+    const val ANALYTICS_ENABLED = "analytics_enabled"
+    /** Personalized ads (AdMob `npa` flag off). Default ON; the banner
+     * itself cannot be turned off, and regulator-required UMP consent
+     * additionally gates every ad load. */
+    const val PERSONALIZED_ADS = "personalized_ads"
     // -- Display & experience --------------------------------------------------
     const val UNITS = "units"
     const val UNITS_METRIC = "metric"

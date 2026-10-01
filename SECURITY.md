@@ -43,7 +43,8 @@ on the device (see below).
 | AI API key (`openai_api_key`), provider, model, base URL | Private `SharedPreferences` (`app_prefs.xml`) | **Excluded** from Android Auto Backup and device-to-device transfer (`backup_rules.xml`, `data_extraction_rules.xml`) |
 | Cached DTC assessments (`dtc_results.json`) | App-internal storage | Normal app data |
 | Live telemetry (speed, RPM, coolant) | In-memory flows (`ObdDataHolder`) | Never persisted |
-| Analytics / ads | Firebase Analytics, AdMob SDK | Per those SDKs' policies |
+| Analytics | Firebase Analytics — **on by default, opt-out** in Settings → Privacy (first-launch choice; collection disabled in the manifest until the choice exists). Reports screens used + device/app identifiers (app-instance ID, ad ID, IP-derived geo) — pseudonymous, not anonymous | Per Google's policies |
+| Ads | AdMob banner, **always on** (funds the free app and cannot be disabled); personalization **on by default**, opt-out under Settings → Privacy (`npa=1` requests); UMP consent flow gates ad requests via `canRequestAds` and re-prompts on opt-in | Per Google's policies |
 
 ## The key boundary (AiService)
 

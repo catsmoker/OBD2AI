@@ -80,7 +80,10 @@ class LiveDataFragment : Fragment(), LocationListener {
 
     companion object {
         private const val RPM_GREEN = 0xFF43A047.toInt()
-        private const val RPM_AMBER = 0xFFF9A825.toInt()
+        // Deep amber twin of R.color.gauge_warn (bright #F9A825 is 1.97:1
+        // on white; #C07F00 is 3.35:1). Used for the dial warn section and
+        // the edge flash, so both stay in sync with the gauge palette.
+        private const val RPM_AMBER = 0xFFC07F00.toInt()
         private const val RPM_RED = 0xFFE53935.toInt()
 
         /** Green/amber boundary derived from the shift point (idle stays green). */

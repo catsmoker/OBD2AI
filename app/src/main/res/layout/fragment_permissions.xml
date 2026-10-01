@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xxlarge"
         android:layout_marginEnd="@dimen/spacing_xxlarge"
+        android:accessibilityHeading="true"
         android:gravity="center"
         android:text="@string/permissions_title"
         android:textAppearance="?attr/textAppearanceHeadlineMedium"

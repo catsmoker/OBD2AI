@@ -26,6 +26,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
+            android:id="@+id/nav_back"
+            android:layout_width="@dimen/button_min_height"
+            android:layout_height="@dimen/button_min_height"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nav_back_desc"
+            android:padding="@dimen/spacing_small"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
+            app:tint="?attr/colorOnSurface"
+            tools:visibility="visible" />
+
+        <ImageButton
             android:id="@+id/nav_dashboard"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_min_height"
@@ -113,7 +125,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/9214589741"
+        app:adUnitId="@string/admob_banner_id"
         android:layerType="software" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

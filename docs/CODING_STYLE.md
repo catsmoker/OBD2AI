@@ -31,7 +31,7 @@ contributing so new code reads like the code around it.
 - ELM327 init (`ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0, ATAT1`) is a fixed raw
   AT sequence — `ATS0`/`ATH0` make responses deterministic across clones.
   Don't drop entries.
-- Only `setupObd` / `setupWifi` / `setupDemo` own `demoMode`.
+- Only `setupObd` / `setupWifi` / `setupDemo` / `disconnectAll` own `demoMode`.
   `disconnectFromObdDevice()` must **not** reset it (LiveData teardown calls
   it; resetting silently kills demo and every later read fails).
 - In demo there is no polling loop — sliders write `ObdDataHolder` flows

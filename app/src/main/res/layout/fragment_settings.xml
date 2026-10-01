@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
+            android:accessibilityHeading="true"
             android:text="@string/settings_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="?attr/colorOnSurface" />
@@ -149,6 +150,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_small"
+                        android:contentDescription="@string/settings_language_title"
                         android:minHeight="@dimen/button_min_height" />
 
                     <TextView
@@ -621,6 +623,7 @@
                             android:id="@+id/offlineVolumeSeek"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/settings_voice_volume"
                             android:max="100" />
 
                         <Button
@@ -668,7 +671,8 @@
                             android:id="@+id/shiftRpmSeekBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small" />
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:contentDescription="@string/settings_shift_rpm_title" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchHighRpm"
@@ -690,7 +694,8 @@
                             android:id="@+id/highRpmSeekBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small" />
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:contentDescription="@string/settings_alert_high_rpm" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchHighSpeed"
@@ -712,7 +717,8 @@
                             android:id="@+id/highSpeedSeekBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small" />
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:contentDescription="@string/settings_alert_high_speed" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchCoolantAlert"
@@ -734,7 +740,8 @@
                             android:id="@+id/coolantThresholdSeek"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small" />
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:contentDescription="@string/settings_alert_coolant" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchNewFault"
@@ -934,6 +941,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_small"
+                            android:labelFor="@+id/providerSpinner"
                             android:text="@string/settings_ai_provider"
                             android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:textColor="?attr/colorOnSurface" />
@@ -943,6 +951,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_large"
+                            android:contentDescription="@string/settings_ai_provider"
                             android:minHeight="@dimen/button_min_height" />
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -980,6 +989,14 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:text="@string/settings_api_privacy_note"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurface" />
+
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
@@ -1016,6 +1033,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_small"
+                            android:labelFor="@+id/freqSpinner"
                             android:text="@string/settings_ai_frequency"
                             android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:textColor="?attr/colorOnSurface" />
@@ -1025,12 +1043,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_large"
+                            android:contentDescription="@string/settings_ai_frequency"
                             android:minHeight="@dimen/button_min_height" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_small"
+                            android:labelFor="@+id/personalitySpinner"
                             android:text="@string/settings_ai_personality"
                             android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:textColor="?attr/colorOnSurface" />
@@ -1040,6 +1060,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/spacing_large"
+                            android:contentDescription="@string/settings_ai_personality"
                             android:minHeight="@dimen/button_min_height" />
 
 
@@ -1079,6 +1100,7 @@
                             android:id="@+id/aiVolumeSeek"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/settings_ai_volume"
                             android:max="100" />
 
                         <Button
@@ -1099,6 +1121,154 @@
                             android:text="@string/settings_tts_system" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Group: Privacy (opt-in analytics + ads, legal pages) -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            app:cardCornerRadius="@dimen/card_corner_radius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/headerPrivacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/button_min_height"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/spacing_large">
+
+                    <ImageView
+                        android:layout_width="@dimen/row_icon_size"
+                        android:layout_height="@dimen/row_icon_size"
+                        android:contentDescription="@null"
+                        app:srcCompat="@drawable/ic_info"
+                        app:tint="?attr/colorSecondary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/spacing_large"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_privacy_title"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <TextView
+                            android:id="@+id/summaryPrivacy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="Off" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/chevronPrivacy"
+                        android:layout_width="@dimen/row_icon_size"
+                        android:layout_height="@dimen/row_icon_size"
+                        android:contentDescription="@null"
+                        app:srcCompat="@drawable/ic_chevron"
+                        app:tint="?attr/colorOnSurface" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contentPrivacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_large"
+                    android:paddingBottom="@dimen/spacing_large"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        android:text="@string/settings_privacy_desc"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchAnalytics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_analytics_title"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/settings_analytics_desc"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchPersonalizedAds"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/settings_ads_title"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/settings_ads_desc"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <Button
+                        android:id="@+id/buttonPrivacyPolicy"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:minHeight="@dimen/button_min_height"
+                        android:text="@string/about_privacy_button" />
+
+                    <Button
+                        android:id="@+id/buttonTerms"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:minHeight="@dimen/button_min_height"
+                        android:text="@string/about_terms_button" />
+
+                    <Button
+                        android:id="@+id/buttonOnlineLegal"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:minHeight="@dimen/button_min_height"
+                        android:text="@string/about_legal_online_button" />
 
                 </LinearLayout>
 

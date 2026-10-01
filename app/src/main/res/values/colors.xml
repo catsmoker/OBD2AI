@@ -2,7 +2,11 @@
 <resources>
     <!-- Base Colors -->
     <color name="colorPrimary">#1A237E</color>
-    <color name="colorSecondary">#00BCD4</color>
+    <!-- Cyan 800 (not 500): #00BCD4 measured 2.30:1 on white and fails
+         WCAG 1.4.11 for selected-nav icons, header icons, the loading
+         indicator and the white splash icon. #00838F is 4.52:1 on white
+         (and white-on-it 4.52:1), same hue family. -->
+    <color name="colorSecondary">#00838F</color>
 
     <!-- Material Design Light Theme Colors -->
     <color name="surface">#FFFFFF</color>
@@ -21,9 +25,14 @@
     <color name="tertiary">#006A60</color>
     <color name="tertiary_container">#6FF7EC</color>
     <color name="on_tertiary_container">#00201C</color>
-    <!-- OBD2 AI 2.0 gauge + status semantics (same in both themes) -->
+    <!-- OBD2 AI 2.0 gauge + status semantics (same in both themes).
+         gauge_warn is deep amber, not bright #F9A825 (1.97:1 on white):
+         #C07F00 measures 3.35:1 on white, 3.20:1 on the tube track and
+         5.60:1 on dark backgrounds, so the warn state stays visible in
+         every theme. Zone meaning is always redundant with the numeric
+         readout and the spoken/banner text. -->
     <color name="gauge_ok">#43A047</color>
-    <color name="gauge_warn">#F9A825</color>
+    <color name="gauge_warn">#C07F00</color>
     <color name="gauge_danger">#E53935</color>
     <color name="gauge_sport">#FFA500</color>
     <color name="gauge_neon">#00E5FF</color>

@@ -44,18 +44,52 @@ Fragments reach the shared helpers via `(activity as MainActivity)`.
 ## App flow
 
 ```
-Onboarding ─┬─ Get Started → Permissions → ConnectFragment ─┬─► ErrorOverviewFragment
-            │      (Bluetooth / WiFi / Demo)                 │      (reads DTCs, assesses each
-            └─ Try Demo → LiveDataFragment (demo) ───────────┘       code via AI in parallel)
-                                              ↓
-                               ErrorDetailFragment ←→ LiveDataFragment
-                               (cached dtc_results.json   (gauges + AI
-                                fallback)                  voice insight)
+OnboardingFragment = welcome screen + state-aware main menu (start dest.)
+ ├── Hero: title, description; entry actions when unlinked
+ │   (Connect to OBD Device / Try Demo), disconnect/exit-demo when linked
+ ├── ConnectionState (DISCONNECTED: settings+about only; CONNECTED/DEMO:
+ │   + dashboard, diagnostics, trip, console)
+ ├── Get Started → Permissions → ConnectFragment ─► menu (connected)
+ ├── Try Demo → setupDemo() in place ─► menu (demo, same screens+data)
+ └── Cards → sections ─► Back / system Back ─► menu
+
+ErrorOverviewFragment (reads DTCs, assesses each code via AI in parallel;
+button-driven, fails gracefully when unlinked)
+                                               ↓
+                                ErrorDetailFragment ←→ LiveDataFragment
+                                (cached dtc_results.json   (gauges + AI
+                                 fallback)                  voice insight)
 ```
 
+State notes: `demoMode`/`isConnected` (ObdHelper) are the only connection
+truth — no parallel model. Demo branches every read (DemoObdSource), so
+demo reuses the exact same screens. Leaving Live Data tears down *real*
+transports (demo survives by design); the menu re-renders on resume, so a
+dead connection honestly shows the disconnected menu again. Explicit
+disconnect/exit-demo goes through `ObdHelper.disconnectAll()`; passive
+teardown (`disconnectFromObdDevice`, LiveData only) never clears demo.
+
+First launch shows the setup screen (`ui/setup/SetupFragment`, only while
+the setup is incomplete): agreement (Terms acceptance required, optionals
+separate), language, theme and privacy choices — all written to the same
+prefs Settings uses and applied through the same MainActivity methods.
+Continue records the choice and returns to the menu; SDKs stay gated by
+the choice rules until then.
+
+Section jumps (top bar / rail) collapse everything above the welcome root
+(`popUpTo onboarding`, single top), so Back always returns toward the menu.
+The visible back arrow (top bar on phones, rail header on tablets) calls
+`navigateUp()` — the same action as system Back / back gesture — and is
+hidden on the welcome root and the transient setup screens (permissions,
+connect), where the whole chrome hides. On phones the menu leaf screens
+(settings, about, legal) additionally hide the section buttons and use the
+back-arrow-only flow, so the strip never pops in mid-flow; the tablet rail
+keeps all its entries on every chromed screen.
+
 Tablets (sw600dp) navigate top-level destinations with a navigation rail
-(Dashboard, Diagnostics, Trip, Console, Settings); phones use the floating
-global settings shortcut. About is a standalone destination from Settings.
+(Dashboard, Diagnostics, Trip, Console, Settings, About, plus a header back
+arrow on secondary screens); phones use the compact in-flow top bar with
+the same sections plus the back arrow.
 
 Speed source can be the OBD device or the phone GPS (`speed_source` pref).
 

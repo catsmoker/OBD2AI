@@ -59,9 +59,9 @@ Contributions must:
 - **Keep AI advisory.** Assessments must stay suggestions, never
   instructions that could cause unsafe repairs. Keep the disclaimer true.
 - **Revert cleanly.** Anything a feature engages at "on" (demo mode,
-  receivers, TTS) must have a symmetric "off". In particular: only
-  `setupObd` / `setupWifi` / `setupDemo` own `demoMode` — teardown code must
-  not reset it (see [docs/OBD_CONNECTION.md](docs/OBD_CONNECTION.md)).
+   receivers, TTS) must have a symmetric "off". In particular: only
+   `setupObd` / `setupWifi` / `setupDemo` / `disconnectAll` own `demoMode` —
+   teardown code must not reset it (see [docs/OBD_CONNECTION.md](docs/OBD_CONNECTION.md)).
 - **Not introduce data collection.** The only network traffic is the user's
   own AI provider, ads (AdMob) and analytics (Firebase) — see
   [SECURITY.md](SECURITY.md).

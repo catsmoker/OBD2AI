@@ -11,6 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
         android:text="@string/ask_ai_title"
         android:textAppearance="?attr/textAppearanceTitleLarge"
         android:textColor="?attr/colorOnSurface" />
@@ -23,6 +24,14 @@
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="?attr/colorOnSurface"
         tools:text="Questions about P0301? Ask below — answers use the diagnosis above." />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="@string/ask_ai_data_note"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/textViewAskNoKey"
@@ -68,6 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_small"
             android:layout_weight="1"
+            android:contentDescription="@string/ask_ai_question_label"
             android:hint="@string/ask_ai_hint"
             android:imeOptions="actionSend"
             android:inputType="text"

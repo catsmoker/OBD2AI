@@ -4,7 +4,7 @@
     <string name="app_name">OBD2AI</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Te damos la bienvenida a OBD2 AI Pro</string>
+    <string name="onboarding_title">Te damos la bienvenida a OBD2AI</string>
     <string name="onboarding_description">Diagnostica problemas del vehículo leyendo códigos de falla y obtén análisis con IA y consejos de reparación.</string>
     <string name="onboarding_button_get_started">Comenzar</string>
     <string name="onboarding_try_demo">Probar demo</string>
@@ -258,6 +258,64 @@
     <string name="settings_about_title">Acerca de</string>
     <string name="settings_about_desc">OBD2 AI lee los códigos de falla de tu coche y los explica con IA sin conexión (voz del dispositivo) e IA en línea (tu proveedor de IA).</string>
     <string name="settings_about_version">Versión %1$s</string>
+
+    <!-- First-launch setup -->
+    <string name="setup_title">Configuración inicial</string>
+    <string name="setup_agreement_title">Acuerdo y privacidad</string>
+    <string name="setup_agreement_desc">OBD2AI es gratis gracias a anuncios de banner siempre activos. Los datos de tu coche y tu clave de IA permanecen en este dispositivo; la app no usa cookies. Lee los textos completos:</string>
+    <string name="setup_agree">He leído y acepto los Términos del servicio</string>
+    <string name="setup_require_note">Para continuar, acepta los Términos del servicio anteriores. Las analíticas y la personalización siguen siendo opcionales y se pueden cambiar cuando quieras.</string>
+    <string name="setup_continue">Continuar</string>
+    <string name="setup_step_indicator">Paso %1$d de %2$d</string>
+    <string name="setup_step2_title">Idioma y apariencia</string>
+    <string name="setup_next">Siguiente</string>
+    <string name="setup_back">Atrás</string>
+    <string name="setup_cookies_note">Esta app no usa cookies ni carga píxeles de rastreo. El sitio web del operador tiene su propia política:</string>
+    <string name="setup_language_desc">Elige el idioma de OBD2AI.</string>
+    <string name="setup_appearance_desc">Elige el aspecto de OBD2AI en este dispositivo.</string>
+    <string name="settings_privacy_title">Privacidad</string>
+    <string name="settings_privacy_desc">Las analíticas de uso y la personalización de anuncios están activadas por defecto; desactiva cualquiera cuando quieras. Los datos del coche y tu clave de IA permanecen en este dispositivo.</string>
+    <string name="settings_analytics_title">Analíticas de uso</string>
+    <string name="settings_analytics_desc">Informa qué pantallas se usan, además de identificadores del dispositivo y la app, a Firebase Analytics para mejorar la app. Activado por defecto; desactívalo cuando quieras.</string>
+    <string name="settings_ads_title">Anuncios personalizados</string>
+    <string name="settings_ads_desc">Permite anuncios según tus intereses (AdMob). Activado por defecto \u2014 desactívalo para ver anuncios genéricos. Los anuncios siempre se muestran.</string>
+    <string name="settings_api_privacy_note">Tu clave se guarda solo en este dispositivo y se envía únicamente al proveedor seleccionado, junto con los códigos de falla y el VIN, para explicar los códigos de tu coche. Consulta la Política de privacidad para más detalles.</string>
+    <string name="ask_ai_data_note">Las preguntas, la evaluación de la falla y el VIN (si se conoce) se envían a tu proveedor de IA seleccionado para generar la respuesta.</string>
+    <string name="console_local_note">Los comandos de la consola solo van a tu adaptador OBD-II. Nada aquí se envía a internet.</string>
+    <string name="ask_ai_question_label">Tu pregunta sobre este código de falla</string>
+    <string name="console_input_label">Comando OBD o PID</string>
+    <string name="gauge_speed_desc">Indicador de velocidad</string>
+    <string name="gauge_rpm_desc">Indicador de RPM del motor</string>
+    <string name="gauge_coolant_desc">Indicador de temperatura del refrigerante</string>
+    <string name="gauge_voltage_desc">Indicador de voltaje de la batería</string>
+    <string name="gauge_fuel_desc">Indicador de nivel de combustible</string>
+
+    <!-- Legal -->
+    <string name="legal_privacy_title">Política de privacidad</string>
+    <string name="legal_terms_title">Términos del servicio</string>
+    <string name="about_privacy_button">Política de privacidad</string>
+    <string name="about_terms_button">Términos del servicio</string>
+    <string name="about_contact_title">Contacto</string>
+    <string name="about_contact_text">Soporte: contacta con el responsable en el sitio web siguiente.</string>
+    <!-- Operator-hosted legal notices (a URL is never translated). -->
+    <string name="legal_url" translatable="false">https://catsmoker.vercel.app/legal</string>
+    <string name="about_legal_online_button">Sitio web y avisos legales</string>
+    <string name="legal_privacy_body">Política de privacidad de OBD2AI.\n\nQuiénes somos: CATSMOKER. Avisos legales en línea: https://catsmoker.vercel.app/legal. Esta app se publica como proyecto de código abierto; en este repositorio no se declara ningún nombre de empresa, dirección ni número de registro.\n\nQué hace la app: lee diagnósticos del vehículo (códigos de falla, telemetría como velocidad, RPM, refrigerante, voltaje, combustible) desde tu adaptador ELM327 por Bluetooth o WiFi, o los simula en modo demo, y puede explicar los códigos con el proveedor de IA que configures.\n\nDatos guardados solo en tu dispositivo: tus ajustes y la configuración de IA (proveedor, modelo, URL del servidor, umbrales, tema, idioma, unidades) en preferencias privadas; tu clave API en las mismas preferencias, excluida de la copia de seguridad de Android y de la transferencia entre dispositivos; evaluaciones de códigos en un archivo interno (dtc_results.json) que se reemplaza en cada escaneo; la telemetría y la velocidad GPS se conservan solo en memoria y nunca se guardan.\n\nDatos enviados fuera del dispositivo: solo lo que tú actives. Los códigos, el VIN (cuando se conoce) y tus preguntas se envían al proveedor de IA que elijas en Ajustes, bajo la política de privacidad de ese proveedor. Las analíticas de uso (Firebase Analytics) están activadas por defecto y se pueden desactivar en Ajustes \u2192 Privacidad. Informan qué pantallas se usan, junto con identificadores del dispositivo y la app como el ID de instancia y el ID de publicidad \u2014 identificadores técnicos seudónimos, no tu nombre ni tus datos de contacto. Los anuncios de banner (AdMob) siempre se muestran para mantener la app gratuita; la personalización está activada por defecto y se puede desactivar en Ajustes \u2192 Privacidad. La app no usa cookies, no carga píxeles de rastreo y no integra redes sociales, mapas, video, chat ni pagos. Tocar \u00abBuscar gasolinera\u00bb abre tu propia app de mapas con una búsqueda cercana; esa búsqueda la gestiona la app de mapas, no nosotros.\n\nPermisos: Bluetooth (conexión con el adaptador), ubicación (exigida por Android para descubrir Bluetooth en versiones antiguas, más la fuente opcional de velocidad GPS), internet (explicaciones de IA, anuncios de banner siempre activos y analíticas cuando están activas). La ubicación de la fuente GPS permanece en memoria y la app nunca la guarda ni la transmite.\n\nTus derechos: acceder, corregir o borrar tus datos borrando el almacenamiento de la app o desinstalándola; retirar el consentimiento de analíticas en Ajustes \u2192 Privacidad; pedir ayuda a través del sitio web del responsable indicado arriba.\n\nMenores: la app es una herramienta general de vehículo, no dirigida a menores.\n\nCambios: los cambios importantes se describirán en las notas de la versión. Este texto describe los hechos de la app, no es asesoría legal; pide revisión a un abogado antes de un lanzamiento que apunte a la UE/RU.</string>
+    <string name="legal_terms_body">Términos del servicio de OBD2AI.\n\nQué recibes: una herramienta de diagnóstico de código abierto (Licencia Apache 2.0, ver LICENSE) que lee datos OBD-II y ofrece explicaciones de códigos generadas por IA. La app no vende nada ni cobra pagos; las donaciones por enlaces externos (si las hay) son voluntarias y el proyecto no las reembolsa.\n\nSeguridad ante todo: configura la app con el coche detenido y no interactúes con ella mientras conduces. Las evaluaciones de IA son solo orientativas y no sustituyen a un mecánico cualificado. Borrar códigos sin reparar la causa puede ocultar problemas reales. Usas la app y sus explicaciones bajo tu propio riesgo.\n\nTus responsabilidades: usa tu propia clave API de forma lícita y mantenla en secreto; usa tu propio adaptador OBD-II en vehículos que tengas derecho a diagnosticar; no uses la consola OBD para alterar el vehículo de forma insegura.\n\nSin garantía: el software se ofrece \u00abtal cual\u00bb, sin garantías de ningún tipo, en la máxima medida permitida por la ley (ver Licencia Apache 2.0, secciones 7\u20138).\n\nResponsable: CATSMOKER. Avisos legales en línea: https://catsmoker.vercel.app/legal. Como la Política de privacidad, este texto no es asesoría legal; pide revisión a un abogado antes del lanzamiento.</string>
+
+    <!-- Home / main menu -->
+    <string name="home_section_title">Funciones</string>
+    <string name="home_status_connected">Conectado</string>
+    <string name="home_status_offline">Sin conexión</string>
+    <string name="menu_disconnect">Desconectar</string>
+    <string name="menu_exit_demo">Salir de la demo</string>
+    <string name="nav_back_desc">Atrás</string>
+    <string name="home_card_dashboard_desc">Velocidad, RPM y datos del motor en vivo.</string>
+    <string name="home_card_diagnostics_desc">Lee códigos de falla con explicaciones de IA.</string>
+    <string name="home_card_trip_desc">Registra distancia, tiempo y velocidad máxima.</string>
+    <string name="home_card_console_desc">Envía comandos OBD directos.</string>
+    <string name="home_card_settings_desc">Proveedores, alertas, privacidad y pantalla.</string>
+    <string name="home_card_about_desc">Versión, privacidad y avisos legales.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>

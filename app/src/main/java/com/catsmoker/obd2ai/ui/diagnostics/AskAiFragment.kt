@@ -25,7 +25,6 @@ import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
 import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.launch
 
 /** One line in the Ask-AI follow-up chat: the driver's question or the AI answer. */
@@ -91,7 +90,6 @@ class AskAiFragment : Fragment() {
     private lateinit var noKeyHint: TextView
     private lateinit var obdHelper: ObdHelper
     private lateinit var aiService: AiService
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private var dto: DtpCodeDTO? = null
     private var vin: String? = null
     private val history = mutableListOf<Pair<String, String>>()
@@ -101,7 +99,6 @@ class AskAiFragment : Fragment() {
         val errorCode = AskAiFragmentArgs.fromBundle(requireArguments()).errorCode
         obdHelper = (activity as MainActivity).obdHelper
         aiService = (activity as MainActivity).aiService
-        firebaseAnalytics = (activity as MainActivity).firebaseAnalytics
 
         // Same lookup as the detail screen: memory first, cached scan second.
         dto = ObdDataHolder.dtpResults.find { it.errorCode == errorCode }
@@ -173,7 +170,7 @@ class AskAiFragment : Fragment() {
                     refreshNoKeyHint()
                     chatAdapter.addMessage(ChatMessage(answer, fromUser = false))
                     messagesView.scrollToPosition(chatAdapter.itemCount - 1)
-                    firebaseAnalytics.logEvent("ask_ai_sent", null)
+                    (activity as MainActivity).logAnalyticsEvent("ask_ai_sent")
                 }
             } catch (e: Exception) {
                 Log.e("AskAiFragment", "Follow-up answer failed", e)

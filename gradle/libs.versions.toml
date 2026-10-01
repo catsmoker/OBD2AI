@@ -1,11 +1,11 @@
 [versions]
 androidGradlePlugin = "9.4.1"
 kotlin = "2.4.20"
-coreKtx = "1.19.0"
+coreKtx = "1.19.1"
 appcompat = "1.8.0"
 constraintlayout = "2.2.2"
 material = "1.14.0"
-navigation = "2.10.1"
+navigation = "2.10.2"
 lifecycle = "2.11.0"
 obdApi = "1.4.1"
 junit = "4.13.2"
@@ -15,7 +15,8 @@ espressoCore = "3.7.0"
 speedview = "1.6.1"
 swiperefreshlayout = "1.2.0"
 google-services = "4.5.0"
-play-services-ads = "25.4.0"
+play-services-ads = "25.5.0"
+user-messaging-platform = "4.0.0"
 firebase-analytics = "22.5.0"
 core-splashscreen = "1.2.0"
 
@@ -39,6 +40,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 kotlin-obd-api = { group = "com.github.eltonvs", name = "kotlin-obd-api", version.ref = "obdApi" }
 speedviewlib = { group = "com.github.anastr", name = "speedviewlib", version.ref = "speedview" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "play-services-ads" }
+# Google User Messaging Platform (consent form for ads, EEA/UK + US states).
+ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "user-messaging-platform" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx", version.ref = "firebase-analytics" }
 
 # Testing

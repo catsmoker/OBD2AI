@@ -172,7 +172,7 @@ class ConnectFragment : Fragment() {
                         Toast.makeText(context, R.string.connect_scanning_for_devices, Toast.LENGTH_LONG).show()
                         obdHelper.setupObd(deviceAddress)
                         obdHelper.initializeObd()
-                        findNavController().navigate(R.id.action_connectFragment_to_errorOverviewFragment)
+                        findNavController().navigate(R.id.action_connectFragment_to_onboardingFragment)
                     } catch (e: Exception) {
                         Log.e("ConnectFragment", "Connection failed", e)
                         Toast.makeText(context, getString(R.string.could_not_connect_to_obd2_adapter, e.message), Toast.LENGTH_LONG).show()
@@ -185,7 +185,7 @@ class ConnectFragment : Fragment() {
         view.findViewById<Button>(R.id.button_demo).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             obdHelper.setupDemo()
-            findNavController().navigate(R.id.action_connectFragment_to_errorOverviewFragment)
+            findNavController().navigate(R.id.action_connectFragment_to_onboardingFragment)
         }
 
         view.findViewById<Button>(R.id.button_wifi).setOnClickListener {
@@ -244,11 +244,13 @@ class ConnectFragment : Fragment() {
         }
         val hostInput = android.widget.EditText(requireContext()).apply {
             hint = getString(R.string.connect_wifi_host_hint)
+            contentDescription = getString(R.string.connect_wifi_host_hint)
             setText(prefs.getString(PrefsKeys.WIFI_HOST, PrefsKeys.DEFAULT_WIFI_HOST))
             inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_URI
         }
         val portInput = android.widget.EditText(requireContext()).apply {
             hint = getString(R.string.connect_wifi_port_hint)
+            contentDescription = getString(R.string.connect_wifi_port_hint)
             setText(prefs.getInt(PrefsKeys.WIFI_PORT, PrefsKeys.DEFAULT_WIFI_PORT).toString())
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
         }
@@ -275,7 +277,7 @@ class ConnectFragment : Fragment() {
                         Toast.makeText(context, R.string.connect_scanning_for_devices, Toast.LENGTH_LONG).show()
                         obdHelper.setupWifi(host, port)
                         obdHelper.initializeObd()
-                        findNavController().navigate(R.id.action_connectFragment_to_errorOverviewFragment)
+                        findNavController().navigate(R.id.action_connectFragment_to_onboardingFragment)
                     } catch (e: Exception) {
                         Log.e("ConnectFragment", "WiFi connection failed", e)
                         Toast.makeText(context, getString(R.string.could_not_connect_to_obd2_adapter, e.message), Toast.LENGTH_LONG).show()

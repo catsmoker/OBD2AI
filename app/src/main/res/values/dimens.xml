@@ -11,6 +11,10 @@
 
     <dimen name="button_min_height">48dp</dimen>
 
+    <!-- First-launch setup: content column stays readable on tablets and
+         wide screens; phones are narrower so this is a no-op there. -->
+    <dimen name="setup_content_max_width">640dp</dimen>
+
     <dimen name="card_corner_radius">12dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="badge_vertical_padding">6dp</dimen>
@@ -18,6 +22,7 @@
     <dimen name="row_icon_size">24dp</dimen>
     <dimen name="row_icon_gap">16dp</dimen>
     <dimen name="detail_icon_size">48dp</dimen>
+    <dimen name="home_logo_size">72dp</dimen>
     <dimen name="settings_button_size">48dp</dimen>
 
     <!-- OBD2 AI 2.0 dashboard + speedometer system -->

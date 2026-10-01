@@ -11,8 +11,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
         android:text="@string/obd_console_title"
         android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="@string/console_local_note"
+        android:textAppearance="?attr/textAppearanceBodySmall"
         android:textColor="?attr/colorOnSurface" />
 
     <ScrollView
@@ -46,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_small"
             android:layout_weight="1"
+            android:contentDescription="@string/console_input_label"
             android:fontFamily="monospace"
             android:hint="@string/obd_console_hint"
             android:imeOptions="actionSend"

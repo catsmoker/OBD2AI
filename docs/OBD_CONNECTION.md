@@ -47,11 +47,12 @@ SpeedView gauges. Speed source is switchable (`speed_source` pref):
 
 ## demoMode ownership (important)
 
-Only `setupObd` / `setupWifi` / `setupDemo` own `ObdHelper.demoMode`.
-`disconnectFromObdDevice()` must **not** reset it — LiveData teardown calls
-disconnect, and resetting there silently kills demo so every later read
-fails. All reads branch on `demoMode`; keep that branching when adding new
-commands.
+Only `setupObd` / `setupWifi` / `setupDemo` / `disconnectAll` own
+`ObdHelper.demoMode`. `disconnectFromObdDevice()` must **not** reset it —
+LiveData teardown calls disconnect, and resetting there silently kills demo
+so every later read fails. (`disconnectAll()` is the explicit user-action
+counterpart: menu Disconnect / Exit demo.) All reads branch on `demoMode`;
+keep that branching when adding new commands.
 
 ## Permissions & receivers
 

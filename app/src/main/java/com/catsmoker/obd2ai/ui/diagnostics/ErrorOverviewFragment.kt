@@ -31,7 +31,6 @@ import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -123,7 +122,6 @@ class ErrorOverviewFragment : Fragment() {
     private lateinit var adapterTextView: TextView
     private lateinit var obdHelper: ObdHelper
     private lateinit var aiService: AiService
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     companion object {
         private var cachedDictionary: Map<String, DtcInfo>? = null
@@ -142,7 +140,6 @@ class ErrorOverviewFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_error_overview, container, false)
         obdHelper = (activity as MainActivity).obdHelper
         aiService = (activity as MainActivity).aiService
-        firebaseAnalytics = (activity as MainActivity).firebaseAnalytics
 
         statsTextView = view.findViewById(R.id.textView_stats)
         milTextView = view.findViewById(R.id.textView_mil)
@@ -182,13 +179,13 @@ class ErrorOverviewFragment : Fragment() {
 
         view.findViewById<Button>(R.id.button_analyze).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            firebaseAnalytics.logEvent("analyze_clicked", null)
+            (activity as MainActivity).logAnalyticsEvent("analyze_clicked")
             loadAndAssessErrorCodes()
         }
 
         view.findViewById<Button>(R.id.button_clear_codes).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            firebaseAnalytics.logEvent("clear_codes_clicked", null)
+            (activity as MainActivity).logAnalyticsEvent("clear_codes_clicked")
             confirmAndClearCodes()
         }
 

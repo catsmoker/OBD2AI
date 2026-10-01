@@ -1,9 +1,12 @@
 <resources>
     <!-- App Information -->
     <string name="app_name">OBD2AI</string>
+    <!-- TODO(owner): production AdMob banner unit before release. The app ID
+         lives in app/build.gradle.kts (manifestPlaceholders admobAppId). -->
+    <string name="admob_banner_id" translatable="false">ca-app-pub-3940256099942544/9214589741</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Welcome to OBD2 AI Pro</string>
+    <string name="onboarding_title">Welcome to OBD2AI</string>
     <string name="onboarding_description">Diagnose vehicle issues by reading fault codes and get AI-driven insights and repair advice.</string>
     <string name="onboarding_button_get_started">Get Started</string>
     <string name="onboarding_try_demo">Try Demo</string>
@@ -259,6 +262,64 @@
     <string name="settings_about_title">About</string>
     <string name="settings_about_desc">OBD2 AI reads your car\u2019s fault codes and explains them with Offline AI (on-device voice) and Online AI (your AI provider).</string>
     <string name="settings_about_version">Version %1$s</string>
+
+    <!-- First-launch setup -->
+    <string name="setup_title">App setup</string>
+    <string name="setup_agreement_title">Agreement &amp; privacy</string>
+    <string name="setup_agreement_desc">OBD2AI is free thanks to always-on banner ads. Your car data and AI key stay on this device; the app sets no cookies. Please read the full texts:</string>
+    <string name="setup_agree">I have read and agree to the Terms of Service</string>
+    <string name="setup_require_note">To continue, accept the Terms of Service above. Analytics and ad personalization stay optional and can be changed anytime.</string>
+    <string name="setup_continue">Continue</string>
+    <string name="setup_step_indicator">Step %1$d of %2$d</string>
+    <string name="setup_step2_title">Language &amp; appearance</string>
+    <string name="setup_next">Next</string>
+    <string name="setup_back">Back</string>
+    <string name="setup_cookies_note">This app sets no cookies and loads no tracking pixels. The operator website has its own policy:</string>
+    <string name="setup_language_desc">Choose the language for OBD2AI.</string>
+    <string name="setup_appearance_desc">Choose how OBD2AI looks on this device.</string>
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_privacy_desc">Usage analytics and ad personalization are on by default; turn either off anytime. Your car data and AI key stay on this device.</string>
+    <string name="settings_analytics_title">Usage analytics</string>
+    <string name="settings_analytics_desc">Reports which screens are used, plus device and app identifiers, to Firebase Analytics to improve the app. On by default; turn off anytime.</string>
+    <string name="settings_ads_title">Personalized ads</string>
+    <string name="settings_ads_desc">Allow ads tailored to your interests (AdMob). On by default \u2014 turn off for generic ads. Ads themselves are always shown.</string>
+    <string name="settings_api_privacy_note">Your key is stored only on this device and is sent only to the selected provider, together with fault codes and the VIN, to explain your car\u2019s codes. See the Privacy Policy for details.</string>
+    <string name="ask_ai_data_note">Questions, the fault assessment and the VIN (if known) are sent to your selected AI provider to generate the answer.</string>
+    <string name="console_local_note">Console commands go only to your OBD-II adapter. Nothing here is sent to the internet.</string>
+    <string name="ask_ai_question_label">Your question about this fault code</string>
+    <string name="console_input_label">OBD command or PID</string>
+    <string name="gauge_speed_desc">Speed gauge</string>
+    <string name="gauge_rpm_desc">Engine RPM gauge</string>
+    <string name="gauge_coolant_desc">Coolant temperature gauge</string>
+    <string name="gauge_voltage_desc">Battery voltage gauge</string>
+    <string name="gauge_fuel_desc">Fuel level gauge</string>
+
+    <!-- Legal -->
+    <string name="legal_privacy_title">Privacy Policy</string>
+    <string name="legal_terms_title">Terms of Service</string>
+    <string name="about_privacy_button">Privacy Policy</string>
+    <string name="about_terms_button">Terms of Service</string>
+    <string name="about_contact_title">Contact</string>
+    <string name="about_contact_text">Support: contact the operator through the website below.</string>
+    <!-- Operator-hosted legal notices (a URL is never translated). -->
+    <string name="legal_url" translatable="false">https://catsmoker.vercel.app/legal</string>
+    <string name="about_legal_online_button">Operator website &amp; legal</string>
+    <string name="legal_privacy_body">Privacy Policy for OBD2AI.\n\nWho we are: CATSMOKER. Online legal notices: https://catsmoker.vercel.app/legal. This app is published as an open-source project; no company name, address, or registration number is asserted in this repository.\n\nWhat the app does: reads vehicle diagnostics (fault codes, live telemetry such as speed, RPM, coolant, voltage, fuel) from your ELM327 adapter over Bluetooth or WiFi, or simulates them in demo mode, and can explain fault codes with an AI provider you configure.\n\nData stored on your device only: your settings and AI configuration (provider, model, server URL, thresholds, theme, language, units) in private app preferences; your AI API key in the same preferences, excluded from Android backup and device transfer; cached fault-code assessments in an internal file (dtc_results.json) that is replaced on each scan; live telemetry and GPS speed are kept in memory only and never saved.\n\nData sent off the device: only what you explicitly trigger. Fault codes, the VIN (when known) and your follow-up questions are sent to the AI provider you select in Settings, under that provider\u2019s privacy policy. Usage analytics (Firebase Analytics) are on by default and can be turned off under Settings \u2192 Privacy. They report which screens are used, together with device and app identifiers such as the app-instance ID and advertising ID \u2014 pseudonymous technical identifiers, not your name or contact details. Banner ads (AdMob) are always shown to keep the app free; ad personalization is on by default and can be turned off under Settings \u2192 Privacy. The app sets no cookies, loads no tracking pixels, and embeds no social-media, map, video, chat, or payment SDKs. Tapping \u201cGet Gas\u201d opens your own installed maps app with a nearby gas-station search; that search is handled by the maps app, not by us.\n\nPermissions: Bluetooth (adapter connection), location (required by Android for Bluetooth discovery on older versions, plus the optional GPS speed source), internet (AI explanations, always-on banner ads, and analytics when enabled). Location for the GPS speed source stays in memory and is never stored or transmitted by the app.\n\nYour rights: access, correct, or delete your data by clearing the app\u2019s storage or uninstalling; withdraw analytics consent anytime in Settings \u2192 Privacy; request support via the operator website above.\n\nChildren: the app is a general vehicle-utility tool, not directed at children.\n\nChanges: material changes will be described in the release notes. Questions: contact the operator via the website above. This text is a factual description of the app, not legal advice; have a qualified lawyer review it before a store release that targets the EU/UK.</string>
+    <string name="legal_terms_body">Terms of Service for OBD2AI.\n\nWhat you get: an open-source vehicle-diagnostics tool (Apache License 2.0, see LICENSE) that reads OBD-II data and offers AI-generated fault-code explanations. The app sells nothing and takes no payments; donations via external links (if any) are voluntary and non-refundable by the project.\n\nSafety first: set the app up while parked and never interact with it while driving. AI assessments are advisory only and are not a substitute for a qualified mechanic. Clearing fault codes without fixing the cause can hide real problems. You use the app and any AI explanation at your own risk.\n\nYour responsibilities: use your own AI API key lawfully and keep it secret; use your own OBD-II adapter on vehicles you are entitled to diagnose; do not misuse the OBD console to alter vehicle behavior unsafely.\n\nNo warranty: the software is provided \u201cas is\u201d without warranties of any kind, to the maximum extent permitted by law (see Apache License 2.0, sections 7\u20138).\n\nOperator: CATSMOKER. Online legal notices: https://catsmoker.vercel.app/legal. Questions: contact the operator via the website above. Like the Privacy Policy, this text is not legal advice; have a qualified lawyer review it before a store release.</string>
+
+    <!-- Home / main menu -->
+    <string name="home_section_title">Features</string>
+    <string name="home_status_connected">Connected</string>
+    <string name="home_status_offline">Not connected</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_exit_demo">Exit demo</string>
+    <string name="nav_back_desc">Back</string>
+    <string name="home_card_dashboard_desc">Live speed, RPM and engine data.</string>
+    <string name="home_card_diagnostics_desc">Read fault codes with AI explanations.</string>
+    <string name="home_card_trip_desc">Track distance, time and top speed.</string>
+    <string name="home_card_console_desc">Send raw OBD commands.</string>
+    <string name="home_card_settings_desc">Providers, alerts, privacy, display.</string>
+    <string name="home_card_about_desc">Version, privacy and legal.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>

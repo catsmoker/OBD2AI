@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tablet rail header: visible back arrow on secondary screens only.
+      Toggled per destination by MainActivity; same action as system Back. -->
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rail_back"
+    android:layout_width="@dimen/button_min_height"
+    android:layout_height="@dimen/button_min_height"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:contentDescription="@string/nav_back_desc"
+    android:padding="@dimen/spacing_small"
+    android:src="@drawable/ic_arrow_back"
+    android:visibility="gone"
+    app:tint="?attr/colorOnSurface"
+    tools:visibility="visible" />

@@ -299,9 +299,21 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
         // NOTE: demoMode is intentionally NOT reset here. Leaving Live Data
         // (or rotating the phone) destroys the view and calls this; resetting
         // would silently drop demo mode and every later read would fail with
-        // "OBD connection not established". setupObd/setupWifi/setupDemo own it.
+        // "OBD connection not established". setupObd/setupWifi/setupDemo and
+        // disconnectAll() own it.
         disconnectTransports()
         obdConnection = null
+    }
+
+    /**
+     * Explicit user disconnect (menu status card): drops transports AND
+     * leaves demo mode, returning to fully disconnected. Unlike
+     * [disconnectFromObdDevice] (passive teardown, demo-preserving), this is
+     * only ever called from direct user action.
+     */
+    fun disconnectAll() {
+        disconnectFromObdDevice()
+        demoMode = false
     }
 
     companion object {

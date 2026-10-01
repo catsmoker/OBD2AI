@@ -4,7 +4,7 @@
     <string name="app_name">OBD2AI</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">欢迎使用 OBD2 AI Pro</string>
+    <string name="onboarding_title">欢迎使用 OBD2AI</string>
     <string name="onboarding_description">读取故障码诊断车辆问题，获取 AI 解析和维修建议。</string>
     <string name="onboarding_button_get_started">开始使用</string>
     <string name="onboarding_try_demo">试用演示</string>
@@ -258,6 +258,64 @@
     <string name="settings_about_title">关于</string>
     <string name="settings_about_desc">OBD2 AI 读取车辆故障码，并通过离线 AI（设备语音）和在线 AI（你的 AI 服务）进行解释。</string>
     <string name="settings_about_version">版本 %1$s</string>
+
+    <!-- First-launch setup -->
+    <string name="setup_title">初始设置</string>
+    <string name="setup_agreement_title">协议与隐私</string>
+    <string name="setup_agreement_desc">OBD2AI 因常显横幅广告而保持免费。你的车辆数据和 AI 密钥保留在此设备上；本应用不使用 Cookie。请阅读完整文本：</string>
+    <string name="setup_agree">我已阅读并同意服务条款</string>
+    <string name="setup_require_note">继续即需接受上述服务条款。分析与广告个性化仍为可选项，可随时更改。</string>
+    <string name="setup_continue">继续</string>
+    <string name="setup_step_indicator">第 %1$d 步，共 %2$d 步</string>
+    <string name="setup_step2_title">语言和外观</string>
+    <string name="setup_next">下一步</string>
+    <string name="setup_back">返回</string>
+    <string name="setup_cookies_note">此应用不使用 Cookie，也不加载跟踪像素。运营商网站有其自己的政策：</string>
+    <string name="setup_language_desc">选择 OBD2AI 的语言。</string>
+    <string name="setup_appearance_desc">选择 OBD2AI 在此设备上的外观。</string>
+    <string name="settings_privacy_title">隐私</string>
+    <string name="settings_privacy_desc">使用情况分析和广告个性化默认开启，可随时关闭其中任何一项。车辆数据和 AI 密钥保留在此设备上。</string>
+    <string name="settings_analytics_title">使用情况分析</string>
+    <string name="settings_analytics_desc">向 Firebase Analytics 上报使用过的页面以及设备与应用标识符，用于改进应用。默认开启，可随时关闭。</string>
+    <string name="settings_ads_title">个性化广告</string>
+    <string name="settings_ads_desc">允许展示符合你兴趣的广告（AdMob）。默认开启 \u2014 关闭后显示普通广告。广告始终会显示。</string>
+    <string name="settings_api_privacy_note">你的密钥仅存储在此设备上，仅与故障码和 VIN 一起发送给你选择的服务商，用于解释车辆故障码。详见隐私政策。</string>
+    <string name="ask_ai_data_note">提问、故障评估和 VIN（如已知）将被发送给你选择的 AI 服务商以生成回答。</string>
+    <string name="console_local_note">控制台命令仅发送到你的 OBD-II 适配器。此处没有任何内容会被发送到互联网。</string>
+    <string name="ask_ai_question_label">你关于此故障码的问题</string>
+    <string name="console_input_label">OBD 命令或 PID</string>
+    <string name="gauge_speed_desc">车速表</string>
+    <string name="gauge_rpm_desc">发动机转速表</string>
+    <string name="gauge_coolant_desc">冷却液温度表</string>
+    <string name="gauge_voltage_desc">电瓶电压表</string>
+    <string name="gauge_fuel_desc">燃油油位表</string>
+
+    <!-- Legal -->
+    <string name="legal_privacy_title">隐私政策</string>
+    <string name="legal_terms_title">服务条款</string>
+    <string name="about_privacy_button">隐私政策</string>
+    <string name="about_terms_button">服务条款</string>
+    <string name="about_contact_title">联系我们</string>
+    <string name="about_contact_text">支持：请通过下面的官网联系运营者。</string>
+    <!-- Operator-hosted legal notices (a URL is never translated). -->
+    <string name="legal_url" translatable="false">https://catsmoker.vercel.app/legal</string>
+    <string name="about_legal_online_button">官网与法律声明</string>
+    <string name="legal_privacy_body">OBD2AI 隐私政策。\n\n我们是谁：CATSMOKER。在线法律声明：https://catsmoker.vercel.app/legal。本应用以开源项目形式发布；本仓库中未声明任何公司名称、地址或注册号。\n\n应用功能：通过蓝牙或 WiFi 从 ELM327 适配器读取车辆诊断信息（故障码、车速、转速、冷却液、电压、燃油等实时数据），或在演示模式下模拟这些数据，并可使用你配置的 AI 服务商解释故障码。\n\n仅存储在设备上的数据：你的设置和 AI 配置（服务商、模型、服务器地址、阈值、主题、语言、单位）保存在私有偏好设置中；AI API 密钥保存在同一偏好设置中，已排除在 Android 备份和设备传输之外；故障码评估缓存在内部文件（dtc_results.json）中，每次扫描都会被替换；实时遥测和 GPS 车速仅保留在内存中，从不保存。\n\n发送到设备之外的数据：仅限你明确触发的内容。故障码、VIN（如已知）和你的追问会被发送到你在设置中选择的 AI 服务商，并受该服务商隐私政策约束。使用情况分析（Firebase Analytics）默认开启，可在设置 \u2192 隐私中关闭。它会上报使用过的页面，以及设备与应用标识符（如应用实例 ID 和广告 ID）\u2014\u2014均为假名化的技术标识符，而非你的姓名或联系方式。横幅广告（AdMob）始终显示以保持应用免费；广告个性化默认开启，可在设置 \u2192 隐私中关闭。本应用不使用 Cookie，不加载跟踪像素，不嵌入社交媒体、地图、视频、聊天或支付 SDK。点击加油站按钮会用你自己安装的地图应用搜索附近加油站；该搜索由地图应用处理，而非我们。\n\n权限：蓝牙（连接适配器）、位置（旧版本 Android 蓝牙发现所需，另加可选 GPS 车速来源）、互联网（AI 解释、常显横幅广告，以及启用时的分析）。GPS 车速来源的位置保留在内存中，应用从不存储或传输。\n\n你的权利：可通过清除应用存储或卸载来访问、更正或删除你的数据；可随时在设置 \u2192 隐私中撤回分析同意；可通过上述运营者官网寻求帮助。\n\n儿童：本应用为通用车辆工具，并非面向儿童。\n\n变更：重大变更将在版本说明中描述。本文是对应用事实的描述，不构成法律建议；在面向欧盟/英国发布前请咨询合格律师。</string>
+    <string name="legal_terms_body">OBD2AI 服务条款。\n\n你获得的内容：开源车辆诊断工具（Apache 2.0 许可证，见 LICENSE），可读取 OBD-II 数据并提供 AI 生成的故障码解释。本应用不销售任何商品，不收取任何费用；通过外部链接的捐赠（如有）均为自愿，项目不予退款。\n\n安全第一：请在停车时设置本应用，切勿在驾驶时操作。AI 评估仅供参考，不能替代合格维修技师。不修复故障原因而清除故障码可能会掩盖真正的问题。你使用本应用及任何 AI 解释的风险由你自行承担。\n\n你的责任：合法使用你自己的 AI API 密钥并妥善保密；在你有权诊断的车辆上使用你自己的 OBD-II 适配器；不得滥用 OBD 控制台以不安全方式改变车辆行为。\n\n无保证：在法律允许的最大范围内，本软件按 \u00ab现状\u00bb 提供，不作任何保证（见 Apache 2.0 许可证第 7\u20138 条）。\n\n运营者：CATSMOKER。在线法律声明：https://catsmoker.vercel.app/legal。与隐私政策一样，本文不构成法律建议，发布前请咨询合格律师。</string>
+
+    <!-- Home / main menu -->
+    <string name="home_section_title">功能</string>
+    <string name="home_status_connected">已连接</string>
+    <string name="home_status_offline">未连接</string>
+    <string name="menu_disconnect">断开连接</string>
+    <string name="menu_exit_demo">退出演示</string>
+    <string name="nav_back_desc">返回</string>
+    <string name="home_card_dashboard_desc">实时车速、转速与发动机数据。</string>
+    <string name="home_card_diagnostics_desc">读取故障码并获取 AI 解释。</string>
+    <string name="home_card_trip_desc">记录里程、时间与最高车速。</string>
+    <string name="home_card_console_desc">发送原始 OBD 命令。</string>
+    <string name="home_card_settings_desc">服务商、提醒、隐私与显示。</string>
+    <string name="home_card_about_desc">版本、隐私与法律声明。</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">错误</string>

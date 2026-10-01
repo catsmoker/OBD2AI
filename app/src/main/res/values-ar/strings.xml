@@ -4,7 +4,7 @@
     <string name="app_name">OBD2AI</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">مرحبًا بك في OBD2 AI Pro</string>
+    <string name="onboarding_title">مرحبًا بك في OBD2AI</string>
     <string name="onboarding_description">شخّص مشاكل السيارة بقراءة رموز الأعطال واحصل على تحليلات بالذكاء الاصطناعي ونصائح للإصلاح.</string>
     <string name="onboarding_button_get_started">ابدأ</string>
     <string name="onboarding_try_demo">جرّب العرض</string>
@@ -258,6 +258,64 @@
     <string name="settings_about_title">حول</string>
     <string name="settings_about_desc">يقرأ OBD2 AI رموز أعطال سيارتك ويشرحها بالذكاء الاصطناعي دون اتصال (صوت الجهاز) والذكاء الاصطناعي عبر الإنترنت (موفر الذكاء الخاص بك).</string>
     <string name="settings_about_version">الإصدار %1$s</string>
+
+    <!-- First-launch setup -->
+    <string name="setup_title">الإعداد الأولي</string>
+    <string name="setup_agreement_title">الاتفاقية والخصوصية</string>
+    <string name="setup_agreement_desc">OBD2AI مجاني بفضل إعلانات البانر الدائمة. تبقى بيانات سيارتك ومفتاح الذكاء الاصطناعي على هذا الجهاز؛ ولا يستخدم التطبيق ملفات تعريف الارتباط. اقرأ النصوص الكاملة:</string>
+    <string name="setup_agree">قرأت شروط الخدمة وأوافق عليها</string>
+    <string name="setup_require_note">للمتابعة، اقبل شروط الخدمة أعلاه. تبقى التحليلات وتخصيص الإعلانات اختيارية ويمكن تغييرها في أي وقت.</string>
+    <string name="setup_continue">متابعة</string>
+    <string name="setup_step_indicator">الخطوة %1$d من %2$d</string>
+    <string name="setup_step2_title">اللغة والمظهر</string>
+    <string name="setup_next">التالي</string>
+    <string name="setup_back">رجوع</string>
+    <string name="setup_cookies_note">هذا التطبيق لا يستخدم ملفات تعريف الارتباط ولا يحمل بكسلات التتبع. موقع المشغل له سياسة خاصة به:</string>
+    <string name="setup_language_desc">اختر لغة OBD2AI.</string>
+    <string name="setup_appearance_desc">اختر مظهر OBD2AI على هذا الجهاز.</string>
+    <string name="settings_privacy_title">الخصوصية</string>
+    <string name="settings_privacy_desc">تحليلات الاستخدام وتخصيص الإعلانات مفعّلة افتراضيًا؛ أوقف أيًا منهما في أي وقت. تبقى بيانات السيارة ومفتاح الذكاء الاصطناعي على هذا الجهاز.</string>
+    <string name="settings_analytics_title">تحليلات الاستخدام</string>
+    <string name="settings_analytics_desc">تُبلغ عن الشاشات المستخدمة ومعرفات الجهاز والتطبيق إلى Firebase Analytics لتحسين التطبيق. مفعّلة افتراضيًا؛ أوقفها في أي وقت.</string>
+    <string name="settings_ads_title">إعلانات مخصصة</string>
+    <string name="settings_ads_desc">يسمح بإعلانات تناسب اهتماماتك (AdMob). مفعّل افتراضيًا \u2014 أوقفه للإعلانات العامة. تظهر الإعلانات دائمًا.</string>
+    <string name="settings_api_privacy_note">يُحفظ مفتاحك على هذا الجهاز فقط ويُرسل إلى الموفر المحدد فقط، مع رموز الأعطال ورقم VIN، لشرح رموز سيارتك. راجع سياسة الخصوصية للتفاصيل.</string>
+    <string name="ask_ai_data_note">تُرسل الأسئلة وتقييم العطل ورقم VIN (إن عُرف) إلى موفر الذكاء الاصطناعي المحدد لتوليد الإجابة.</string>
+    <string name="console_local_note">تذهب أوامر الوحدة الطرفية إلى محوّل OBD-II فقط. لا يُرسل أي شيء هنا إلى الإنترنت.</string>
+    <string name="ask_ai_question_label">سؤالك عن رمز العطل هذا</string>
+    <string name="console_input_label">أمر OBD أو PID</string>
+    <string name="gauge_speed_desc">مقياس السرعة</string>
+    <string name="gauge_rpm_desc">مقياس دوران المحرك</string>
+    <string name="gauge_coolant_desc">مقياس حرارة سائل التبريد</string>
+    <string name="gauge_voltage_desc">مقياس جهد البطارية</string>
+    <string name="gauge_fuel_desc">مقياس مستوى الوقود</string>
+
+    <!-- Legal -->
+    <string name="legal_privacy_title">سياسة الخصوصية</string>
+    <string name="legal_terms_title">شروط الخدمة</string>
+    <string name="about_privacy_button">سياسة الخصوصية</string>
+    <string name="about_terms_button">شروط الخدمة</string>
+    <string name="about_contact_title">اتصل بنا</string>
+    <string name="about_contact_text">الدعم: تواصل مع المشغّل عبر الموقع أدناه.</string>
+    <!-- Operator-hosted legal notices (a URL is never translated). -->
+    <string name="legal_url" translatable="false">https://catsmoker.vercel.app/legal</string>
+    <string name="about_legal_online_button">الموقع والإشعارات القانونية</string>
+    <string name="legal_privacy_body">سياسة الخصوصية لتطبيق OBD2AI.\n\nمن نحن: CATSMOKER. الإشعارات القانونية عبر الإنترنت: https://catsmoker.vercel.app/legal. يُنشر هذا التطبيق كمشروع مفتوح المصدر؛ ولا يُذكر في هذا المستودع أي اسم شركة أو عنوان أو رقم تسجيل.\n\nماذا يفعل التطبيق: يقرأ تشخيصات السيارة (رموز الأعطال والبيانات الحية مثل السرعة والدوران وحرارة سائل التبريد والجهد والوقود) من محوّل ELM327 عبر البلوتوث أو WiFi، أو يحاكيها في الوضع التجريبي، ويمكنه شرح رموز الأعطال عبر موفر الذكاء الاصطناعي الذي تُعدّه.\n\nالبيانات المحفوظة على جهازك فقط: إعداداتك وإعدادات الذكاء الاصطناعي (الموفر والطراز ورابط الخادم والعتبات والمظهر واللغة والوحدات) في تفضيلات خاصة؛ ومفتاح API في التفضيلات نفسها مستبعدًا من النسخ الاحتياطي والنقل؛ وتقييمات الرموز المخزنة في ملف داخلي (dtc_results.json) يُستبدل مع كل فحص؛ وتبقى البيانات الحية وسرعة GPS في الذاكرة فقط ولا تُحفظ أبدًا.\n\nالبيانات المرسلة خارج الجهاز: فقط ما تُشغّله بنفسك. تُرسل الرموز ورقم VIN (عند معرفته) وأسئلتك إلى موفر الذكاء الاصطناعي الذي تختاره في الإعدادات وفق سياسة خصوصية ذلك الموفر. وتُرسل تحليلات الاستخدام إلى Google‏ (Firebase Analytics) مفعّلة افتراضيًا ويمكن إيقافها في الإعدادات \u2192 الخصوصية. وهي تُبلغ عن الشاشات المستخدمة مع معرفات الجهاز والتطبيق مثل معرف نسخة التطبيق والمعرف الإعلاني \u2014 معرفات تقنية مستعارة، وليست اسمك أو بيانات الاتصال بك. تظهر إعلانات البانر (AdMob) دائمًا لإبقاء التطبيق مجانيًا؛ وتخصيص الإعلانات مفعّل افتراضيًا ويمكن إيقافه في الإعدادات \u2192 الخصوصية. لا يستخدم التطبيق ملفات تعريف الارتباط ولا يحمّل بكسلات تتبع ولا يضمّن شبكات اجتماعية أو خرائط أو فيديو أو دردشة أو مدفوعات. زر محطات الوقود يفتح تطبيق الخرائط المثبت لديك للبحث عن محطات قريبة؛ وهذا البحث يعالجه تطبيق الخرائط وليس نحن.\n\nالأذونات: البلوتوث (الاتصال بالمحول) والموقع (يطلبه أندرويد لاكتشاف البلوتوث في الإصدارات القديمة، إضافة إلى مصدر سرعة GPS الاختياري) والإنترنت (شروح الذكاء الاصطناعي وإعلانات البانر الدائمة والتحليلات عند تفعيلها). يبقى موقع مصدر GPS في الذاكرة ولا يحفظه التطبيق ولا ينقله أبدًا.\n\nحقوقك: الوصول إلى بياناتك أو تصحيحها أو حذفها بمسح تخزين التطبيق أو إلغاء تثبيته؛ وسحب موافقة التحليلات في أي وقت من الإعدادات \u2192 الخصوصية؛ وطلب الدعم عبر موقع المشغّل المذكور أعلاه.\n\nالأطفال: التطبيق أداة مركبات عامة وليس موجهًا للأطفال.\n\nالتغييرات: ستُوصف التغييرات الجوهرية في ملاحظات الإصدار. هذا النص وصف واقعي للتطبيق وليس استشارة قانونية؛ اعرضه على محامٍ مؤهل قبل إصدار يستهدف الاتحاد الأوروبي/المملكة المتحدة.</string>
+    <string name="legal_terms_body">شروط الخدمة لتطبيق OBD2AI.\n\nما تحصل عليه: أداة تشخيص مركبات مفتوحة المصدر (رخصة Apache 2.0، راجع LICENSE) تقرأ بيانات OBD-II وتقدم شروح رموز مولدة بالذكاء الاصطناعي. لا يبيع التطبيق شيئًا ولا يتقاضى مدفوعات؛ والتبرعات عبر روابط خارجية (إن وجدت) طوعية وغير قابلة للاسترداد من المشروع.\n\nالسلامة أولًا: أعدّ التطبيق والسيارة متوقفة ولا تتفاعل معه أثناء القيادة. تقييمات الذكاء الاصطناعي استشارية فقط وليست بديلًا عن ميكانيكي مؤهل. مسح الرموز دون إصلاح السبب قد يخفي مشاكل حقيقية. استخدامك للتطبيق ولأي شرح على مسؤوليتك الخاصة.\n\nمسؤولياتك: استخدم مفتاح API الخاص بك بشكل قانوني وحافظ على سريته؛ واستخدم محوّل OBD-II الخاص بك على مركبات يحق لك فحصها؛ ولا تُسئ استخدام وحدة OBD لتغيير سلوك السيارة بشكل غير آمن.\n\nلا ضمان: يُقدم البرنامج \u00abكما هو\u00bb دون أي ضمانات، إلى أقصى حد يسمح به القانون (راجع رخصة Apache 2.0، البندين 7\u20138).\n\nالمشغّل: CATSMOKER. الإشعارات القانونية عبر الإنترنت: https://catsmoker.vercel.app/legal. مثل سياسة الخصوصية، هذا النص ليس استشارة قانونية؛ اعرضه على محامٍ قبل الإصدار.</string>
+
+    <!-- Home / main menu -->
+    <string name="home_section_title">المزايا</string>
+    <string name="home_status_connected">متصل</string>
+    <string name="home_status_offline">غير متصل</string>
+    <string name="menu_disconnect">قطع الاتصال</string>
+    <string name="menu_exit_demo">إنهاء العرض التجريبي</string>
+    <string name="nav_back_desc">رجوع</string>
+    <string name="home_card_dashboard_desc">السرعة والدوران وبيانات المحرك مباشرة.</string>
+    <string name="home_card_diagnostics_desc">اقرأ رموز الأعطال مع شروح الذكاء الاصطناعي.</string>
+    <string name="home_card_trip_desc">تتبع المسافة والوقت والسرعة القصوى.</string>
+    <string name="home_card_console_desc">أرسل أوامر OBD مباشرة.</string>
+    <string name="home_card_settings_desc">الموفرون والتنبيهات والخصوصية والعرض.</string>
+    <string name="home_card_about_desc">الإصدار والخصوصية والإشعارات القانونية.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">خطأ</string>

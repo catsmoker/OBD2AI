@@ -153,6 +153,7 @@ Licensed under the **Apache License, Version 2.0**. See [LICENSE](LICENSE) for d
 
 - **Donate**: Support the project via [PayPal](https://www.paypal.me/catsmoker)
 - **Report Bugs**: [GitHub Issues](https://github.com/catsmoker/OBD2AI/issues)
+- **Privacy**: In-app Privacy Policy and Terms live under About → Privacy Policy / Terms of Service (offline, no account needed); operator-hosted notices: [catsmoker.vercel.app/legal](https://catsmoker.vercel.app/legal). Maintainer reference: [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
 - **Security**: please read [SECURITY.md](SECURITY.md) before reporting vulnerabilities.
 - Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue before starting a large change.
 

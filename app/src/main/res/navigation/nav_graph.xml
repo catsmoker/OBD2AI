@@ -18,7 +18,21 @@
         <action
             android:id="@+id/action_onboardingFragment_to_liveDataFragment"
             app:destination="@id/liveDataFragment"/>
-
+        <action
+            android:id="@+id/action_onboardingFragment_to_errorOverviewFragment"
+            app:destination="@id/errorOverviewFragment" />
+        <action
+            android:id="@+id/action_onboardingFragment_to_tripFragment"
+            app:destination="@id/tripFragment" />
+        <action
+            android:id="@+id/action_onboardingFragment_to_consoleFragment"
+            app:destination="@id/consoleFragment" />
+        <action
+            android:id="@+id/action_onboardingFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_onboardingFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
 
     <fragment
@@ -38,9 +52,15 @@
         android:name="com.catsmoker.obd2ai.ui.connect.ConnectFragment"
         android:label="fragment_connect"
         tools:layout="@layout/fragment_connect" >
+        <!-- Successful connection returns to the menu, which re-renders in
+             the connected state. popUpTo + singleTop collapse the setup
+             stack so no duplicate menu is ever stacked. -->
         <action
-            android:id="@+id/action_connectFragment_to_errorOverviewFragment"
-            app:destination="@id/errorOverviewFragment" />
+            android:id="@+id/action_connectFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
@@ -111,12 +131,40 @@
         <action
             android:id="@+id/action_settingsFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_legalFragment"
+            app:destination="@id/legalFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.catsmoker.obd2ai.ui.settings.AboutFragment"
         android:label="fragment_about"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_legalFragment"
+            app:destination="@id/legalFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/legalFragment"
+        android:name="com.catsmoker.obd2ai.ui.settings.LegalFragment"
+        android:label="fragment_legal"
+        tools:layout="@layout/fragment_legal" >
+        <argument
+            android:name="page"
+            app:argType="string"
+            android:defaultValue="privacy" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/setupFragment"
+        android:name="com.catsmoker.obd2ai.ui.setup.SetupFragment"
+        android:label="fragment_setup"
+        tools:layout="@layout/fragment_setup" >
+        <action
+            android:id="@+id/action_setupFragment_to_legalFragment"
+            app:destination="@id/legalFragment" />
+    </fragment>
 
 </navigation>
