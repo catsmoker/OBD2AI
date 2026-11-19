@@ -69,7 +69,7 @@
 
 1. Operator contact email (optional but recommended) — operator identity
    is CATSMOKER and the hosted legal notices live at
-   `https://catsmoker.vercel.app/legal` (linked from About, Settings →
+   `https://catsmoker.is-a.dev/legal` (linked from About, Settings →
    Privacy, and the in-app legal reader; use this URL for the Play Data
    Safety / store-listing privacy-policy field).
 2. Trader details if the Play listing qualifies as a trader under the EU

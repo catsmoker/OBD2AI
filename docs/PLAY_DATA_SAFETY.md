@@ -13,7 +13,7 @@ plus what this app's code actually does (verified, not guessed).
 | -------- | ------ |
 | Does the app collect or share user data? | **Yes** (see table) |
 | Is all user data encrypted in transit? | **Yes** (HTTPS/TLS: AI providers, Firebase, AdMob) |
-| Can users request data deletion? | **Yes** — in-app: Settings → Privacy toggles off analytics/personalization; full wipe via Android Settings → Apps → OBD2AI → Storage → Clear data, or uninstall. Support: `https://catsmoker.vercel.app/legal` |
+| Can users request data deletion? | **Yes** — in-app: Settings → Privacy toggles off analytics/personalization; full wipe via Android Settings → Apps → OBD2AI → Storage → Clear data, or uninstall. Support: `https://catsmoker.is-a.dev/legal` |
 | Target audience includes children? | **No** (general vehicle-utility tool) |
 
 ## Declare: collected AND shared
