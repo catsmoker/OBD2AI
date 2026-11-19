@@ -185,7 +185,7 @@ class RpmGaugeView @JvmOverloads constructor(
         if (face == TachoFace.DIGITAL) {
             drawDigital(canvas, cx, cy, frac, dim)
         } else if (face == TachoFace.SEGMENT) {
-            drawSegments(canvas, cx, cy, frac, dim)
+            drawSegments(canvas, frac, dim)
             drawShiftMark(canvas, cx, cy, dim)
         } else {
             drawArcDial(canvas, sweep, dim)
@@ -236,7 +236,7 @@ class RpmGaugeView @JvmOverloads constructor(
         canvas.drawCircle(cx, cy, size * 0.028f, hubPaint)
     }
 
-    private fun drawSegments(canvas: Canvas, cx: Float, cy: Float, frac: Float, dim: Int) {
+    private fun drawSegments(canvas: Canvas, frac: Float, dim: Int) {
         val blocks = 24
         val shiftFrac = SpeedometerStyle.fraction(shiftRpm.toFloat(), rpmMax.toFloat())
         for (i in 0 until blocks) {

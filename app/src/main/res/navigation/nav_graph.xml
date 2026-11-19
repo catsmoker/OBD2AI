@@ -7,8 +7,7 @@
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="com.catsmoker.obd2ai.ui.onboarding.OnboardingFragment"
-        android:label="fragment_onboarding"
-        tools:layout="@layout/fragment_onboarding" >
+        android:label="fragment_onboarding" >
         <action
             android:id="@+id/action_onboardingFragment_to_permissionsFragment"
             app:destination="@id/permissionsFragment"/>
@@ -38,8 +37,7 @@
     <fragment
         android:id="@+id/permissionsFragment"
         android:name="com.catsmoker.obd2ai.ui.onboarding.PermissionsFragment"
-        android:label="fragment_permissions"
-        tools:layout="@layout/fragment_permissions" >
+        android:label="fragment_permissions" >
         <action
             android:id="@+id/action_permissions_to_connectFragment"
             app:destination="@id/connectFragment"
@@ -50,8 +48,7 @@
     <fragment
         android:id="@+id/connectFragment"
         android:name="com.catsmoker.obd2ai.ui.connect.ConnectFragment"
-        android:label="fragment_connect"
-        tools:layout="@layout/fragment_connect" >
+        android:label="fragment_connect" >
         <!-- Successful connection returns to the menu, which re-renders in
              the connected state. popUpTo + singleTop collapse the setup
              stack so no duplicate menu is ever stacked. -->
@@ -66,8 +63,7 @@
     <fragment
         android:id="@+id/errorOverviewFragment"
         android:name="com.catsmoker.obd2ai.ui.diagnostics.ErrorOverviewFragment"
-        android:label="fragment_error_overview"
-        tools:layout="@layout/fragment_error_overview" >
+        android:label="fragment_error_overview" >
         <action
             android:id="@+id/action_errorOverviewFragment_to_errorDetailFragment"
             app:destination="@id/errorDetailFragment" />
@@ -85,8 +81,7 @@
     <fragment
         android:id="@+id/errorDetailFragment"
         android:name="com.catsmoker.obd2ai.ui.diagnostics.ErrorDetailFragment"
-        android:label="fragment_error_detail"
-        tools:layout="@layout/fragment_error_detail" >
+        android:label="fragment_error_detail" >
         <argument
             android:name="errorCode"
             app:argType="string" />
@@ -98,8 +93,7 @@
     <fragment
         android:id="@+id/askAiFragment"
         android:name="com.catsmoker.obd2ai.ui.diagnostics.AskAiFragment"
-        android:label="fragment_ask_ai"
-        tools:layout="@layout/fragment_ask_ai" >
+        android:label="fragment_ask_ai" >
         <argument
             android:name="errorCode"
             app:argType="string" />
@@ -108,14 +102,12 @@
     <fragment
         android:id="@+id/consoleFragment"
         android:name="com.catsmoker.obd2ai.ui.console.ConsoleFragment"
-        android:label="fragment_console"
-        tools:layout="@layout/fragment_console" />
+        android:label="fragment_console" />
 
     <fragment
         android:id="@+id/tripFragment"
         android:name="com.catsmoker.obd2ai.ui.trip.TripFragment"
-        android:label="fragment_trip"
-        tools:layout="@layout/fragment_trip" />
+        android:label="fragment_trip" />
 
     <fragment
         android:id="@+id/liveDataFragment"

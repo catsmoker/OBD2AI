@@ -125,7 +125,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:adSize="BANNER"
-        app:adUnitId="@string/admob_banner_id"
-        android:layerType="software" />
+        app:adUnitId="@string/admob_banner_id" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

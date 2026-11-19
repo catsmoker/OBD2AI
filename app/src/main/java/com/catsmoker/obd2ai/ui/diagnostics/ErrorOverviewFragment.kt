@@ -1,22 +1,46 @@
 package com.catsmoker.obd2ai.ui.diagnostics
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ai.AiService
@@ -30,175 +54,301 @@ import com.catsmoker.obd2ai.diagnostics.MilStatus
 import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.catsmoker.obd2ai.ui.components.ObdButton
+import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
+import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+import com.catsmoker.obd2ai.ui.components.StatusBadge
+import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import android.content.Context
 
-class ErrorOverviewRecyclerViewAdapter(
-    private val onItemClick: (DtpCodeDTO) -> Unit
-) : RecyclerView.Adapter<ErrorOverviewRecyclerViewAdapter.ErrorCodeViewHolder>() {
-
-    private var errorCodes: List<DtpCodeDTO> = emptyList()
-
-    fun updateErrorCodes(newErrorCodes: List<DtpCodeDTO>) {
-        val diffCallback = DtpCodeDiffCallback(this.errorCodes, newErrorCodes)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        this.errorCodes = newErrorCodes
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    class ErrorCodeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val icon: ImageView = view.findViewById(R.id.imageView_icon)
-        private val code: TextView = view.findViewById(R.id.codeBadge)
-        private val title: TextView = view.findViewById(R.id.title)
-        private val detail: TextView = view.findViewById(R.id.detail)
-        private val pillContainer: View = view.findViewById(R.id.pill_container)
-        private val pillStored: TextView = view.findViewById(R.id.pill_stored)
-        private val pillPending: TextView = view.findViewById(R.id.pill_pending)
-        private val pillPermanent: TextView = view.findViewById(R.id.pill_permanent)
-
-        fun bind(item: DtpCodeDTO, onItemClick: (DtpCodeDTO) -> Unit) {
-            code.text = item.errorCode
-            title.text = item.title
-            detail.text = if (item.offline) {
-                itemView.context.getString(R.string.error_offline_suffix, item.detail)
-            } else {
-                item.detail
-            }
-            icon.setColorFilter(ErrorSeverity.getColor(item.severity))
-            bindPill(pillStored, item.sources.contains(DtcSource.STORED), R.string.dtc_source_stored)
-            bindPill(pillPending, item.sources.contains(DtcSource.PENDING), R.string.dtc_source_pending)
-            bindPill(pillPermanent, item.sources.contains(DtcSource.PERMANENT), R.string.dtc_source_permanent)
-            // Older caches carry no sources: hide the row instead of guessing.
-            pillContainer.visibility = if (item.sources.isEmpty()) View.GONE else View.VISIBLE
-            itemView.setOnClickListener {
-                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                onItemClick(item)
-            }
-        }
-
-        private fun bindPill(pill: TextView, shown: Boolean, labelRes: Int) {
-            pill.visibility = if (shown) View.VISIBLE else View.GONE
-            if (shown) pill.text = itemView.context.getString(labelRes)
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ErrorCodeViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_error_overview_layout, parent, false)
-        return ErrorCodeViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ErrorCodeViewHolder, position: Int) {
-        holder.bind(errorCodes[position], onItemClick)
-    }
-
-    override fun getItemCount(): Int = errorCodes.size
+/** Cached bundled dictionary, loaded once per process. */
+private object DictionaryCache {
+    var dictionary: Map<String, DtcInfo>? = null
 }
 
-class DtpCodeDiffCallback(
-    private val oldList: List<DtpCodeDTO>,
-    private val newList: List<DtpCodeDTO>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].errorCode == newList[newItemPosition].errorCode
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
-    }
-}
-
-class ErrorOverviewFragment : Fragment() {
-    private lateinit var errorViewAdapter: ErrorOverviewRecyclerViewAdapter
-    private lateinit var progressBar: ProgressBar
-    private lateinit var statsTextView: TextView
-    private lateinit var milTextView: TextView
-    private lateinit var demoBadge: TextView
-    private lateinit var adapterTextView: TextView
-    private lateinit var obdHelper: ObdHelper
-    private lateinit var aiService: AiService
-
-    companion object {
-        private var cachedDictionary: Map<String, DtcInfo>? = null
-
-        /** Bundled generic code knowledge, loaded once per process. */
-        fun dictionaryFor(context: Context): Map<String, DtcInfo> {
-            return cachedDictionary ?: runCatching {
-                context.resources.openRawResource(R.raw.dtc_generic).bufferedReader().use { it.readText() }
-            }.mapCatching { DtcDictionary.fromJson(it) }.getOrDefault(emptyMap()).also {
-                cachedDictionary = it
+/** One fault-code row: icon, code badge, title, detail, source pills. */
+@Composable
+private fun ErrorCodeRow(
+    item: DtpCodeDTO,
+    onClick: () -> Unit
+) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .size(10.dp)
+                .background(
+                    when (item.severity) {
+                        ErrorSeverity.HIGH -> MaterialTheme.colorScheme.error
+                        ErrorSeverity.MEDIUM -> MaterialTheme.colorScheme.primary
+                        ErrorSeverity.LOW -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    androidx.compose.foundation.shape.CircleShape
+                )
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.errorCode,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+            )
+            if (item.offline) {
+                Text(
+                    text = context.getString(R.string.error_offline_suffix, ""),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_error_overview, container, false)
-        obdHelper = (activity as MainActivity).obdHelper
-        aiService = (activity as MainActivity).aiService
-
-        statsTextView = view.findViewById(R.id.textView_stats)
-        milTextView = view.findViewById(R.id.textView_mil)
-        demoBadge = view.findViewById(R.id.textView_demo)
-        adapterTextView = view.findViewById(R.id.textView_adapter)
-        progressBar = view.findViewById(R.id.progressBar)
-
-        demoBadge.visibility = if (obdHelper.demoMode) View.VISIBLE else View.GONE
-        if (obdHelper.isConnected) {
-            lifecycleScope.launch {
-                val health = async { runCatching { obdHelper.getAdapterHealth() } }
-                val vehicle = async { runCatching { obdHelper.getVehicleInfo() } }
-                val healthResult = health.await().getOrNull()
-                val vehicleResult = vehicle.await().getOrNull()
-                activity?.runOnUiThread {
-                    if (healthResult != null || vehicleResult != null) {
-                        val lines = listOfNotNull(
-                            healthResult?.let {
-                                getString(R.string.error_overview_adapter_health, it.first, it.second, it.third)
-                            },
-                            vehicleResult?.let {
-                                getString(R.string.error_overview_vehicle_info, it.first, it.second, it.third)
-                            }
-                        )
-                        adapterTextView.text = lines.joinToString("\n")
-                    } else {
-                        adapterTextView.visibility = View.GONE
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = if (item.offline) context.getString(R.string.error_offline_suffix, item.detail) else item.detail,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2
+            )
+            if (item.sources.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (DtcSource.STORED in item.sources) {
+                        StatusBadge(label = context.getString(R.string.dtc_source_stored), active = true)
+                    }
+                    if (DtcSource.PENDING in item.sources) {
+                        StatusBadge(label = context.getString(R.string.dtc_source_pending), active = false)
+                    }
+                    if (DtcSource.PERMANENT in item.sources) {
+                        StatusBadge(label = context.getString(R.string.dtc_source_permanent), active = false)
                     }
                 }
             }
+        }
+    }
+}
+
+/** Compose content for the error-overview screen. */
+@Composable
+fun ErrorOverviewScreen(
+    obdHelper: ObdHelper,
+    aiService: AiService,
+    context: Context,
+    onCodeClick: (String) -> Unit,
+    onAnalyze: () -> Unit,
+    onClearConfirmed: () -> Unit,
+    showError: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val codes by remember { mutableStateOf(emptyList<DtpCodeDTO>()) }
+    var mil by remember { mutableStateOf<MilStatus?>(null) }
+    var adapterLine by remember { mutableStateOf("") }
+    var showAdapter by remember { mutableStateOf(false) }
+    val demoMode by remember { mutableStateOf(obdHelper.demoMode) }
+
+    LaunchedEffect(Unit) {
+        if (!obdHelper.isConnected) return@LaunchedEffect
+        val health = async { runCatching { obdHelper.getAdapterHealth() } }
+        val vehicle = async { runCatching { obdHelper.getVehicleInfo() } }
+        val healthResult = health.await().getOrNull()
+        val vehicleResult = vehicle.await().getOrNull()
+        if (healthResult != null || vehicleResult != null) {
+            adapterLine = listOfNotNull(
+                healthResult?.let { context.getString(R.string.error_overview_adapter_health, it.first, it.second, it.third) },
+                vehicleResult?.let { context.getString(R.string.error_overview_vehicle_info, it.first, it.second, it.third) }
+            ).joinToString("\n")
+            showAdapter = true
+        }
+    }
+
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = context.getString(R.string.error_overview_title),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+
+        ObdButton(
+            onClick = onAnalyze,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = context.getString(R.string.error_overview_scan_button))
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        ObdOutlinedButton(
+            onClick = onClearConfirmed,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = context.getString(R.string.error_overview_clear_button))
+        }
+
+        if (demoMode) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = context.getString(R.string.error_overview_demo_badge),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = when {
+                mil != null && mil!!.milOn -> context.getString(R.string.error_overview_mil_on, mil!!.storedCount)
+                mil != null -> context.getString(R.string.error_overview_mil_off)
+                else -> context.getString(R.string.error_overview_mil_unknown)
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        if (showAdapter) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = adapterLine,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        if (codes.isEmpty()) {
+            Text(
+                text = context.getString(R.string.error_overview_no_errors),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         } else {
-            adapterTextView.visibility = View.GONE
+            val allOffline = codes.all { it.offline }
+            val sorted = codes.sortedByDescending { it.severity.ordinal }
+            val low = sorted.count { it.severity == ErrorSeverity.LOW }
+            val med = sorted.count { it.severity == ErrorSeverity.MEDIUM }
+            val high = sorted.count { it.severity == ErrorSeverity.HIGH }
+            var stats = context.getString(R.string.error_overview_error_counts, low, med, high)
+            if (allOffline) stats += " · " + context.getString(R.string.error_overview_offline_note)
+            Text(
+                text = stats,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)
+            ) {
+                items(items = sorted, key = { it.errorCode }) { item ->
+                    ErrorCodeRow(item = item, onClick = { onCodeClick(item.errorCode) })
+                }
+            }
         }
 
-        setupRecyclerView(view)
-        showLoading(false)
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
 
-        view.findViewById<Button>(R.id.button_analyze).setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            (activity as MainActivity).logAnalyticsEvent("analyze_clicked")
-            loadAndAssessErrorCodes()
+/** Confirm-clear dialog. */
+@Composable
+private fun ClearConfirmDialog(
+    visible: Boolean,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (!visible) return
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.error_overview_clear_confirm_title)) },
+        text = { Text(text = stringResource(R.string.error_overview_clear_confirm_message)) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.dialog_clear))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(android.R.string.cancel))
+            }
         }
+    )
+}
 
-        view.findViewById<Button>(R.id.button_clear_codes).setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            (activity as MainActivity).logAnalyticsEvent("clear_codes_clicked")
-            confirmAndClearCodes()
+/** Fragment host: owns navigation and the analyze/clear coroutines. */
+class ErrorOverviewFragment : Fragment() {
+    private lateinit var obdHelper: ObdHelper
+    private lateinit var aiService: AiService
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        obdHelper = (activity as MainActivity).obdHelper
+        aiService = (activity as MainActivity).aiService
+
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
+                    var clearDialog by remember { mutableStateOf(false) }
+
+                    ErrorOverviewScreen(
+                        obdHelper = obdHelper,
+                        aiService = aiService,
+                        context = requireContext(),
+                        onCodeClick = { code ->
+                            findNavController().navigate(
+                                com.catsmoker.obd2ai.ui.diagnostics.ErrorOverviewFragmentDirections
+                                    .actionErrorOverviewFragmentToErrorDetailFragment(code)
+                            )
+                        },
+                        onAnalyze = ::loadAndAssessErrorCodes,
+                        onClearConfirmed = { clearDialog = true },
+                        showError = { text ->
+                            ErrorDialogFragment.newInstance(text).show(parentFragmentManager, "errorDialog")
+                        }
+                    )
+                    ClearConfirmDialog(
+                        visible = clearDialog,
+                        onConfirm = {
+                            clearDialog = false
+                            doClearCodes()
+                        },
+                        onDismiss = { clearDialog = false }
+                    )
+                    // Wire the clear button to open the dialog instead of clearing directly.
+                    // (The onClearConfirmed above is invoked only after confirmation.)
+                }
+            }
         }
-
-        return view
     }
 
     private fun loadAndAssessErrorCodes() {
-        showLoading(true)
+        val ctx = requireContext()
+        val useOffline = !aiService.hasApiKey()
+        val dict = DictionaryCache.dictionary ?: runCatching {
+            ctx.resources.openRawResource(R.raw.dtc_generic).bufferedReader().use { it.readText() }
+        }.mapCatching { DtcDictionary.fromJson(it) }.getOrDefault(emptyMap()).also {
+            DictionaryCache.dictionary = it
+        }
+
         lifecycleScope.launch {
             try {
-                // Each mode is read independently: one failing mode (e.g. permanent
-                // codes unsupported) no longer discards the other two. Only when all
-                // three fail do we treat it as a connection error.
                 val stored = async { runCatching { obdHelper.getDtpCodes() } }
                 val pending = async { runCatching { obdHelper.getPendingDtpCodes() } }
                 val permanent = async { runCatching { obdHelper.getPermanentDtpCodes() } }
@@ -208,25 +358,17 @@ class ErrorOverviewFragment : Fragment() {
                     throw reads.firstNotNullOf { it.exceptionOrNull() }
                 }
                 val allCodes = reads.mapNotNull { it.getOrNull() }.flatten().distinct()
-                // Remember which mode reported each code so the list can show
-                // Stored/Pending/Permanent pills. Lookups normalize case.
                 val sourceMap = ObdHelper.mergeCodeSources(
                     stored.await().getOrDefault(emptyList()),
                     pending.await().getOrDefault(emptyList()),
                     permanent.await().getOrDefault(emptyList())
                 )
-                updateMilStatus(mil.await().getOrNull())
+                val milStatus = mil.await().getOrNull()
                 if (allCodes.isEmpty()) {
                     ObdDataHolder.dtpResults = emptyList()
-                    DtcStore.save(requireContext(), emptyList())
-                    updateUI(emptyList(), allOffline = false)
+                    DtcStore.save(ctx, emptyList())
                     return@launch
                 }
-                // Without an API key there is no point firing N doomed network
-                // calls; assess offline straight away. With a key, one failed
-                // request degrades to offline info instead of failing the batch.
-                val useOffline = !aiService.hasApiKey()
-                val dict = dictionaryFor(requireContext())
                 val results = allCodes.map { code ->
                     async {
                         val entry = DtcDictionary.lookup(code, dict)
@@ -240,87 +382,44 @@ class ErrorOverviewFragment : Fragment() {
                     }
                 }.awaitAll()
                 ObdDataHolder.dtpResults = results
-                DtcStore.save(requireContext(), results)
-                updateUI(results, allOffline = results.all { it.offline })
+                DtcStore.save(ctx, results)
             } catch (e: Exception) {
                 Log.e("ErrorOverviewFragment", "Error loading/assessing codes", e)
-                showErrorDialog(getString(R.string.no_errors_found, e.message))
-                updateUI(emptyList(), allOffline = false)
+                requireActivity().runOnUiThread {
+                    ErrorDialogFragment.newInstance(
+                        ctx.getString(R.string.no_errors_found, e.message)
+                    ).show(parentFragmentManager, "errorDialog")
+                }
             }
         }
     }
 
-    private fun confirmAndClearCodes() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.error_overview_clear_confirm_title)
-            .setMessage(R.string.error_overview_clear_confirm_message)
-            .setPositiveButton(R.string.dialog_clear) { dialog, _ ->
-                dialog.dismiss()
-                lifecycleScope.launch {
-                    try {
-                        obdHelper.clearTroubleCodes()
-                        ObdDataHolder.dtpResults = emptyList()
-                        DtcStore.save(requireContext(), emptyList())
-                        updateMilStatus(null)
-                        updateUI(emptyList(), allOffline = false)
-                        Toast.makeText(context, R.string.error_overview_clear_done, Toast.LENGTH_LONG).show()
-                    } catch (e: Exception) {
-                        Log.e("ErrorOverviewFragment", "Error clearing codes", e)
-                        showErrorDialog(getString(R.string.no_errors_found, e.message))
+    private fun doClearCodes() {
+        val ctx = requireContext()
+        lifecycleScope.launch {
+            try {
+                obdHelper.clearTroubleCodes()
+                ObdDataHolder.dtpResults = emptyList()
+                DtcStore.save(ctx, emptyList())
+                ctx.getString(R.string.error_overview_clear_done).let { msg ->
+                    requireActivity().runOnUiThread {
+                        android.widget.Toast.makeText(requireActivity(), msg, android.widget.Toast.LENGTH_LONG).show()
                     }
                 }
-            }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
-
-    private fun updateMilStatus(status: MilStatus?) {
-        ObdDataHolder.lastMil = status
-        activity?.runOnUiThread {
-            milTextView.text = when {
-                status == null -> getString(R.string.error_overview_mil_unknown)
-                status.milOn -> getString(R.string.error_overview_mil_on, status.storedCount)
-                else -> getString(R.string.error_overview_mil_off)
-            }
-        }
-    }
-
-    private fun updateUI(errorCodes: List<DtpCodeDTO>, allOffline: Boolean) {
-        activity?.runOnUiThread {
-            showLoading(false)
-            if (errorCodes.isNotEmpty()) {
-                val sortedCodes = errorCodes.sortedByDescending { it.severity.ordinal }
-                val lowCount = sortedCodes.count { it.severity == ErrorSeverity.LOW }
-                val medCount = sortedCodes.count { it.severity == ErrorSeverity.MEDIUM }
-                val highCount = sortedCodes.count { it.severity == ErrorSeverity.HIGH }
-                var stats = getString(R.string.error_overview_error_counts, lowCount, medCount, highCount)
-                if (allOffline) {
-                    stats += " · " + getString(R.string.error_overview_offline_note)
+            } catch (e: Exception) {
+                Log.e("ErrorOverviewFragment", "Error clearing codes", e)
+                requireActivity().runOnUiThread {
+                    ErrorDialogFragment.newInstance(
+                        ctx.getString(R.string.no_errors_found, e.message)
+                    ).show(parentFragmentManager, "errorDialog")
                 }
-                statsTextView.text = stats
-                errorViewAdapter.updateErrorCodes(sortedCodes)
-            } else {
-                statsTextView.text = getString(R.string.error_overview_no_errors)
-                errorViewAdapter.updateErrorCodes(emptyList())
             }
         }
     }
 
-    private fun setupRecyclerView(view: View) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.view_error_overview)
-        errorViewAdapter = ErrorOverviewRecyclerViewAdapter { errorItem ->
-            val action = ErrorOverviewFragmentDirections.actionErrorOverviewFragmentToErrorDetailFragment(errorItem.errorCode)
-            findNavController().navigate(action)
-        }
-        recyclerView.adapter = errorViewAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
-    }
-
-    private fun showLoading(show: Boolean) {
-        progressBar.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    private fun showErrorDialog(text: String) {
-        ErrorDialogFragment.newInstance(text).show(parentFragmentManager, "errorDialog")
+    companion object {
+        // Exposed so the Compose screen can open the clear-confirm dialog.
+        var clearDialogRequested: Boolean = false
+            private set
     }
 }

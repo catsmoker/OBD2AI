@@ -39,7 +39,6 @@ object PrefsKeys {
     const val DEFAULT_RPM_MAX = 8000
     const val RPM_MAX_MIN = 1000
     const val RPM_MAX_MAX = 10000
-    const val RPM_MAX_STEP = 500
     /** Coolant overheat alarm threshold (°C). */
     const val COOLANT_ALARM_C = 120
     /** Alarm releases below this so the siren does not flap at the edge. */
@@ -96,6 +95,12 @@ object PrefsKeys {
      * itself cannot be turned off, and regulator-required UMP consent
      * additionally gates every ad load. */
     const val PERSONALIZED_ADS = "personalized_ads"
+    /** Local cache of the `remove_ads` Play Billing entitlement. Never the
+     * source of truth: the billing manager re-queries Google Play on every
+     * start and overwrites this, so reinstalls, data clears and refunds
+     * all resolve from the store. Exists only so the first frame already
+     * knows the last-known state while the async query runs. */
+    const val ADS_REMOVED = "ads_removed"
     // -- Display & experience --------------------------------------------------
     const val UNITS = "units"
     const val UNITS_METRIC = "metric"

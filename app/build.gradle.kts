@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.google.gms.google.services)
 }
@@ -13,18 +14,17 @@ android {
         applicationId = "com.catsmoker.obd2ai"
         minSdk = 24
         targetSdk = 36
-        versionCode = 3
-        versionName = "1.3.0"
+        versionCode = 4
+        versionName = "1.3.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig = signingConfigs.getByName("debug")
-        // TODO(owner): replace the demo AdMob IDs with production IDs from
-        // your AdMob account before release. Banner unit lives in
-        // res/values/strings.xml (admob_banner_id, translatable=false).
-        // Then create the Funding Choices messages in AdMob (Privacy &
-        // messaging) so the UMP consent form can appear in regulated regions.
-        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+        // Production AdMob app ID (AdMob console → Apps → OBD2AI).
+        // Banner unit lives in res/values/strings.xml (admob_banner_id,
+        // translatable=false). Funding Choices messages in AdMob (Privacy &
+        // messaging) let the UMP consent form appear in regulated regions.
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-4717628365066461~8579086064"
     }
 
     buildTypes {
@@ -62,8 +62,9 @@ android {
     }
 
     buildFeatures {
-        // IMPORTANT: Compose is disabled as we are using Views and Fragments
-        compose = false
+        // Compose is migrating in screen by screen; XML screens remain until
+        // their replacement lands.
+        compose = true
         buildConfig = true
         viewBinding = false
     }
@@ -89,10 +90,25 @@ dependencies {
     implementation(libs.speedviewlib)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
+
+    // Jetpack Compose (BOM pins the versions)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.activity.compose)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
     implementation(libs.kotlin.obd.api)
     implementation(libs.play.services.ads)
+    implementation(libs.play.billing.ktx)
     implementation(libs.ump)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.splashscreen)

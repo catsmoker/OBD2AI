@@ -40,9 +40,10 @@ plus what this app's code actually does (verified, not guessed).
 
 ## Owner actions this sheet does NOT replace
 
-1. **Production AdMob IDs**: `app/build.gradle.kts` (`manifestPlaceholders
-   admobAppId`) + `res/values/strings.xml` (`admob_banner_id`) still hold
-   Google's demo IDs — swap both before release.
+1. **Production AdMob IDs**: done — `app/build.gradle.kts`
+   (`manifestPlaceholders admobAppId` =
+   `ca-app-pub-4717628365066461~8579086064`) + `res/values/strings.xml`
+   (`admob_banner_id` = `ca-app-pub-4717628365066461/5980804893`, Banner 01).
 2. **Funding Choices messages**: AdMob console → Privacy & messaging →
    create GDPR + US-states messages for the production app ID, otherwise the
    UMP form never appears and EEA consent is unmanaged.

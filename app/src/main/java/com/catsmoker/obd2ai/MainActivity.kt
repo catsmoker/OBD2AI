@@ -9,6 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import com.catsmoker.obd2ai.ads.AdBillingManager
+import kotlinx.coroutines.launch
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.NavOptions
 import com.catsmoker.obd2ai.ui.common.AppNav
@@ -40,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var bluetoothHelper: BluetoothHelper
     lateinit var obdHelper: ObdHelper
     lateinit var aiService: AiService
+    /** Paid ad removal (Play Billing `remove_ads`); fragments read the
+     * entitlement through this, never through preferences directly. */
+    lateinit var adBilling: AdBillingManager
     /** Created on first use (off the launch path): Firebase init does disk I/O. */
     val firebaseAnalytics: FirebaseAnalytics by lazy { Firebase.analytics }
 
@@ -126,6 +132,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * True when Google requires a revocable consent entry point (regions
+     * with Funding Choices messages, e.g. EEA/UK). The Settings Privacy
+     * card shows the "Ad consent options" button only then. Never throws.
+     */
+    fun canShowAdPrivacyOptions(): Boolean = runCatching {
+        UserMessagingPlatform.getConsentInformation(this).privacyOptionsRequirementStatus ==
+            ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
+    }.getOrDefault(false)
+
+    /**
+     * Revocation link: re-opens the Google privacy-options form so the
+     * user can review or withdraw ad consent after the first-launch
+     * choice. Settles with [applyPrivacyChoices] and reports the
+     * resulting UMP status, mirroring [syncAdsConsent]. Never writes
+     * preferences itself — the Settings toggles stay the sole writers.
+     * Never throws.
+     */
+    fun showAdPrivacyOptions(onDone: (Int) -> Unit = {}) {
+        val settled = {
+            applyPrivacyChoices()
+            val status = runCatching {
+                UserMessagingPlatform.getConsentInformation(this).consentStatus
+            }.getOrDefault(ConsentInformation.ConsentStatus.UNKNOWN)
+            onDone(status)
+        }
+        runCatching {
+            UserMessagingPlatform.showPrivacyOptionsForm(this) {
+                settled()
+            }
+        }.onFailure {
+            Log.w("MainActivity", "UMP privacy options form failed; using stored choices", it)
+            settled()
+        }
+    }
+
     private fun buildAdRequest(): AdRequest {
         val builder = AdRequest.Builder()
         if (!effectivePersonalizedAds()) {
@@ -138,9 +180,23 @@ class MainActivity : AppCompatActivity() {
         return builder.build()
     }
 
+    /** True once a granted entitlement has torn the banner down. Grants
+     * only ever land here mid-session; revocations surface on the next
+     * start (fresh Activity, fresh AdView), so this never flips back. */
+    private var adsRemovedApplied = false
+
     private fun applyAdChoice() {
         val adView = findViewById<AdView>(R.id.adView) ?: return
-        // Always on: banner ads fund the free app and cannot be disabled.
+        if (adBilling.isAdsRemoved.value) {
+            // Paid entitlement: never load an ad, and tear down any
+            // creative already on screen instead of merely hiding it.
+            adsRemovedApplied = true
+            adView.visibility = View.GONE
+            runCatching { adView.destroy() }
+            return
+        }
+        // Always on unless purchased: banner ads fund the free app and
+        // cannot be disabled for free.
         // Only personalization is user-controlled — except where the UMP
         // flow says ads must wait for consent (EEA/UK with configured
         // Funding Choices messages and no consent yet).
@@ -155,10 +211,15 @@ class MainActivity : AppCompatActivity() {
         if (!adsInitialized) {
             adsInitialized = true
             MobileAds.initialize(this) {
-                val testDeviceIds = listOf("AB065C801A1B4DA9FCCDBC44E5483FDD")
-                val configuration =
-                    RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
-                MobileAds.setRequestConfiguration(configuration)
+                // Debug only: this device gets Google test ads so manual
+                // testing never generates invalid production impressions.
+                // Release builds always request live ads.
+                if (BuildConfig.DEBUG) {
+                    val testDeviceIds = listOf("AB065C801A1B4DA9FCCDBC44E5483FDD")
+                    val configuration =
+                        RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+                    MobileAds.setRequestConfiguration(configuration)
+                }
             }
         }
         // Wide, short adaptive banner sized to the actual container width
@@ -170,12 +231,29 @@ class MainActivity : AppCompatActivity() {
                 else resources.displayMetrics.widthPixels
                 val adWidthDp = (widthPx / resources.displayMetrics.density)
                     .toInt().coerceAtLeast(320)
+                // Large anchored adaptive banner: the SDK v25 replacement
+                // for the deprecated current-orientation sizing.
                 adView.setAdSize(
-                    AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidthDp)
+                    AdSize.getLargeAnchoredAdaptiveBannerAdSize(this, adWidthDp)
                 )
             }
             adView.loadAd(buildAdRequest())
         }
+    }
+
+    override fun onPause() {
+        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.pause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.resume()
+    }
+
+    override fun onDestroy() {
+        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.destroy()
+        super.onDestroy()
     }
 
     fun currentThemeMode(prefs: android.content.SharedPreferences): ThemeMode {
@@ -230,6 +308,11 @@ class MainActivity : AppCompatActivity() {
         bluetoothHelper = BluetoothHelper(this)
         obdHelper = ObdHelper(bluetoothHelper)
         aiService = AiService(this)
+        adBilling = AdBillingManager(this)
+        adBilling.start()
+        // Entitlement flips (restore on start, purchase any time) re-run
+        // the single ad gate: grant tears the banner down immediately.
+        lifecycleScope.launch { adBilling.isAdsRemoved.collect { applyAdChoice() } }
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.activityRoot).applySystemBarInsets()

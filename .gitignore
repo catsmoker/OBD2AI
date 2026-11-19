@@ -26,6 +26,8 @@ secrets.properties
 .externalNativeBuild
 .cxx
 *.hprof
+*.aab
+app/release/
 
 # Signing (never commit keystores)
 *.jks
@@ -40,3 +42,4 @@ Desktop.ini
 # AI
 .claude/settings.local.json
 AGENTS.md
+opencode.json

@@ -32,7 +32,6 @@ class VoltageGaugeView @JvmOverloads constructor(
 
     private val ink: Int = ContextCompat.getColor(context, R.color.on_surface)
     private val warn: Int = ContextCompat.getColor(context, R.color.gauge_warn)
-    private val track: Int = ContextCompat.getColor(context, R.color.gauge_track)
 
     private val bodyRect = RectF()
     private val fillRect = RectF()

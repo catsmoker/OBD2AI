@@ -56,7 +56,7 @@ class MyRPMCommand : ObdCommand() {
             if (a == null || b == null) "" else (((a * 256) + b) / 4).toString()
         } else {
             ""
-        }.toString()
+        }
     }
 }
 

@@ -1,6 +1,8 @@
 package com.catsmoker.obd2ai.obd
 
+import android.Manifest
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import com.catsmoker.obd2ai.diagnostics.DtcSource
 import com.catsmoker.obd2ai.diagnostics.FreezeFrame
 import com.catsmoker.obd2ai.diagnostics.MilStatus
@@ -67,6 +69,7 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
     val isConnected: Boolean
         get() = demoMode || obdConnection != null
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     suspend fun setupObd(deviceAddress: String) {
         demoMode = false
         pidHealth.reset()

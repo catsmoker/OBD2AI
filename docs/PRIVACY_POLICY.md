@@ -26,15 +26,17 @@
   disabled in the manifest until the choice exists). They report screens
   used plus device and app identifiers (app-instance ID, advertising ID,
   IP-derived geo) — pseudonymous technical identifiers, not a name or
-  contact details. The banner ad (AdMob) is **always
-  shown** — it funds the free app and cannot be turned off; ad
-  personalization is **on by default, opt-out** under Settings → Privacy
-  (`npa=1` until then). The Google UMP flow (`syncAdsConsent`, UMP SDK
-  4.0.0) shows the Funding Choices consent form where required (EEA/UK)
-  before any ad request, gates loads on `canRequestAds`, and never writes
-  preferences itself — the setup screen and Settings toggles are the sole
-  writers. No cookies, no WebView, no tracking pixels, no
-  social/map/video/chat/payment SDKs. “Get Gas” fires a `geo:` intent into
+   contact details. The banner ad (AdMob) funds the free app and is shown
+   unless permanently removed with the one-time `remove_ads` purchase
+   (`ads/AdBillingManager`, Play Billing; no free off-switch exists); ad
+   personalization is **on by default, opt-out** under Settings → Privacy
+   (`npa=1` until then). The Google UMP flow (`syncAdsConsent`, UMP SDK
+   4.0.0) shows the Funding Choices consent form where required (EEA/UK)
+   before any ad request, gates loads on `canRequestAds`, and never writes
+   preferences itself — the setup screen and Settings toggles are the sole
+   writers. No cookies, no WebView, no tracking pixels, no
+   social/map/video/chat SDKs; payments go through Google Play Billing
+   only. “Get Gas” fires a `geo:` intent into
   the user’s own maps app; that search is handled by the maps app, not
   by us.
 - **Permissions:** Bluetooth (+ admin on old APIs) for the adapter;
@@ -48,10 +50,12 @@
   no browser storage has nothing truthful to put in one. Cookie-equivalent
   identifiers (advertising ID via AdMob, app-instance ID via Firebase) are
   disclosed in the Privacy Policy and gated behind the same opt-in.
-- **No Refund/Cancellation Policy.** The app sells nothing, has no
-  in-app purchases or subscriptions, and takes no payments. The PayPal
-  donate link exists only in the GitHub README (outside the app); external
-  voluntary donations are covered by one sentence in the Terms of Service.
+- **Refund/Cancellation Policy.** The single one-time product
+  (`remove_ads`, non-consumable) is sold, acknowledged and refunded
+  through Google Play under Google’s terms — see `docs/REMOVE_ADS.md`.
+  The PayPal donate link exists only in the GitHub README (outside the
+  app); external voluntary donations are covered by one sentence in the
+  Terms of Service.
 - **No invented identity.** Operator name, address, registration numbers,
   phone, email, and DPO details are marked `[TODO]` in the in-app texts
   and must be supplied by the owner — fabricating them would be worse
@@ -70,9 +74,9 @@
    Safety / store-listing privacy-policy field).
 2. Trader details if the Play listing qualifies as a trader under the EU
    Digital Services Act (address, registration, VAT where applicable).
-3. Replace the demo AdMob IDs (`ca-app-pub-3940256099942544/...`, now
-   centralized: `manifestPlaceholders admobAppId` in `app/build.gradle.kts`
-   + `admob_banner_id` in `strings.xml`) with real production IDs; create
+3. Production AdMob IDs are in place (centralized:
+   `manifestPlaceholders admobAppId` in `app/build.gradle.kts`
+   + `admob_banner_id` in `strings.xml`); create
    the Funding Choices messages (AdMob console → Privacy & messaging, GDPR
    + US-states) or the UMP form never appears; then fill the Play Data
    Safety form from `docs/PLAY_DATA_SAFETY.md`.

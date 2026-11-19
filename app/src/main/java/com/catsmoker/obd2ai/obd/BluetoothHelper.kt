@@ -1,6 +1,5 @@
 package com.catsmoker.obd2ai.obd
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -8,8 +7,10 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.pm.PackageManager
+import android.Manifest
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -62,7 +63,7 @@ class BluetoothHelper(private val context: Context) {
 
     fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled ?: false
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun startDiscovery() {
         if (checkBluetoothPermissions()) {
             if (bluetoothAdapter?.isDiscovering == true) {
@@ -72,7 +73,7 @@ class BluetoothHelper(private val context: Context) {
         }
     }
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun stopDiscovery() {
         if (checkBluetoothPermissions() && bluetoothAdapter?.isDiscovering == true) {
             bluetoothAdapter.cancelDiscovery()
@@ -89,7 +90,7 @@ class BluetoothHelper(private val context: Context) {
         ActivityCompat.requestPermissions(activity, requiredPermissions, REQUEST_CODE_PERMISSIONS)
     }
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun getPairedDevices(): List<BluetoothDeviceDTO> {
         if (!checkBluetoothPermissions()) throw SecurityException("Permissions not granted")
         val adapter = bluetoothAdapter ?: throw IOException("Bluetooth adapter is not available.")
@@ -97,7 +98,7 @@ class BluetoothHelper(private val context: Context) {
     }
 
     @Throws(IOException::class, SecurityException::class)
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     suspend fun connectToDevice(deviceAddress: String): Pair<InputStream, OutputStream> = withContext(Dispatchers.IO) {
         if (!checkBluetoothPermissions()) throw SecurityException("Permissions not granted")
         val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
@@ -142,7 +143,7 @@ class BluetoothHelper(private val context: Context) {
         }
     }
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun convertToDeviceDTO(bluetoothDevice: BluetoothDevice): BluetoothDeviceDTO {
         return BluetoothDeviceDTO(
             name = bluetoothDevice.name ?: "Unknown Device",

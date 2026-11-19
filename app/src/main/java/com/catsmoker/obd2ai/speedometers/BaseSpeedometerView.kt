@@ -101,13 +101,4 @@ abstract class BaseSpeedometerView @JvmOverloads constructor(
             textAlign = Paint.Align.CENTER
             typeface = if (bold) android.graphics.Typeface.DEFAULT_BOLD else android.graphics.Typeface.DEFAULT
         }
-
-    protected fun arcPaint(color: Int, widthPx: Float, glow: Int? = null): Paint =
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            this.color = color
-            strokeWidth = widthPx
-            if (glow != null) setShadowLayer(widthPx * 0.45f, 0f, 0f, glow)
-        }
 }

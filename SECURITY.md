@@ -95,7 +95,7 @@ Most are expected for the feature set. A few deserve explicit justification:
 
 ## Third-party surface
 
-- **AdMob** (`play-services-ads`, demo ad id included) and **Firebase
+- **AdMob** (`play-services-ads`, production banner unit) and **Firebase
   Analytics** — the only bundled third-party SDKs besides AndroidX /
   Navigation / SpeedView / kotlin-obd. `google-services.json` is committed
   by design (Firebase keys are identifiers, not secrets).

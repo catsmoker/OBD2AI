@@ -44,12 +44,10 @@ class ResourceParityTest {
                 .findAll(file.readText()).map { it.groupValues[1] }.toSet()
         }
 
-        val pairs = listOf(
-            "layout/fragment_live_data.xml" to "layout-land/fragment_live_data.xml",
-            "layout/fragment_error_overview.xml" to "layout-land/fragment_error_overview.xml",
-            "layout/fragment_error_overview.xml" to "layout-sw600dp/fragment_error_overview.xml",
-            "layout/fragment_connect.xml" to "layout-land/fragment_connect.xml"
-        )
+        val pairs: List<Pair<String, String>> = listOf()
+        // fragment_live_data.xml, fragment_error_overview.xml and
+        // fragment_connect.xml were migrated to Compose, so they no longer
+        // have XML layouts or land/tablet variants to keep IDs in sync with.
         for ((default, variant) in pairs) {
             val defaultIds = idsOf("src/main/res/$default")
             val variantIds = idsOf("src/main/res/$variant")
