@@ -1,0 +1,9 @@
+Apache License 2.0
+AndroidX (including Compose), Material Components for Android, Kotlin,
+kotlinx.coroutines, SpeedView (anastr/SpeedView), and kotlin-obd-api
+(eltonvs/kotlin-obd-api). The license text follows.
+
+Google SDKs
+Google Mobile Ads, User Messaging Platform, Play Billing, and Firebase Analytics
+are distributed under the Google Android SDK terms:
+https://developer.android.com/studio/terms

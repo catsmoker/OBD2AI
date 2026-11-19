@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/instrument_ink" />
+    <corners android:radius="@dimen/spacing_small" android:topRightRadius="@dimen/spacing_xlarge" />
+</shape>

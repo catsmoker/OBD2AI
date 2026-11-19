@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Colors -->
-    <color name="colorPrimary">#1A237E</color>
-    <!-- Cyan 800 (not 500): #00BCD4 measured 2.30:1 on white and fails
-         WCAG 1.4.11 for selected-nav icons, header icons, the loading
-         indicator and the white splash icon. #00838F is 4.52:1 on white
-         (and white-on-it 4.52:1), same hue family. -->
-    <color name="colorSecondary">#00838F</color>
+    <!-- Material 3 Expressive - Indigo/Cyan/Phosphor Palette -->
+    <!-- Light Theme -->
+    <color name="colorPrimary">#4F46E5</color>        <!-- Indigo 600 -->
+    <color name="colorSecondary">#06B6D4</color>      <!-- Cyan 500 -->
+    <color name="colorTertiary">#D4FA68</color>       <!-- Phosphor Lime -->
 
-    <!-- Material Design Light Theme Colors -->
-    <color name="surface">#FFFFFF</color>
-    <color name="background">#FFFFFF</color>
-    <color name="error">#B00020</color>
+    <color name="background">#FAFAFC</color>         <!-- Near-white with cool tint -->
+    <color name="surface">#FFFFFF</color>            <!-- Pure white -->
+    <color name="error">#DC2626</color>              <!-- Red 600 -->
+
     <color name="on_primary">#FFFFFF</color>
-    <color name="on_secondary">#000000</color>
-    <color name="on_surface">#000000</color>
-    <color name="on_background">#000000</color>
+    <color name="on_secondary">#0F172A</color>        <!-- Slate 900 -->
+    <color name="on_surface">#0F172A</color>
+    <color name="on_background">#0F172A</color>
     <color name="on_error">#FFFFFF</color>
-    <!-- Material 3 tonal roles -->
-    <color name="primary_container">#DEE0FF</color>
-    <color name="on_primary_container">#00115B</color>
-    <color name="secondary_container">#B4EBFF</color>
-    <color name="on_secondary_container">#001F29</color>
-    <color name="tertiary">#006A60</color>
-    <color name="tertiary_container">#6FF7EC</color>
-    <color name="on_tertiary_container">#00201C</color>
-    <!-- OBD2 AI 2.0 gauge + status semantics (same in both themes).
-         gauge_warn is deep amber, not bright #F9A825 (1.97:1 on white):
-         #C07F00 measures 3.35:1 on white, 3.20:1 on the tube track and
-         5.60:1 on dark backgrounds, so the warn state stays visible in
-         every theme. Zone meaning is always redundant with the numeric
-         readout and the spoken/banner text. -->
-    <color name="gauge_ok">#43A047</color>
-    <color name="gauge_warn">#C07F00</color>
-    <color name="gauge_danger">#E53935</color>
-    <color name="gauge_sport">#FFA500</color>
-    <color name="gauge_neon">#00E5FF</color>
-    <color name="gauge_track">#3E3E3E</color>
+
+    <!-- Material 3 Tonal Palettes -->
+    <color name="primary_container">#E0E7FF</color>   <!-- Indigo 100 -->
+    <color name="on_primary_container">#1E1B4B</color> <!-- Indigo 950 -->
+    <color name="secondary_container">#CFFAFE</color>  <!-- Cyan 100 -->
+    <color name="on_secondary_container">#164E63</color> <!-- Cyan 950 -->
+    <color name="tertiary">#A3E635</color>            <!-- Lime 500 -->
+    <color name="tertiary_container">#F7FEE7</color>  <!-- Lime 50 -->
+    <color name="on_tertiary_container">#365314</color> <!-- Lime 950 -->
+
+    <!-- Gauge colors (semantic, same in both themes) -->
+    <color name="gauge_ok">#16A34A</color>            <!-- Green 600 -->
+    <color name="gauge_warn">#CA8A04</color>          <!-- Yellow 600 -->
+    <color name="gauge_danger">#DC2626</color>        <!-- Red 600 -->
+    <color name="gauge_sport">#F97316</color>         <!-- Orange 500 -->
+    <color name="gauge_neon">#06B6D4</color>         <!-- Cyan 500 -->
+    <color name="gauge_track">#E2E8F0</color>        <!-- Slate 200 -->
+
+    <!-- Instrument panel colors for legacy XML drawables -->
+    <color name="instrument_ink">#0F172A</color>
+    <color name="instrument_glow">#D4FA68</color>
 </resources>
