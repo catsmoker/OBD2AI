@@ -381,3 +381,13 @@ untouched. Verified on device: demo start lands on Live, Console tab
 navigates and highlights, back shows tile-free Home with an unhighlighted
 dock, connect-screen demo lands on Live, cards mode still shows tiles with
 no dock.
+
+### Tablet rail with the Console tab (density-200 regression pass)
+Re-verified the sw600dp rail after the bar-mode tab swap, via
+`wm density 200` on the POCO X3 (864dp width). Rail items are
+Console / Dashboard / Diagnostic Report / Trip computer; the rail stays
+hidden while disconnected, appears on demo start (which lands on the
+dashboard), the Console item navigates and its active indicator
+highlights, back shows the tile-free Home with an unhighlighted rail,
+and the Dashboard item returns to Live with the indicator on the second
+slot. Density reset to 440 afterwards.
