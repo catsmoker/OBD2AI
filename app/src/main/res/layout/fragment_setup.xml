@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- First-launch setup in ONE layout: two step containers (setupStep1:
-     agreement & privacy, setupStep2: language & appearance) share this
+<!-- First-launch setup in ONE layout: three step containers (setupStep1:
+     agreement & privacy, setupStep2: language & appearance, setupStep3:
+     navigation style) share this
      file; SetupFragment toggles visibility so the flow never recreates.
      Language/theme previews write the same prefs Settings uses and arrive
      as onConfigurationChanged (manifest uiMode|locale|layoutDirection),
@@ -429,34 +430,108 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <LinearLayout
+            </LinearLayout>
+
+            <!-- Step 3: navigation style — chosen once, stored in prefs.
+                 Same card pattern as the step-2 option cards. -->
+            <LinearLayout
+                android:id="@+id/setupStep3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_large"
-                    android:layout_marginBottom="@dimen/spacing_large"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="@dimen/spacing_small"
+                    app:cardCornerRadius="@dimen/card_corner_radius">
 
-                    <Button
-                        android:id="@+id/setupBackButton"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/spacing_small"
-                        android:layout_weight="1"
-                        android:minHeight="@dimen/button_min_height"
-                        android:text="@string/setup_back" />
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_large">
 
-                    <Button
-                        android:id="@+id/setupContinueButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_small"
-                        android:layout_weight="1"
-                        android:minHeight="@dimen/button_min_height"
-                        android:text="@string/setup_continue" />
+                        <TextView
+                            android:id="@+id/setupNavTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:accessibilityHeading="true"
+                            android:text="@string/setup_nav_title"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/setupNavDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:text="@string/setup_nav_desc"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurface" />
+
+                        <RadioGroup
+                            android:id="@+id/setupNavStyleGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:orientation="vertical">
+
+                            <RadioButton
+                                android:id="@+id/setupNavStyleBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/button_min_height"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                tools:text="Navigation bar" />
+
+                            <RadioButton
+                                android:id="@+id/setupNavStyleCards"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/button_min_height"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                tools:text="Cards" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- Shared Back/Continue row for steps 2 and 3 (step 1 has its
+                 own Next button inside setupStep1). -->
+            <LinearLayout
+                android:id="@+id/setupNavButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/setupBackButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_min_height"
+                    android:text="@string/setup_back" />
+
+                <Button
+                    android:id="@+id/setupContinueButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/button_min_height"
+                    android:text="@string/setup_continue" />
 
             </LinearLayout>
 

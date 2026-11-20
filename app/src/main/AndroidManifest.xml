@@ -34,7 +34,7 @@
         android:theme="@style/Theme.OBD2AI"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="33"
-        tools:replace="android:theme">
+        tools:replace="android:theme,android:allowBackup,android:icon,android:label,android:supportsRtl,android:enableOnBackInvokedCallback">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${admobAppId}"/>

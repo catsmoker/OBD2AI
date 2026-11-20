@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,24 @@ plugins {
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.google.gms.google.services)
 }
+
+fun localSettings(name: String) = Properties().apply {
+    rootProject.file(name).takeIf { it.isFile }?.inputStream()?.use { load(it) }
+}
+val signing = localSettings("signing.properties")
+val ads = localSettings("local.properties")
+val localSigner = listOf("storeFile", "storePassword", "keyAlias", "keyPassword")
+    .all { !signing.getProperty(it).isNullOrBlank() }
+val injected = listOf("store.file", "store.password", "key.alias", "key.password")
+    .associateWith { providers.gradleProperty("android.injected.signing.$it").orNull }
+val releaseAlias = if (injected.values.any { it != null }) {
+    injected["key.alias"].takeIf { injected.values.all { value -> !value.isNullOrBlank() } }
+} else signing.getProperty("keyAlias").takeIf { localSigner }
+val releaseAds = !releaseAlias.isNullOrBlank() && !releaseAlias.equals("androiddebugkey", true)
+val testAppId = "ca-app-pub-3940256099942544~3347511713"
+val testBannerId = "ca-app-pub-3940256099942544/9214589741"
+fun releaseId(key: String, fallback: String) =
+    ads.getProperty(key)?.trim()?.takeIf { releaseAds && it.isNotEmpty() } ?: fallback
 
 android {
     namespace = "com.catsmoker.obd2ai"
@@ -20,11 +40,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig = signingConfigs.getByName("debug")
-        // Production AdMob app ID (AdMob console → Apps → OBD2AI).
-        // Banner unit lives in res/values/strings.xml (admob_banner_id,
-        // translatable=false). Funding Choices messages in AdMob (Privacy &
-        // messaging) let the UMP consent form appear in regulated regions.
-        manifestPlaceholders["admobAppId"] = "ca-app-pub-4717628365066461~8579086064"
+        manifestPlaceholders["admobAppId"] = testAppId
+        buildConfigField("String", "BANNER_ID", "\"$testBannerId\"")
+    }
+
+    if (localSigner) signingConfigs.create("publisher") {
+        storeFile = rootProject.file(signing.getProperty("storeFile"))
+        storePassword = signing.getProperty("storePassword")
+        keyAlias = signing.getProperty("keyAlias")
+        keyPassword = signing.getProperty("keyPassword")
     }
 
     buildTypes {
@@ -34,13 +58,15 @@ android {
             isMinifyEnabled = true
 
             // Enables resource shrinking.
-            isShrinkResources = true
+            isShrinkResources = false
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (localSigner) "publisher" else "debug")
+            manifestPlaceholders["admobAppId"] = releaseId("ADMOB_APP_ID", testAppId)
+            buildConfigField("String", "BANNER_ID", "\"${releaseId("ADMOB_BANNER_ID", testBannerId)}\"")
         }
     }
 

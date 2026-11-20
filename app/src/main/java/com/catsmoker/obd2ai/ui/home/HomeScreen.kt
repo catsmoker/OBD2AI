@@ -16,6 +16,8 @@ import androidx.compose.material.icons.outlined.CarRepair
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Route
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material3.MaterialTheme
@@ -107,22 +109,9 @@ fun HomeScreen(
                 )
             )
         }
-        add(
-            HomeTile(
-                title = stringResource(R.string.settings_title),
-                subtitle = stringResource(R.string.home_card_settings_desc),
-                icon = Icons.Outlined.Settings,
-                onClick = onOpenSettings
-            )
-        )
-        add(
-            HomeTile(
-                title = stringResource(R.string.settings_about_title),
-                subtitle = stringResource(R.string.home_card_about_desc),
-                icon = Icons.Outlined.Info,
-                onClick = onOpenAbout
-            )
-        )
+        // About lives in the header (info icon next to the settings gear),
+        // not in the tile grid — one consistent pattern for both secondary
+        // destinations, and the connected grid stays a full 2×2.
     }
 
     Column(
@@ -152,6 +141,22 @@ fun HomeScreen(
                 },
                 active = linked
             )
+            // Settings lives here, not in the tile grid: one canonical path
+            // (this gear), so no tile duplicates it.
+            IconButton(onClick = { tap(onOpenAbout) }) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = stringResource(R.string.settings_about_title),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            IconButton(onClick = { tap(onOpenSettings) }) {
+                Icon(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = stringResource(R.string.settings_title),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
         SectionCard {
@@ -194,37 +199,47 @@ fun HomeScreen(
                 ) {
                     Text(text = stringResource(R.string.onboarding_try_demo))
                 }
+                Spacer(Modifier.height(ObdSpacing.LabelGap))
+                Text(
+                    text = stringResource(R.string.home_nav_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
         Spacer(Modifier.height(ObdSpacing.SectionGap))
 
-        SectionLabel(
-            text = stringResource(R.string.home_section_title),
-            accent = true
-        )
+        // Tiles exist only while linked; disconnected Home is just the
+        // connection card, so hide the empty section entirely.
+        if (tiles.isNotEmpty()) {
+            SectionLabel(
+                text = stringResource(R.string.home_section_title),
+                accent = true
+            )
 
-        Column(verticalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)) {
-            tiles.chunked(columns).forEach { rowTiles ->
-                Row(horizontalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)) {
-                    rowTiles.forEach { tile ->
-                        QuickActionTile(
-                            title = tile.title,
-                            subtitle = tile.subtitle,
-                            icon = tile.icon,
-                            onClick = { tap(tile.onClick) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    // Keep the last, incomplete row from stretching a lone tile.
-                    repeat(columns - rowTiles.size) {
-                        Spacer(Modifier.weight(1f))
+            Column(verticalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)) {
+                tiles.chunked(columns).forEach { rowTiles ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)) {
+                        rowTiles.forEach { tile ->
+                            QuickActionTile(
+                                title = tile.title,
+                                subtitle = tile.subtitle,
+                                icon = tile.icon,
+                                onClick = { tap(tile.onClick) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        // Keep the last, incomplete row from stretching a lone tile.
+                        repeat(columns - rowTiles.size) {
+                            Spacer(Modifier.weight(1f))
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(Modifier.height(ObdSpacing.SectionGap))
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
+        }
     }
 }
 

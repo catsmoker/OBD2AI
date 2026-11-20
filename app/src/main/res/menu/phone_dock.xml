@@ -3,5 +3,4 @@
     <item android:id="@id/liveDataFragment" android:icon="@drawable/ic_gauge" android:title="@string/dock_live" />
     <item android:id="@id/errorOverviewFragment" android:icon="@drawable/ic_engine" android:title="@string/dock_faults" />
     <item android:id="@id/tripFragment" android:icon="@drawable/ic_route" android:title="@string/dock_trip" />
-    <item android:id="@+id/dock_more" android:icon="@drawable/ic_more" android:title="@string/dock_more" />
 </menu>

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Phone layout: full-screen FragmentContainerView + BottomNavigationView
+     above the ad banner.  Bottom nav replaces the old in-flow icon strip
+     (top_nav_bar) so the primary destinations sit where thumbs naturally rest.
+     The rail stays untouched on tablets (sw600dp). -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,123 +12,44 @@
     android:background="?attr/colorSurface"
     tools:context=".MainActivity">
 
-    <!-- Phone top navigation: compact in-flow icon bar with the same six
-         destinations as the tablet rail. In-flow (never overlaid) so it can
-         never cover fragment controls like the dashboard mute/demo row.
-         Hidden during the first-run flow. -->
-    <LinearLayout
-        android:id="@+id/top_nav_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="@dimen/button_min_height"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/spacing_small"
-        android:weightSum="6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/nav_back"
-            android:layout_width="@dimen/button_min_height"
-            android:layout_height="@dimen/button_min_height"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/nav_back_desc"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_arrow_back"
-            android:visibility="gone"
-            app:tint="?attr/colorOnSurface"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/nav_dashboard"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/dashboard_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_gauge"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/nav_diagnostics"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/error_overview_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_engine"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/nav_trip"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/trip_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_route"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/nav_console"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/obd_console_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_terminal"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/nav_settings"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/settings_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_settings"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/nav_about"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_min_height"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/settings_about_title"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_info"
-            app:tint="?attr/colorOnSurface" />
-
-    </LinearLayout>
-
+    <!-- Nav host – fills the entire screen area above the bottom bar and ad.
+         Hidden during setup / onboarding / connect / permissions so users
+         see only those flows without competing chrome. -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
+
+    <!-- Bottom navigation dock: Home · Live · Diagnostics · Trip · More.
+         Matches the AGENTS target for phone; tablet uses the rail instead. -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="8dp"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toTopOf="@id/adView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_nav_bar"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        app:menu="@menu/phone_dock" />
 
+    <!-- Banner ads remain below the bottom bar. -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:adSize="BANNER"
+        app:adUnitId="@string/admob_banner_id"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:adSize="BANNER"
-        app:adUnitId="@string/admob_banner_id" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

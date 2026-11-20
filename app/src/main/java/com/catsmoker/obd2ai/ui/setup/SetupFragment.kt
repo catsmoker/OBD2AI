@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.prefs.AppLanguage
+import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.ui.settings.LegalFragment
@@ -55,9 +56,12 @@ class SetupFragment : Fragment() {
     private var progress: LinearProgressIndicator? = null
     private var step1: View? = null
     private var step2: View? = null
+    private var step3: View? = null
+    private var navButtons: View? = null
     private var nextButton: Button? = null
     private var languageGroup: RadioGroup? = null
     private var themeGroup: RadioGroup? = null
+    private var navStyleGroup: RadioGroup? = null
     private var analyticsSwitch: SwitchMaterial? = null
     private var personalizedSwitch: SwitchMaterial? = null
 
@@ -82,9 +86,12 @@ class SetupFragment : Fragment() {
         progress = view.findViewById(R.id.setupProgress)
         step1 = view.findViewById(R.id.setupStep1)
         step2 = view.findViewById(R.id.setupStep2)
+        step3 = view.findViewById(R.id.setupStep3)
+        navButtons = view.findViewById(R.id.setupNavButtons)
         nextButton = view.findViewById(R.id.setupNextButton)
         languageGroup = view.findViewById(R.id.setupLanguageGroup)
         themeGroup = view.findViewById(R.id.setupThemeGroup)
+        navStyleGroup = view.findViewById(R.id.setupNavStyleGroup)
         analyticsSwitch = view.findViewById(R.id.setupAnalyticsSwitch)
         personalizedSwitch = view.findViewById(R.id.setupPersonalizedSwitch)
 
@@ -151,16 +158,25 @@ class SetupFragment : Fragment() {
         // --- Step 2: appearance -------------------------------------------
         bindThemeRadios(prefs, activity)
 
+        // --- Step 3: navigation style (chosen once, saved on Continue) -----
+        bindNavStyleRadios(prefs)
+
         view.findViewById<ImageButton>(R.id.setupStepBackArrow).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             showStep(STEP_1, smoothScroll = true)
         }
         view.findViewById<Button>(R.id.setupBackButton).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            showStep(STEP_1, smoothScroll = true)
+            showStep(prevStep(currentStep), smoothScroll = true)
         }
         view.findViewById<Button>(R.id.setupContinueButton).setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Steps 2-3 share this button: on step 2 it advances to the
+            // navigation-style step; on step 3 it completes setup.
+            if (currentStep == STEP_2) {
+                showStep(STEP_3, smoothScroll = true)
+                return@setOnClickListener
+            }
             prefs.edit {
                 putBoolean(PrefsKeys.TERMS_ACCEPTED, true)
                 putBoolean(
@@ -172,6 +188,8 @@ class SetupFragment : Fragment() {
                     personalizedSwitch?.isChecked == true
                 )
                 putBoolean(PrefsKeys.CONSENT_SET, true)
+                // NAV_STYLE was already saved live by the step-3 radios,
+                // like language/theme during their steps.
             }
             // Language/theme were already applied live during the steps;
             // settle UMP (form if required) and apply everything, then home.
@@ -189,8 +207,8 @@ class SetupFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (currentStep == STEP_2) {
-                        showStep(STEP_1, smoothScroll = true)
+                    if (currentStep > STEP_1) {
+                        showStep(prevStep(currentStep), smoothScroll = true)
                     } else {
                         Toast.makeText(
                             context,
@@ -241,6 +259,35 @@ class SetupFragment : Fragment() {
             }
         }
     }
+
+    private fun bindNavStyleRadios(prefs: android.content.SharedPreferences) {
+        val group = navStyleGroup ?: return
+        suppressChecks = true
+        group.check(
+            when (NavStyle.fromPref(prefs.getString(PrefsKeys.NAV_STYLE, null))) {
+                NavStyle.CARDS -> R.id.setupNavStyleCards
+                NavStyle.BAR -> R.id.setupNavStyleBar
+            }
+        )
+        suppressChecks = false
+        group.setOnCheckedChangeListener { _, checkedId ->
+            if (suppressChecks) return@setOnCheckedChangeListener
+            val style = when (checkedId) {
+                R.id.setupNavStyleCards -> NavStyle.CARDS
+                else -> NavStyle.BAR
+            }
+            if (NavStyle.fromPref(prefs.getString(PrefsKeys.NAV_STYLE, null)) != style) {
+                prefs.edit { putString(PrefsKeys.NAV_STYLE, style.prefValue) }
+            }
+        }
+    }
+
+    /** Currently checked navigation-style radio, as a [NavStyle]. */
+    private fun checkedNavStyle(): NavStyle =
+        when (navStyleGroup?.checkedRadioButtonId) {
+            R.id.setupNavStyleCards -> NavStyle.CARDS
+            else -> NavStyle.BAR
+        }
 
     private fun bindThemeRadios(
         prefs: android.content.SharedPreferences,
@@ -321,6 +368,14 @@ class SetupFragment : Fragment() {
                 getString(R.string.settings_theme_light)
             view.findViewById<RadioButton>(R.id.setupThemeDark).text =
                 getString(R.string.settings_theme_dark)
+            view.findViewById<TextView>(R.id.setupNavTitle).text =
+                getString(R.string.setup_nav_title)
+            view.findViewById<TextView>(R.id.setupNavDesc).text =
+                getString(R.string.setup_nav_desc)
+            view.findViewById<RadioButton>(R.id.setupNavStyleBar).text =
+                getString(R.string.setup_nav_bar)
+            view.findViewById<RadioButton>(R.id.setupNavStyleCards).text =
+                getString(R.string.setup_nav_cards)
             view.findViewById<Button>(R.id.setupBackButton).text = getString(R.string.setup_back)
             view.findViewById<Button>(R.id.setupContinueButton).text =
                 getString(R.string.setup_continue)
@@ -339,10 +394,12 @@ class SetupFragment : Fragment() {
     }
 
     private fun showStep(step: Int, smoothScroll: Boolean) {
-        currentStep = step.coerceIn(STEP_1, STEP_2)
-        val onFirst = currentStep == STEP_1
-        step1?.visibility = if (onFirst) View.VISIBLE else View.GONE
-        step2?.visibility = if (onFirst) View.GONE else View.VISIBLE
+        currentStep = step.coerceIn(STEP_1, STEP_3)
+        step1?.visibility = if (currentStep == STEP_1) View.VISIBLE else View.GONE
+        step2?.visibility = if (currentStep == STEP_2) View.VISIBLE else View.GONE
+        step3?.visibility = if (currentStep == STEP_3) View.VISIBLE else View.GONE
+        // Step 1 has its own Next button; steps 2-3 share Back/Continue.
+        navButtons?.visibility = if (currentStep == STEP_1) View.GONE else View.VISIBLE
         renderStepHeader()
         renderNext()
         val scroller = scrollView ?: return
@@ -354,7 +411,11 @@ class SetupFragment : Fragment() {
     private fun renderStepHeader() {
         stepLabel?.text = getString(R.string.setup_step_indicator, currentStep, TOTAL_STEPS)
         stepTitle?.text = getString(
-            if (currentStep == STEP_1) R.string.setup_agreement_title else R.string.setup_step2_title
+            when (currentStep) {
+                STEP_1 -> R.string.setup_agreement_title
+                STEP_2 -> R.string.setup_step2_title
+                else -> R.string.setup_nav_title
+            }
         )
         progress?.progress = progressFor(currentStep)
     }
@@ -377,9 +438,12 @@ class SetupFragment : Fragment() {
         progress = null
         step1 = null
         step2 = null
+        step3 = null
+        navButtons = null
         nextButton = null
         languageGroup = null
         themeGroup = null
+        navStyleGroup = null
         analyticsSwitch = null
         personalizedSwitch = null
     }
@@ -387,21 +451,25 @@ class SetupFragment : Fragment() {
     companion object {
         const val STEP_1 = 1
         const val STEP_2 = 2
-        const val TOTAL_STEPS = 2
+        const val STEP_3 = 3
+        const val TOTAL_STEPS = 3
         private const val KEY_STEP = "setup_step"
         private const val KEY_AGREED = "setup_agreed"
 
         /** Pure step state machine (tested): Next advances one step, clamped. */
-        fun nextStep(current: Int): Int = (current + 1).coerceIn(STEP_1, STEP_2)
+        fun nextStep(current: Int): Int = (current + 1).coerceIn(STEP_1, STEP_3)
 
         /** Pure step state machine (tested): Back retreats one step, clamped. */
-        fun prevStep(current: Int): Int = (current - 1).coerceIn(STEP_1, STEP_2)
+        fun prevStep(current: Int): Int = (current - 1).coerceIn(STEP_1, STEP_3)
 
-        /** Step 1 gates on the Terms agreement; step 2 is ungated. */
+        /** Step 1 gates on the Terms agreement; steps 2-3 are ungated. */
         fun canGoNext(agreed: Boolean): Boolean = agreed
 
         /** Header progress for the step indicator (tested). */
-        fun progressFor(step: Int): Int =
-            if (step.coerceIn(STEP_1, STEP_2) == STEP_1) 50 else 100
+        fun progressFor(step: Int): Int = when (step.coerceIn(STEP_1, STEP_3)) {
+            STEP_1 -> 33
+            STEP_2 -> 66
+            else -> 100
+        }
     }
 }

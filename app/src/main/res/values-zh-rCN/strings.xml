@@ -3,6 +3,12 @@
     <!-- App Information -->
     <string name="app_name">OBD2AI</string>
 
+    <!-- Bottom navigation dock -->
+    <string name="dock_home">主页</string>
+    <string name="dock_live">实时</string>
+    <string name="dock_faults">诊断</string>
+    <string name="dock_trip">行程</string>
+
     <!-- Onboarding -->
     <string name="onboarding_title">欢迎使用 OBD2AI</string>
     <string name="onboarding_description">读取故障码诊断车辆问题，获取 AI 解析和维修建议。</string>
@@ -39,6 +45,9 @@
     <string name="error_overview_mil_on">发动机故障灯：亮 · ECU 报告 %1$d 个存储故障码</string>
     <string name="error_overview_mil_off">发动机故障灯：灭</string>
     <string name="error_overview_mil_unknown">发动机故障灯：未知</string>
+    <string name="diag_scan_state_idle">尚未扫描 — 点按“扫描故障码”。</string>
+    <string name="diag_scan_state_scanning">正在读取故障码…</string>
+    <string name="diag_scan_state_failed">无法读取故障码：%1$s</string>
     <string name="error_overview_offline_note">离线信息 — 请在设置中添加 API 密钥以获取 AI 解析</string>
     <string name="error_overview_clear_button">清除故障码</string>
     <string name="error_overview_clear_confirm_title">清除故障码？</string>
@@ -110,12 +119,12 @@
     <string name="trip_start">开始行程</string>
     <string name="trip_stop">停止</string>
     <string name="trip_reset">重置</string>
-    <string name="trip_duration">用时：%1$s</string>
-    <string name="trip_distance">里程：%1$s</string>
-    <string name="trip_avg_speed">平均：%1$s</string>
-    <string name="trip_max_speed">最高车速：%1$s</string>
-    <string name="trip_max_rpm">最高转速：%1$d</string>
-    <string name="trip_idle">怠速：%1$s</string>
+    <string name="trip_duration">用时</string>
+    <string name="trip_distance">里程</string>
+    <string name="trip_avg_speed">平均车速</string>
+    <string name="trip_max_speed">最高车速</string>
+    <string name="trip_max_rpm">最高转速</string>
+    <string name="trip_idle">怠速时间</string>
     <string name="trip_dist_km">%1$.1f km</string>
     <string name="trip_dist_mi">%1$.1f 英里</string>
     <string name="trip_speed_kmh">%1$d km/h</string>
@@ -268,6 +277,13 @@
     <string name="setup_continue">继续</string>
     <string name="setup_step_indicator">第 %1$d 步，共 %2$d 步</string>
     <string name="setup_step2_title">语言和外观</string>
+    <string name="setup_nav_title">导航方式</string>
+    <string name="setup_nav_desc">选择在各个界面之间移动的方式。</string>
+    <string name="setup_nav_bar">导航栏</string>
+    <string name="setup_nav_bar_desc">固定栏，包含主页、实时、诊断和行程标签。</string>
+    <string name="setup_nav_cards">卡片</string>
+    <string name="setup_nav_cards_desc">所有功能都从主屏幕打开；按返回键回到主页。</string>
+    <string name="home_nav_hint">随时可以在设置中更改导航方式。</string>
     <string name="setup_next">下一步</string>
     <string name="setup_back">返回</string>
     <string name="setup_cookies_note">此应用不使用 Cookie，也不加载跟踪像素。运营商网站有其自己的政策：</string>
@@ -328,8 +344,6 @@
     <string name="home_card_diagnostics_desc">读取故障码并获取 AI 解释。</string>
     <string name="home_card_trip_desc">记录里程、时间与最高车速。</string>
     <string name="home_card_console_desc">发送原始 OBD 命令。</string>
-    <string name="home_card_settings_desc">服务商、提醒、隐私与显示。</string>
-    <string name="home_card_about_desc">版本、隐私与法律声明。</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">错误</string>
@@ -338,4 +352,10 @@
     <string name="popup_skip">跳过</string>
     <string name="countdown_value">%1$d</string>
 
+    <string name="live_data_speed_label">车速</string>
+    <string name="live_data_rpm_label">转速</string>
+    <string name="live_data_load_label">发动机负荷</string>
+    <string name="instrument_coolant">冷却液</string>
+    <string name="instrument_voltage">电压</string>
+    <string name="instrument_fuel">燃油</string>
 </resources>

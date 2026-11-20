@@ -1,6 +1,7 @@
 package com.catsmoker.obd2ai.ads
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.widget.FrameLayout
 import com.catsmoker.obd2ai.BuildConfig

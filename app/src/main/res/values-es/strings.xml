@@ -3,6 +3,12 @@
     <!-- App Information -->
     <string name="app_name">OBD2AI</string>
 
+    <!-- Bottom navigation dock -->
+    <string name="dock_home">Inicio</string>
+    <string name="dock_live">En vivo</string>
+    <string name="dock_faults">Diagnóstico</string>
+    <string name="dock_trip">Viaje</string>
+
     <!-- Onboarding -->
     <string name="onboarding_title">Te damos la bienvenida a OBD2AI</string>
     <string name="onboarding_description">Diagnostica problemas del vehículo leyendo códigos de falla y obtén análisis con IA y consejos de reparación.</string>
@@ -39,6 +45,9 @@
     <string name="error_overview_mil_on">Testigo del motor: ENCENDIDO · %1$d código(s) reportados por la ECU</string>
     <string name="error_overview_mil_off">Testigo del motor: APAGADO</string>
     <string name="error_overview_mil_unknown">Testigo del motor: desconocido</string>
+    <string name="diag_scan_state_idle">Aún no escaneado: toca Escanear códigos de falla.</string>
+    <string name="diag_scan_state_scanning">Leyendo códigos de falla…</string>
+    <string name="diag_scan_state_failed">No se pudieron leer los códigos de falla: %1$s</string>
     <string name="error_overview_offline_note">info sin conexión — agrega una clave API en Ajustes para análisis con IA</string>
     <string name="error_overview_clear_button">Borrar códigos de falla</string>
     <string name="error_overview_clear_confirm_title">¿Borrar los códigos de falla?</string>
@@ -110,12 +119,12 @@
     <string name="trip_start">Iniciar viaje</string>
     <string name="trip_stop">Detener</string>
     <string name="trip_reset">Reiniciar</string>
-    <string name="trip_duration">Tiempo: %1$s</string>
-    <string name="trip_distance">Distancia: %1$s</string>
-    <string name="trip_avg_speed">Promedio: %1$s</string>
-    <string name="trip_max_speed">Velocidad máxima: %1$s</string>
-    <string name="trip_max_rpm">RPM máximas: %1$d</string>
-    <string name="trip_idle">Ralentí: %1$s</string>
+    <string name="trip_duration">Tiempo</string>
+    <string name="trip_distance">Distancia</string>
+    <string name="trip_avg_speed">Velocidad media</string>
+    <string name="trip_max_speed">Velocidad máxima</string>
+    <string name="trip_max_rpm">RPM máximas</string>
+    <string name="trip_idle">Tiempo al ralentí</string>
     <string name="trip_dist_km">%1$.1f km</string>
     <string name="trip_dist_mi">%1$.1f mi</string>
     <string name="trip_speed_kmh">%1$d km/h</string>
@@ -268,6 +277,13 @@
     <string name="setup_continue">Continuar</string>
     <string name="setup_step_indicator">Paso %1$d de %2$d</string>
     <string name="setup_step2_title">Idioma y apariencia</string>
+    <string name="setup_nav_title">Navegación</string>
+    <string name="setup_nav_desc">Elige cómo te mueves entre las pantallas.</string>
+    <string name="setup_nav_bar">Barra de navegación</string>
+    <string name="setup_nav_bar_desc">Una barra fija con las pestañas Inicio, En vivo, Diagnóstico y Viaje.</string>
+    <string name="setup_nav_cards">Tarjetas</string>
+    <string name="setup_nav_cards_desc">Todo se abre desde la pantalla de inicio; pulsa atrás para volver.</string>
+    <string name="home_nav_hint">Puedes cambiar el estilo de navegación cuando quieras en Ajustes.</string>
     <string name="setup_next">Siguiente</string>
     <string name="setup_back">Atrás</string>
     <string name="setup_cookies_note">Esta app no usa cookies ni carga píxeles de rastreo. El sitio web del operador tiene su propia política:</string>
@@ -328,8 +344,6 @@
     <string name="home_card_diagnostics_desc">Lee códigos de falla con explicaciones de IA.</string>
     <string name="home_card_trip_desc">Registra distancia, tiempo y velocidad máxima.</string>
     <string name="home_card_console_desc">Envía comandos OBD directos.</string>
-    <string name="home_card_settings_desc">Proveedores, alertas, privacidad y pantalla.</string>
-    <string name="home_card_about_desc">Versión, privacidad y avisos legales.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>
@@ -338,4 +352,10 @@
     <string name="popup_skip">Omitir</string>
     <string name="countdown_value">%1$d</string>
 
+    <string name="live_data_speed_label">Velocidad</string>
+    <string name="live_data_rpm_label">RPM</string>
+    <string name="live_data_load_label">Carga del motor</string>
+    <string name="instrument_coolant">Refrigerante</string>
+    <string name="instrument_voltage">Voltaje</string>
+    <string name="instrument_fuel">Combustible</string>
 </resources>

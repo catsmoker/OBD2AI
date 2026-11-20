@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.ImageButton
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.NavOptions
 import com.catsmoker.obd2ai.ui.common.AppNav
+import com.catsmoker.obd2ai.ui.common.ConnectionState
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -34,6 +35,7 @@ import com.catsmoker.obd2ai.ai.AiService
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.prefs.AppLanguage
+import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.ui.common.applySystemBarInsets
@@ -48,6 +50,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var adBilling: AdBillingManager
     /** Created on first use (off the launch path): Firebase init does disk I/O. */
     val firebaseAnalytics: FirebaseAnalytics by lazy { Firebase.analytics }
+
+    // Navigation chrome. Null where the active layout lacks it: the bottom
+    // dock exists only on phones, the rail + back arrow only on tablets.
+    private var navController: androidx.navigation.NavController? = null
+    private var rail: com.google.android.material.navigationrail.NavigationRailView? = null
+    private var railHeaderBack: View? = null
+    private var bottomNav: com.google.android.material.bottomnavigation.BottomNavigationView? = null
 
     /** Stored analytics choice (default ON). Effective only after the
      * first-launch choice exists — see [analyticsEffective]. */
@@ -348,88 +357,34 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         // Tablets (sw600dp layout) navigate with the rail instead.
-        val rail =
+        rail =
             findViewById<com.google.android.material.navigationrail.NavigationRailView>(
                 R.id.navigation_rail
             )
-        // Phones navigate with the compact in-flow top bar instead of the
-        // old overlaid shortcut (which could cover fragment controls).
-        val topBar: View? = findViewById(R.id.top_nav_bar)
-        // Visible back arrow (phone): shown on every chromed screen except
-        // the home root. Same action as system Back (navigateUp below).
-        val topNavBack: ImageButton? = findViewById(R.id.nav_back)
-        // Visible back arrow (tablet): rail header, toggled per destination.
-        val railHeaderBack: View? = findViewById(R.id.rail_back)
-        val topNavButtons: List<ImageButton> = listOfNotNull(
-            findViewById(R.id.nav_dashboard),
-            findViewById(R.id.nav_diagnostics),
-            findViewById(R.id.nav_trip),
-            findViewById(R.id.nav_console),
-            findViewById(R.id.nav_settings),
-            findViewById(R.id.nav_about)
-        )
-        val topNavDestinations = listOf(
-            R.id.liveDataFragment,
-            R.id.errorOverviewFragment,
-            R.id.tripFragment,
-            R.id.consoleFragment,
-            R.id.settingsFragment,
-            R.id.aboutFragment
+        // Tablet rail back arrow in the header.
+        railHeaderBack = findViewById(R.id.rail_back)
+        // Phones navigate with a bottom navigation dock (Home / Live /
+        // Diagnostics / Trip). Secondary screens (Console, Settings, About)
+        // live on the Home screen; nothing highlights in the dock for them.
+        // Null on the tablet layout (sw600dp), which uses the rail instead —
+        // every dock reference must be null-safe or tablets crash at launch.
+        bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView?>(
+            R.id.bottom_nav
         )
 
-        // Section mapping + first-run set live in AppNav (tested), so the
-        // phone bar and the tablet rail can never disagree about highlight
-        // or back-arrow state.
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            val section = AppNav.sectionFor(destination.id)
-            if (rail != null) {
-                // Rail layout: rail owns top-level navigation, and the rail
-                // hides itself on the transient setup screens.
-                rail.visibility =
-                    if (AppNav.isChromeHidden(destination.id)) View.GONE else View.VISIBLE
-                if (section != null) {
-                    rail.menu.findItem(section)?.isChecked = true
-                } else {
-                    for (i in 0 until rail.menu.size()) {
-                        rail.menu.getItem(i).isChecked = false
-                    }
-                }
-                railHeaderBack?.visibility =
-                    if (AppNav.showBackArrow(destination.id)) View.VISIBLE else View.GONE
-            } else {
-                // Phone layout: the in-flow top bar replaces the old overlaid
-                // shortcut (which could cover fragment controls). It hides
-                // on the transient setup screens; the selected icon tracks
-                // the destination.
-                topBar?.visibility =
-                    if (AppNav.isChromeHidden(destination.id)) View.GONE else View.VISIBLE
-                topNavBack?.visibility =
-                    if (AppNav.showBackArrow(destination.id)) View.VISIBLE else View.GONE
-                val selected = section
-                val selectedColor = getColor(R.color.colorSecondary)
-                val idleColor = getColor(R.color.on_surface)
-                // Leaf screens (settings/about/legal) keep the bar for the
-                // back arrow but hide the section buttons: back-arrow-only.
-                val sectionsVisible = AppNav.showSectionButtons(destination.id)
-                topNavButtons.forEachIndexed { index, button ->
-                    button.visibility = if (sectionsVisible) View.VISIBLE else View.GONE
-                    val active = topNavDestinations[index] == selected
-                    button.imageTintList =
-                        android.content.res.ColorStateList.valueOf(
-                            if (active) selectedColor else idleColor
-                        )
-                }
-            }
+        navController?.addOnDestinationChangedListener { _, _, _ ->
+            // Visibility depends on both the destination and the live
+            // connection state — updateNavChrome reads both.
+            updateNavChrome()
         }
 
-        // Top-level jumps collapse everything above the welcome root and
-        // reuse the destination when already there: Back always returns
-        // toward the welcome menu, never through discarded sections.
+        /** Collapse the nav stack to a known destination; reuse when already there. */
         fun goSection(destId: Int) {
-            if (navController.currentDestination?.id == destId) return
-            navController.navigate(
+            val nav = navController ?: return
+            if (nav.currentDestination?.id == destId) return
+            nav.navigate(
                 destId,
                 null,
                 NavOptions.Builder()
@@ -439,16 +394,12 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        topNavBack?.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            navController.navigateUp()
-        }
-
-        topNavButtons.forEachIndexed { index, button ->
-            button.setOnClickListener {
-                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                goSection(topNavDestinations[index])
-            }
+        // Single dispatch for dock taps. Re-taps on the active tab are the
+        // standard no-op — every destination has its own tab or Home tile.
+        bottomNav?.setOnItemSelectedListener { item ->
+            bottomNav?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            goSection(item.itemId)
+            true
         }
 
         val railView = rail
@@ -459,13 +410,61 @@ class MainActivity : AppCompatActivity() {
         }
         railHeaderBack?.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            navController.navigateUp()
+            navController?.navigateUp()
         }
 
         // First launch shows the setup screen once, on top of the menu;
         // every later launch starts directly on the menu.
         if (!prefs.contains(PrefsKeys.CONSENT_SET)) {
-            navController.navigate(R.id.setupFragment)
+            navController?.navigate(R.id.setupFragment)
+        }
+    }
+
+    /** Check the menu item for [section], or clear all when null. */
+    private fun syncHighlight(menu: android.view.Menu, section: Int?) {
+        if (section != null) {
+            menu.findItem(section)?.isChecked = true
+        } else {
+            for (i in 0 until menu.size()) {
+                menu.getItem(i).isChecked = false
+            }
+        }
+    }
+
+    /**
+     * Recompute chrome (dock/rail) visibility and highlight for the current
+     * destination. Chrome appears only once the app has a data world to
+     * navigate — the user picked Connect or Try Demo — and hides again on
+     * disconnect: every tab leads to a screen that needs a connection.
+     * Called on every destination change and from the Home menu's
+     * refreshState(), so starting demo makes the bar appear in place,
+     * with no navigation.
+     */
+    fun updateNavChrome() {
+        val nav = navController ?: return
+        val dest = nav.currentDestination ?: return
+        val linked = ConnectionState.resolve(
+            obdHelper.demoMode,
+            obdHelper.isConnected
+        ) != ConnectionState.DISCONNECTED
+        // Cards mode (chosen at first start) means hub-and-spoke: no bar.
+        val cardsMode = NavStyle.fromPref(
+            getSharedPreferences(PrefsKeys.PREFS_NAME, MODE_PRIVATE)
+                .getString(PrefsKeys.NAV_STYLE, null)
+        ) == NavStyle.CARDS
+        val hidden = AppNav.isChromeHidden(dest.id, linked, cardsMode)
+        val section = AppNav.sectionFor(dest.id)
+        val railView = rail
+        if (railView != null) {
+            // Tablet: the rail owns top-level navigation.
+            railView.visibility = if (hidden) View.GONE else View.VISIBLE
+            syncHighlight(railView.menu, section)
+            railHeaderBack?.visibility =
+                if (AppNav.showBackArrow(dest.id)) View.VISIBLE else View.GONE
+        } else {
+            // Phone: the bottom dock.
+            bottomNav?.visibility = if (hidden) View.GONE else View.VISIBLE
+            bottomNav?.let { syncHighlight(it.menu, section) }
         }
     }
 

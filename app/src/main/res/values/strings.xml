@@ -1,6 +1,12 @@
 <resources>
     <!-- App Information -->
     <string name="app_name">OBD2AI</string>
+
+    <!-- Bottom navigation dock -->
+    <string name="dock_home">Home</string>
+    <string name="dock_live">Live</string>
+    <string name="dock_faults">Diagnostics</string>
+    <string name="dock_trip">Trip</string>
     <!-- Production AdMob banner unit (AdMob console → Apps → OBD2AI → Banner 01).
          App ID lives in app/build.gradle.kts (manifestPlaceholders admobAppId). -->
     <string name="admob_banner_id" translatable="false">ca-app-pub-4717628365066461/5980804893</string>
@@ -41,6 +47,9 @@
     <string name="error_overview_mil_on">Engine light: ON · %1$d stored code(s) reported by ECU</string>
     <string name="error_overview_mil_off">Engine light: OFF</string>
     <string name="error_overview_mil_unknown">Engine light: unknown</string>
+    <string name="diag_scan_state_idle">Not scanned yet — tap Scan for Fault Codes.</string>
+    <string name="diag_scan_state_scanning">Reading fault codes…</string>
+    <string name="diag_scan_state_failed">Could not read fault codes: %1$s</string>
     <string name="error_overview_offline_note">offline info — add an API key in Settings for AI assessments</string>
     <string name="error_overview_clear_button">Clear Fault Codes</string>
     <string name="error_overview_clear_confirm_title">Clear fault codes?</string>
@@ -112,12 +121,12 @@
     <string name="trip_start">Start trip</string>
     <string name="trip_stop">Stop</string>
     <string name="trip_reset">Reset</string>
-    <string name="trip_duration">Time: %1$s</string>
-    <string name="trip_distance">Distance: %1$s</string>
-    <string name="trip_avg_speed">Average: %1$s</string>
-    <string name="trip_max_speed">Top speed: %1$s</string>
-    <string name="trip_max_rpm">Top RPM: %1$d</string>
-    <string name="trip_idle">Idle: %1$s</string>
+    <string name="trip_duration">Time</string>
+    <string name="trip_distance">Distance</string>
+    <string name="trip_avg_speed">Average speed</string>
+    <string name="trip_max_speed">Top speed</string>
+    <string name="trip_max_rpm">Top RPM</string>
+    <string name="trip_idle">Idle time</string>
     <string name="trip_dist_km">%1$.1f km</string>
     <string name="trip_dist_mi">%1$.1f mi</string>
     <string name="trip_speed_kmh">%1$d km/h</string>
@@ -272,6 +281,13 @@
     <string name="setup_continue">Continue</string>
     <string name="setup_step_indicator">Step %1$d of %2$d</string>
     <string name="setup_step2_title">Language &amp; appearance</string>
+    <string name="setup_nav_title">Navigation</string>
+    <string name="setup_nav_desc">Choose how you move between screens.</string>
+    <string name="setup_nav_bar">Navigation bar</string>
+    <string name="setup_nav_bar_desc">A persistent bar with Home, Live, Diagnostics and Trip tabs.</string>
+    <string name="setup_nav_cards">Cards</string>
+    <string name="setup_nav_cards_desc">Hub and spoke: everything opens from the Home screen; press back to return.</string>
+    <string name="home_nav_hint">Navigation style can be changed anytime in Settings.</string>
     <string name="setup_next">Next</string>
     <string name="setup_back">Back</string>
     <string name="setup_cookies_note">This app sets no cookies and loads no tracking pixels. The operator website has its own policy:</string>
@@ -332,8 +348,6 @@
     <string name="home_card_diagnostics_desc">Read fault codes with AI explanations.</string>
     <string name="home_card_trip_desc">Track distance, time and top speed.</string>
     <string name="home_card_console_desc">Send raw OBD commands.</string>
-    <string name="home_card_settings_desc">Providers, alerts, privacy, display.</string>
-    <string name="home_card_about_desc">Version, privacy and legal.</string>
 
     <!-- Generic Dialogs & Messages -->
     <string name="dialog_error_title">Error</string>
@@ -342,4 +356,10 @@
     <string name="popup_skip">Skip</string>
     <string name="countdown_value">%1$d</string>
 
+    <string name="live_data_speed_label">Speed</string>
+    <string name="live_data_rpm_label">RPM</string>
+    <string name="live_data_load_label">Engine load</string>
+    <string name="instrument_coolant">Coolant</string>
+    <string name="instrument_voltage">Voltage</string>
+    <string name="instrument_fuel">Fuel</string>
 </resources>

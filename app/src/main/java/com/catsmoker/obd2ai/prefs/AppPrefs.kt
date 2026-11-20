@@ -25,6 +25,10 @@ object PrefsKeys {
     const val WIFI_PORT = "wifi_port"
     const val VOICE_INSIGHT = "voice_insight" // legacy key: Offline AI voice-alerts switch
     const val APP_LANGUAGE = "app_language"
+    /** Navigation style chosen at first start: persistent bar vs card hub. */
+    const val NAV_STYLE = "nav_style"
+    const val NAV_STYLE_BAR = "bar"
+    const val NAV_STYLE_CARDS = "cards"
     const val SHIFT_RPM = "shift_rpm"
     const val DEFAULT_SHIFT_RPM = 3500
     const val SHIFT_RPM_MIN = 1500
@@ -163,5 +167,21 @@ enum class AppLanguage(val tag: String, val displayName: String) {
     companion object {
         fun fromTag(tag: String?): AppLanguage =
             entries.firstOrNull { it.tag.equals(tag, ignoreCase = true) } ?: SYSTEM
+    }
+}
+
+/**
+ * Navigation style, chosen once during first-start setup. BAR keeps the
+ * persistent bottom dock (phones) / rail (tablets); CARDS is hub-and-spoke:
+ * no bar at all, every screen is reached from the Home cards and left with
+ * back. Pure logic, tested.
+ */
+enum class NavStyle(val prefValue: String) {
+    BAR(PrefsKeys.NAV_STYLE_BAR),
+    CARDS(PrefsKeys.NAV_STYLE_CARDS);
+
+    companion object {
+        fun fromPref(value: String?): NavStyle =
+            entries.firstOrNull { it.prefValue == value } ?: BAR
     }
 }

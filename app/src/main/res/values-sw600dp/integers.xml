@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Home menu grid columns (tablets). -->
-    <integer name="home_grid_columns">3</integer>
+    <!-- Home menu grid columns (tablets). Two columns keeps the four
+         connected-mode tiles in a full 2x2 grid — three would strand the
+         fourth tile alone in a second row. -->
+    <integer name="home_grid_columns">2</integer>
 </resources>

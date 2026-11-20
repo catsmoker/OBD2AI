@@ -91,8 +91,6 @@ fun TripScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     // Lifecycle-aware collection of the live OBD flows ("--"/"ERROR" = unknown).
     val speedText by ObdDataHolder.speedFlow.collectAsStateWithLifecycle("-- km/h")
     val rpmText by ObdDataHolder.rpmFlow.collectAsStateWithLifecycle("-- RPM")
@@ -119,8 +117,6 @@ fun TripScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             SectionCard {
-                SectionLabel(text = stringResource(R.string.trip_title), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
                 TripRow(label = stringResource(R.string.trip_duration), value = TripComputer.formatDuration(snapshot.durationMs))
                 Spacer(modifier = Modifier.height(8.dp))
                 TripRow(
@@ -192,7 +188,6 @@ private fun parseRpm(s: String): Int? = s.split(" ").firstOrNull()?.toIntOrNull(
 /** Speed value converted to the user's units, rendered as a Text. */
 @Composable
 private fun speedReadout(kmh: Double, imperial: Boolean) {
-    val context = LocalContext.current
     val display = Units.displaySpeed(kmh, imperial).toInt()
     val text = if (imperial) {
         stringResource(R.string.trip_speed_mph, display)

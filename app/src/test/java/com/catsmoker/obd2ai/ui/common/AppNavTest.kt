@@ -21,18 +21,66 @@ class AppNavTest {
     fun `sections highlight only themselves`() {
         assertEquals(R.id.liveDataFragment, AppNav.sectionFor(R.id.liveDataFragment))
         assertEquals(R.id.tripFragment, AppNav.sectionFor(R.id.tripFragment))
-        assertEquals(R.id.consoleFragment, AppNav.sectionFor(R.id.consoleFragment))
-        assertEquals(R.id.settingsFragment, AppNav.sectionFor(R.id.settingsFragment))
-        assertEquals(R.id.aboutFragment, AppNav.sectionFor(R.id.aboutFragment))
+    }
+
+    @Test
+    fun `secondary screens highlight nothing`() {
+        assertNull(AppNav.sectionFor(R.id.consoleFragment))
+        assertNull(AppNav.sectionFor(R.id.settingsFragment))
+        assertNull(AppNav.sectionFor(R.id.aboutFragment))
+        assertNull(AppNav.sectionFor(R.id.legalFragment))
+    }
+
+    @Test
+    fun `disconnected app hides chrome everywhere including home`() {
+        // Progressive disclosure: with no connection and no demo, every tab
+        // leads to a screen that cannot work — so the bar never shows.
+        for (id in listOf(
+            R.id.onboardingFragment,
+            R.id.liveDataFragment,
+            R.id.errorOverviewFragment,
+            R.id.tripFragment
+        )) {
+            assertTrue("dest $id should hide chrome when disconnected", AppNav.isChromeHidden(id, linked = false))
+        }
+    }
+
+    @Test
+    fun `linked app shows chrome on data screens only`() {
+        // Connected/demo: data sections show chrome, transient flows hide it.
+        assertFalse(AppNav.isChromeHidden(R.id.onboardingFragment, linked = true))
+        assertFalse(AppNav.isChromeHidden(R.id.liveDataFragment, linked = true))
+        assertTrue(AppNav.isChromeHidden(R.id.setupFragment, linked = true))
+        assertTrue(AppNav.isChromeHidden(R.id.connectFragment, linked = true))
+        // Default param keeps the old call sites working (linked = true).
+        assertTrue(AppNav.isChromeHidden(R.id.permissionsFragment))
+    }
+
+    @Test
+    fun `cards mode hides chrome everywhere regardless of state`() {
+        // Hub-and-spoke navigation: the user chose cards at first start, so
+        // the bar never shows — even connected, even on data screens.
+        for (id in listOf(
+            R.id.onboardingFragment,
+            R.id.liveDataFragment,
+            R.id.errorOverviewFragment,
+            R.id.tripFragment
+        )) {
+            assertTrue(
+                "dest $id should hide chrome in cards mode",
+                AppNav.isChromeHidden(id, linked = true, cardsMode = true)
+            )
+        }
+        // Cards mode does not rescue a disconnected app either.
+        assertTrue(AppNav.isChromeHidden(R.id.liveDataFragment, linked = false, cardsMode = true))
     }
 
     @Test
     fun `welcome root setup screens and unknown destinations highlight nothing`() {
-        assertNull(AppNav.sectionFor(R.id.onboardingFragment))
+        assertEquals(R.id.onboardingFragment, AppNav.sectionFor(R.id.onboardingFragment))
         assertNull(AppNav.sectionFor(R.id.setupFragment))
         assertNull(AppNav.sectionFor(R.id.permissionsFragment))
         assertNull(AppNav.sectionFor(R.id.connectFragment))
-        assertNull(AppNav.sectionFor(R.id.legalFragment))
         assertNull(AppNav.sectionFor(-1))
     }
 
@@ -50,27 +98,12 @@ class AppNavTest {
     }
 
     @Test
-    fun `chrome hides on menu setup and transient setup screens`() {
-        assertTrue(AppNav.isChromeHidden(R.id.onboardingFragment))
+    fun `chrome hides on transient setup screens only`() {
+        assertFalse(AppNav.isChromeHidden(R.id.onboardingFragment))
         assertTrue(AppNav.isChromeHidden(R.id.setupFragment))
         assertTrue(AppNav.isChromeHidden(R.id.permissionsFragment))
         assertTrue(AppNav.isChromeHidden(R.id.connectFragment))
         assertFalse(AppNav.isChromeHidden(R.id.settingsFragment))
         assertFalse(AppNav.isChromeHidden(R.id.liveDataFragment))
-    }
-
-    @Test
-    fun `phone section buttons hide on menu leaf screens only`() {
-        assertFalse(AppNav.showSectionButtons(R.id.settingsFragment))
-        assertFalse(AppNav.showSectionButtons(R.id.aboutFragment))
-        assertFalse(AppNav.showSectionButtons(R.id.legalFragment))
-        assertFalse(AppNav.showSectionButtons(R.id.onboardingFragment))
-        assertFalse(AppNav.showSectionButtons(R.id.connectFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.liveDataFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.errorOverviewFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.errorDetailFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.askAiFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.tripFragment))
-        assertTrue(AppNav.showSectionButtons(R.id.consoleFragment))
     }
 }

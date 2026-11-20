@@ -4,61 +4,56 @@ import com.catsmoker.obd2ai.R
 
 /**
  * Single source of truth for top-level navigation state. The welcome screen
- * (onboarding) is the root and main menu; MainActivity's phone top bar and
- * tablet rail both read this, so highlighting and the visible back arrow
- * stay consistent. Pure logic, tested.
+ * (onboarding) is the root and main menu; MainActivity's phone bottom-dock
+ * and tablet rail both read this, so highlighting and the visible back
+ * arrow stay consistent. Pure logic, tested.
  */
 object AppNav {
     /**
-     * Screens without section chrome. The welcome menu IS the navigation,
-     * so the top bar / rail would only duplicate its cards — it stays
-     * standalone, as does the first-launch setup screen. The transient
-     * setup screens hide the whole chrome too. System Back still works
-     * everywhere.
+     * Screens without section chrome. The transient setup screens hide the
+     * whole chrome (setup, permissions, connect). When [linked] is false —
+     * no connection and no demo — chrome is hidden everywhere: the dock/rail
+     * tabs all lead to screens that need a connection, so a disconnected app
+     * shows only the Home connection card (progressive disclosure). In
+     * [cardsMode] the user chose hub-and-spoke navigation at first start:
+     * chrome never shows, screens are reached from the Home cards.
      */
-    fun isChromeHidden(destinationId: Int): Boolean = destinationId in setOf(
-        R.id.onboardingFragment,
-        R.id.setupFragment,
-        R.id.permissionsFragment,
-        R.id.connectFragment
-    )
+    fun isChromeHidden(
+        destinationId: Int,
+        linked: Boolean = true,
+        cardsMode: Boolean = false
+    ): Boolean =
+        cardsMode || !linked || destinationId in setOf(
+            R.id.setupFragment,
+            R.id.permissionsFragment,
+            R.id.connectFragment
+        )
 
     /**
      * Top-level section for a destination, or null when nothing highlights
-     * (welcome root, setup screens, and detail screens without their own
-     * entry resolve to their section or nothing).
+     * (setup screens and the secondary screens — console, settings, about,
+     * legal — which belong to no dock tab). The welcome root resolves to the
+     * Home tab; detail screens resolve to their parent section.
      */
     fun sectionFor(destinationId: Int): Int? = when (destinationId) {
+        // Welcome screen → Home tab
+        R.id.onboardingFragment -> R.id.onboardingFragment
+
+        // Data sections
         R.id.liveDataFragment -> R.id.liveDataFragment
         R.id.errorOverviewFragment,
         R.id.errorDetailFragment,
         R.id.askAiFragment -> R.id.errorOverviewFragment
         R.id.tripFragment -> R.id.tripFragment
-        R.id.consoleFragment -> R.id.consoleFragment
-        R.id.settingsFragment -> R.id.settingsFragment
-        R.id.aboutFragment -> R.id.aboutFragment
+
+        // Secondary screens: no tab highlights
         else -> null
     }
 
     /**
-     * Visible back arrow: every chromed screen except the welcome root
+     * Visible up-arrow: every chromed screen except the welcome root
      * (nowhere meaningful to go back to).
      */
     fun showBackArrow(destinationId: Int): Boolean =
         !isChromeHidden(destinationId) && destinationId != R.id.onboardingFragment
-
-    /**
-     * Phone section buttons (dashboard … about icons). The leaf screens
-     * opened from the menu (settings, about, legal) use the back-arrow-only
-     * flow instead — back arrow + system Back return to the menu — so the
-     * strip never pops in mid-flow. The data screens keep quick section
-     * switching. (The bar itself stays visible for the arrow; only the
-     * section buttons hide, since the arrow lives inside the bar.)
-     */
-    fun showSectionButtons(destinationId: Int): Boolean =
-        !isChromeHidden(destinationId) && destinationId !in setOf(
-            R.id.settingsFragment,
-            R.id.aboutFragment,
-            R.id.legalFragment
-        )
 }

@@ -32,22 +32,6 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
-    <!-- Kept for code parity with the phone layout; hidden on tablets
-         because the rail already reaches Settings. -->
-    <ImageButton
-        android:id="@+id/button_settings_global"
-        android:layout_width="@dimen/settings_button_size"
-        android:layout_height="@dimen/settings_button_size"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/settings_title"
-        android:padding="@dimen/spacing_medium"
-        android:src="@drawable/ic_settings"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnSurface"
-        tools:visibility="visible" />
-
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="0dp"

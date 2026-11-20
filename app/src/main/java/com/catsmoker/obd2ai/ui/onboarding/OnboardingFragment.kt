@@ -125,6 +125,9 @@ class OnboardingFragment : Fragment() {
             activity.obdHelper.demoMode,
             activity.obdHelper.isConnected
         )
+        // The dock/rail share this state: starting demo or connecting makes
+        // the bar appear in place; disconnecting hides it again.
+        activity.updateNavChrome()
     }
 
     /** Dashboard/diagnostics read from the adapter: detour via connect first. */

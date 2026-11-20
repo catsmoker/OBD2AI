@@ -64,18 +64,12 @@
         android:id="@+id/errorOverviewFragment"
         android:name="com.catsmoker.obd2ai.ui.diagnostics.ErrorOverviewFragment"
         android:label="fragment_error_overview" >
+        <!-- Only parent→child navigation. Cross-section shortcuts are
+             available on the Home menu cards; detail screens should not
+             jump between unrelated sections without going through the dock. -->
         <action
             android:id="@+id/action_errorOverviewFragment_to_errorDetailFragment"
             app:destination="@id/errorDetailFragment" />
-        <action
-            android:id="@+id/action_errorOverviewFragment_to_liveDataFragment"
-            app:destination="@id/liveDataFragment" />
-        <action
-            android:id="@+id/action_errorOverviewFragment_to_consoleFragment"
-            app:destination="@id/consoleFragment" />
-        <action
-            android:id="@+id/action_errorOverviewFragment_to_tripFragment"
-            app:destination="@id/tripFragment" />
     </fragment>
 
     <fragment
@@ -120,9 +114,8 @@
         android:name="com.catsmoker.obd2ai.ui.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings">
-        <action
-            android:id="@+id/action_settingsFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
+        <!-- Legal pages are launched from here for privacy/terms links.
+             About is reachable via the Home card; Settings does not link to it. -->
         <action
             android:id="@+id/action_settingsFragment_to_legalFragment"
             app:destination="@id/legalFragment" />
