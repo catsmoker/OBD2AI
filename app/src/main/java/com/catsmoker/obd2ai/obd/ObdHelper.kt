@@ -37,6 +37,14 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /**
+ * The adapter (or transport) accepted the command but produced no reply
+ * within the timeout. Unlike a broken transport this is usually a slow
+ * adapter or a PID it does not support, so it must not be treated as a
+ * lost connection.
+ */
+class AdapterTimeoutException(message: String) : IOException(message)
+
+/**
  * Owns the OBD connection and commands for all three transports: Bluetooth
  * SPP ([setupObd]), WiFi TCP ([setupWifi]) and simulated [setupDemo].
  * Sends the fixed ELM327 init sequence `ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0,
@@ -51,6 +59,13 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
 
     /** When true, all reads come from [DemoObdSource] instead of hardware. */
     var demoMode: Boolean = false
+
+    /**
+     * Invoked when the transport dies unexpectedly (broken pipe, connection
+     * reset, closed socket) while a real adapter is connected. Fired on the
+     * IO thread — listeners must hop to the main thread before touching UI.
+     */
+    var onConnectionLost: (() -> Unit)? = null
 
     /**
      * Per-PID failure budget for the fast loop: a PID that keeps failing is
@@ -166,25 +181,32 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
             if (demoMode) return@withLock "(demo) $cmd\r\nOK\r\n>"
             val out = outputStream ?: throw IOException("Output stream is not available.")
             val `in` = inputStream ?: throw IOException("Input stream is not available.")
-            out.write((cmd + "\r").toByteArray())
-            out.flush()
-            val reply = StringBuilder()
-            val deadline = System.currentTimeMillis() + timeoutMs
-            while (System.currentTimeMillis() < deadline) {
-                if (`in`.available() > 0) {
-                    val chunk = ByteArray(`in`.available())
-                    val read = `in`.read(chunk)
-                    if (read > 0) {
-                        reply.append(String(chunk, 0, read))
-                        if (reply.contains('>')) break
+            try {
+                out.write((cmd + "\r").toByteArray())
+                out.flush()
+                val reply = StringBuilder()
+                val deadline = System.currentTimeMillis() + timeoutMs
+                while (System.currentTimeMillis() < deadline) {
+                    if (`in`.available() > 0) {
+                        val chunk = ByteArray(`in`.available())
+                        val read = `in`.read(chunk)
+                        if (read > 0) {
+                            reply.append(String(chunk, 0, read))
+                            if (reply.contains('>')) break
+                        }
+                    } else {
+                        delay(50)
                     }
-                } else {
-                    delay(50)
                 }
+                val text = reply.toString()
+                if (text.isBlank()) throw AdapterTimeoutException("No reply from adapter (timeout).")
+                return@withLock text
+            } catch (e: IOException) {
+                // A timeout is the adapter being slow; a broken pipe/reset or
+                // a closed socket means the link itself is gone.
+                if (e !is AdapterTimeoutException) onTransportLoss()
+                throw e
             }
-            val text = reply.toString()
-            if (text.isBlank()) throw IOException("No reply from adapter (timeout).")
-            return@withLock text
         }
     }
 
@@ -317,6 +339,20 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
     fun disconnectAll() {
         disconnectFromObdDevice()
         demoMode = false
+    }
+
+    /**
+     * Transport-level failure while a real adapter is connected: the
+     * phone/adapter link is gone, so tear the transports down (passive,
+     * demo-preserving — the same semantics as [disconnectFromObdDevice])
+     * and notify [onConnectionLost]. A plain timeout does NOT count: a slow
+     * adapter must not end the session. No-op in demo mode or when already
+     * disconnected.
+     */
+    private fun onTransportLoss() {
+        if (demoMode || obdConnection == null) return
+        disconnectFromObdDevice()
+        onConnectionLost?.invoke()
     }
 
     companion object {

@@ -391,3 +391,18 @@ dashboard), the Console item navigates and its active indicator
 highlights, back shows the tile-free Home with an unhighlighted rail,
 and the Dashboard item returns to Live with the indicator on the second
 slot. Density reset to 440 afterwards.
+
+### Instant chrome update on transport loss (later on 2025-11-20)
+`ObdHelper` now distinguishes a dead transport from a slow adapter:
+`sendRaw` wraps its write/read loop, and any `IOException` that is not an
+`AdapterTimeoutException` (new subclass, thrown for the plain no-reply
+timeout) triggers `onTransportLoss()` — a passive, demo-preserving teardown
+(same semantics as `disconnectFromObdDevice`) plus the new
+`onConnectionLost` callback. `MainActivity` wires it to
+`runOnUiThread { updateNavChrome() }`, so the dock/rail hides the moment the
+link dies instead of on the next destination change. Timeouts never end the
+session. Verified on device with a scripted ELM327-over-WiFi echo server
+(`adb reverse tcp:9999`): connect, init + live polling flow through it, the
+server drops the socket, the dock disappears immediately, and back shows
+the disconnected Home connect card. No crash; the poll loop logs its
+expected read error once.

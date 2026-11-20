@@ -316,6 +316,12 @@ class MainActivity : AppCompatActivity() {
         // them while its view is created during layout inflation.
         bluetoothHelper = BluetoothHelper(this)
         obdHelper = ObdHelper(bluetoothHelper)
+        // A spontaneous transport loss (adapter powered off, BT drop, WiFi
+        // reset) must hide the chrome immediately, not on the next
+        // destination change. ObdHelper fires on the IO thread.
+        obdHelper.onConnectionLost = {
+            runOnUiThread { updateNavChrome() }
+        }
         aiService = AiService(this)
         adBilling = AdBillingManager(this)
         adBilling.start()
