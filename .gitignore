@@ -44,3 +44,6 @@ Desktop.ini
 .claude/settings.local.json
 AGENTS.md
 opencode.json
+
+# Scratch / working files
+.tmp/

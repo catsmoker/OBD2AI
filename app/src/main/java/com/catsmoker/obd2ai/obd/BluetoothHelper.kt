@@ -17,6 +17,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -27,7 +29,7 @@ data class BluetoothDeviceDTO(
     val address: String
 )
 
-class BluetoothHelper(private val context: Context) {
+class BluetoothHelper @Inject constructor(@ApplicationContext private val context: Context) {
     private val bluetoothAdapter: BluetoothAdapter?
     private var bluetoothSocket: BluetoothSocket? = null
     private val sppUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")

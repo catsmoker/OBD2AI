@@ -2,6 +2,8 @@ package com.catsmoker.obd2ai.ads
 
 import android.app.Activity
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import android.util.Log
 import androidx.core.content.edit
 import com.android.billingclient.api.AcknowledgePurchaseParams
@@ -37,7 +39,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * dialog. Android-framework code (no unit tests) — the grant rules live
  * in the tested [AdEntitlement].
  */
-class AdBillingManager(appContext: Context) {
+class AdBillingManager @Inject constructor(@ApplicationContext appContext: Context) {
     private val context = appContext.applicationContext
     private val prefs =
         context.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)

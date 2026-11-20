@@ -2,6 +2,7 @@ package com.catsmoker.obd2ai.obd
 
 import android.Manifest
 import android.util.Log
+import javax.inject.Inject
 import androidx.annotation.RequiresPermission
 import com.catsmoker.obd2ai.diagnostics.DtcSource
 import com.catsmoker.obd2ai.diagnostics.FreezeFrame
@@ -51,7 +52,7 @@ class AdapterTimeoutException(message: String) : IOException(message)
  * ATAT1` — `ATS0`/`ATH0` make spaces/headers deterministic across clones,
  * which the parsers assume; don't drop them. All reads branch on `demoMode`.
  */
-class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
+class ObdHelper @Inject constructor(private val bluetoothHelper: BluetoothHelper) {
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
     private var obdConnection: ObdDeviceConnection? = null

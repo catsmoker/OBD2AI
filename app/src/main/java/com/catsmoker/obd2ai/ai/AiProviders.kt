@@ -1,6 +1,8 @@
 package com.catsmoker.obd2ai.ai
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import android.util.Log
 import com.catsmoker.obd2ai.diagnostics.DtcInfo
 import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
@@ -72,7 +74,7 @@ data class AiConfig(
  * are covered; each provider speaks its native HTTP API directly so no
  * vendor SDK is needed.
  */
-class AiService(private val context: Context) {
+class AiService @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun getConfig(): AiConfig {
         val prefs = context.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)

@@ -6,6 +6,8 @@ import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -36,13 +38,16 @@ import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.ui.AppRoot
 import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
     lateinit var bluetoothHelper: BluetoothHelper
+    @Inject
     lateinit var obdHelper: ObdHelper
+    @Inject
     lateinit var aiService: AiService
-    /** Paid ad removal (Play Billing `remove_ads`); fragments read the
-     * entitlement through this, never through preferences directly. */
+    @Inject
     lateinit var adBilling: AdBillingManager
     /** Created on first use (off the launch path): Firebase init does disk I/O. */
     val firebaseAnalytics: FirebaseAnalytics by lazy { Firebase.analytics }
@@ -334,18 +339,12 @@ class MainActivity : AppCompatActivity() {
         applyAppLanguage(prefs.getString(PrefsKeys.APP_LANGUAGE, null).orEmpty())
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        // Helpers before setContentView: the start destination (home) reads
-        // them while its view is created during layout inflation.
-        bluetoothHelper = BluetoothHelper(this)
-        obdHelper = ObdHelper(bluetoothHelper)
-        // A spontaneous transport loss (adapter powered off, BT drop, WiFi
-        // reset) refreshes the shared connection state; the Compose chrome
-        // observes it and hides itself without any navigation event.
+        // Helpers are field-injected by Hilt before onCreate. The transport
+        // loss hook must be re-armed here because injection creates a fresh
+        // ObdHelper per activity instance.
         obdHelper.onConnectionLost = {
             runOnUiThread { ConnectionStateStore.refresh(obdHelper) }
         }
-        aiService = AiService(this)
-        adBilling = AdBillingManager(this)
         adBilling.start()
         // Entitlement flips (restore on start, purchase any time) re-run
         // the single ad gate: grant tears the banner down immediately.
