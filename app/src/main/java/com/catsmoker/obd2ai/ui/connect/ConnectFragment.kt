@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.navOptions
 import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
@@ -131,11 +130,7 @@ class ConnectFragment : Fragment() {
                                 !AppNav.isCardsMode(navStyleTag())
                             ) {
                                 findNavController().navigate(
-                                    R.id.liveDataFragment,
-                                    null,
-                                    navOptions {
-                                        popUpTo(R.id.onboardingFragment) { inclusive = false }
-                                    }
+                                    R.id.action_connectFragment_to_liveDataFragment
                                 )
                             } else {
                                 findNavController().navigate(

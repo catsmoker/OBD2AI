@@ -58,6 +58,15 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/onboardingFragment"
             app:popUpToInclusive="false" />
+        <!-- Bar mode: a successful connection lands directly in the app
+             (dashboard) instead of the Home menu. Same stack collapse as
+             the onboarding action so back still returns to Home. -->
+        <action
+            android:id="@+id/action_connectFragment_to_liveDataFragment"
+            app:destination="@id/liveDataFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
