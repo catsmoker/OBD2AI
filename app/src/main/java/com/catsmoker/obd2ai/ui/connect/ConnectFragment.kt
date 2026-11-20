@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.navOptions
 import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
@@ -66,6 +67,7 @@ import com.catsmoker.obd2ai.obd.BluetoothDeviceDTO
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.prefs.PrefsKeys
+import com.catsmoker.obd2ai.ui.common.AppNav
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
@@ -122,15 +124,34 @@ class ConnectFragment : Fragment() {
                         },
                         onRefresh = ::refreshDevices,
                         navigateToHome = {
-                            findNavController().navigate(
-                                R.id.action_connectFragment_to_onboardingFragment
-                            )
+                            // Bar mode: a successful connect lands in the app
+                            // (dashboard) instead of bouncing back to the Home
+                            // menu; a cancelled attempt still returns to Home.
+                            if (obdHelper.isConnected &&
+                                !AppNav.isCardsMode(navStyleTag())
+                            ) {
+                                findNavController().navigate(
+                                    R.id.liveDataFragment,
+                                    null,
+                                    navOptions {
+                                        popUpTo(R.id.onboardingFragment) { inclusive = false }
+                                    }
+                                )
+                            } else {
+                                findNavController().navigate(
+                                    R.id.action_connectFragment_to_onboardingFragment
+                                )
+                            }
                         }
                     )
                 }
             }
         }
     }
+
+    private fun navStyleTag(): String? =
+        activity?.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            ?.getString(PrefsKeys.NAV_STYLE, null)
 
     override fun onResume() {
         super.onResume()

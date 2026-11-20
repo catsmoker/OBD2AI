@@ -24,8 +24,12 @@ class AppNavTest {
     }
 
     @Test
+    fun `console is a top-level dock tab`() {
+        assertEquals(R.id.consoleFragment, AppNav.sectionFor(R.id.consoleFragment))
+    }
+
+    @Test
     fun `secondary screens highlight nothing`() {
-        assertNull(AppNav.sectionFor(R.id.consoleFragment))
         assertNull(AppNav.sectionFor(R.id.settingsFragment))
         assertNull(AppNav.sectionFor(R.id.aboutFragment))
         assertNull(AppNav.sectionFor(R.id.legalFragment))
@@ -77,7 +81,7 @@ class AppNavTest {
 
     @Test
     fun `welcome root setup screens and unknown destinations highlight nothing`() {
-        assertEquals(R.id.onboardingFragment, AppNav.sectionFor(R.id.onboardingFragment))
+        assertNull(AppNav.sectionFor(R.id.onboardingFragment))
         assertNull(AppNav.sectionFor(R.id.setupFragment))
         assertNull(AppNav.sectionFor(R.id.permissionsFragment))
         assertNull(AppNav.sectionFor(R.id.connectFragment))
@@ -105,5 +109,12 @@ class AppNavTest {
         assertTrue(AppNav.isChromeHidden(R.id.connectFragment))
         assertFalse(AppNav.isChromeHidden(R.id.settingsFragment))
         assertFalse(AppNav.isChromeHidden(R.id.liveDataFragment))
+    }
+
+    @Test
+    fun `cards mode is only the cards tag`() {
+        assertTrue(AppNav.isCardsMode("cards"))
+        assertFalse(AppNav.isCardsMode("bar"))
+        assertFalse(AppNav.isCardsMode(null))
     }
 }

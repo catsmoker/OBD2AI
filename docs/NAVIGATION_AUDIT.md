@@ -365,3 +365,19 @@ concept, one name). Selecting a style writes `nav_style` and calls
 `MainActivity.updateNavChrome()`, so the change applies as soon as the user
 leaves Settings. Verified on device both directions with demo running:
 Bar → Cards hides the dock on return; Cards → Bar restores it.
+
+### Bar mode drops the Home tab (later on 2025-11-20)
+In bar mode the dock's first tab is now the OBD Console, not Home:
+Console / Live / Diagnostics / Trip (rail mirrors it). Chrome only ever
+shows in bar mode, so the menus are unconditional. Home is no longer a
+destination in bar mode: starting demo or completing a connect navigates
+straight to the dashboard, the Home tile grid is hidden (the dock already
+covers it), and Home survives only as the disconnected connect screen,
+reachable via system back — its header gear/info icons stay the path to
+Settings/About. `sectionFor(console) = console` now; the welcome root and
+the other secondary screens highlight nothing, and `syncHighlight` clears
+all items when the section has no tab (stale-highlight fix). Cards mode is
+untouched. Verified on device: demo start lands on Live, Console tab
+navigates and highlights, back shows tile-free Home with an unhighlighted
+dock, connect-screen demo lands on Live, cards mode still shows tiles with
+no dock.

@@ -1,6 +1,7 @@
 package com.catsmoker.obd2ai.ui.common
 
 import com.catsmoker.obd2ai.R
+import com.catsmoker.obd2ai.prefs.NavStyle
 
 /**
  * Single source of truth for top-level navigation state. The welcome screen
@@ -31,22 +32,22 @@ object AppNav {
 
     /**
      * Top-level section for a destination, or null when nothing highlights
-     * (setup screens and the secondary screens — console, settings, about,
-     * legal — which belong to no dock tab). The welcome root resolves to the
-     * Home tab; detail screens resolve to their parent section.
+     * (setup screens and the secondary screens — settings, about, legal —
+     * which belong to no dock tab). The welcome root resolves to no tab:
+     * the dock's first tab is the OBD Console, and Home sits above the tabs
+     * (reachable via system back). Detail screens resolve to their parent
+     * section.
      */
     fun sectionFor(destinationId: Int): Int? = when (destinationId) {
-        // Welcome screen → Home tab
-        R.id.onboardingFragment -> R.id.onboardingFragment
-
-        // Data sections
+        // Data sections (Console replaced the Home tab in the dock)
+        R.id.consoleFragment -> R.id.consoleFragment
         R.id.liveDataFragment -> R.id.liveDataFragment
         R.id.errorOverviewFragment,
         R.id.errorDetailFragment,
         R.id.askAiFragment -> R.id.errorOverviewFragment
         R.id.tripFragment -> R.id.tripFragment
 
-        // Secondary screens: no tab highlights
+        // Welcome root and secondary screens: no tab highlights
         else -> null
     }
 
@@ -56,4 +57,11 @@ object AppNav {
      */
     fun showBackArrow(destinationId: Int): Boolean =
         !isChromeHidden(destinationId) && destinationId != R.id.onboardingFragment
+
+    /**
+     * True when the user chose hub-and-spoke (cards) navigation: Home tiles
+     * drive everything and chrome never shows. Pure logic, tested.
+     */
+    fun isCardsMode(navStyleTag: String?): Boolean =
+        NavStyle.fromPref(navStyleTag) == NavStyle.CARDS
 }

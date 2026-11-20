@@ -64,6 +64,7 @@ fun HomeScreen(
     onOpenConsole: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
+    showTiles: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val linked = state != ConnectionState.DISCONNECTED
@@ -75,7 +76,7 @@ fun HomeScreen(
 
     val columns = LocalContext.current.resources.getInteger(R.integer.home_grid_columns)
     val tiles = buildList {
-        if (linked) {
+        if (showTiles) {
             add(
                 HomeTile(
                     title = stringResource(R.string.dashboard_title),

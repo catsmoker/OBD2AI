@@ -420,10 +420,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Check the menu item for [section], or clear all when null. */
+    /** Check the menu item for [section], or clear all when it has none. */
     private fun syncHighlight(menu: android.view.Menu, section: Int?) {
-        if (section != null) {
-            menu.findItem(section)?.isChecked = true
+        val item = section?.let { menu.findItem(it) }
+        if (item != null) {
+            item.isChecked = true
         } else {
             for (i in 0 until menu.size()) {
                 menu.getItem(i).isChecked = false
@@ -448,10 +449,10 @@ class MainActivity : AppCompatActivity() {
             obdHelper.isConnected
         ) != ConnectionState.DISCONNECTED
         // Cards mode (chosen at first start) means hub-and-spoke: no bar.
-        val cardsMode = NavStyle.fromPref(
+        val cardsMode = AppNav.isCardsMode(
             getSharedPreferences(PrefsKeys.PREFS_NAME, MODE_PRIVATE)
                 .getString(PrefsKeys.NAV_STYLE, null)
-        ) == NavStyle.CARDS
+        )
         val hidden = AppNav.isChromeHidden(dest.id, linked, cardsMode)
         val section = AppNav.sectionFor(dest.id)
         val railView = rail

@@ -19,6 +19,7 @@ import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.prefs.PrefsKeys
+import com.catsmoker.obd2ai.ui.common.AppNav
 import com.catsmoker.obd2ai.ui.common.ConnectionState
 import com.catsmoker.obd2ai.ui.home.HomeScreen
 import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
@@ -71,7 +72,12 @@ class OnboardingFragment : Fragment() {
                         },
                         onOpenAbout = {
                             findNavController().navigate(R.id.action_onboardingFragment_to_aboutFragment)
-                        }
+                        },
+                        // Bar mode: the dock owns top-level navigation, so the
+                        // tile grid would duplicate it — Home is the connect
+                        // screen only. Cards mode keeps the tiles.
+                        showTiles = AppNav.isCardsMode(navStyleTag()) &&
+                            state != ConnectionState.DISCONNECTED
                     )
                 }
             }
@@ -102,12 +108,20 @@ class OnboardingFragment : Fragment() {
         }
     }
 
-    /** Demo sets up in place: no navigation, the same menu re-renders. */
+    /** Demo sets up in place; bar mode then lands on the dashboard. */
     private fun startDemo() {
         val activity = activity as? MainActivity ?: return
         activity.obdHelper.setupDemo()
         refreshState()
+        if (!AppNav.isCardsMode(navStyleTag())) {
+            // Bar mode: no Home menu — go straight into the app.
+            findNavController().navigate(R.id.action_onboardingFragment_to_liveDataFragment)
+        }
     }
+
+    private fun navStyleTag(): String? =
+        activity?.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            ?.getString(PrefsKeys.NAV_STYLE, null)
 
     private fun disconnect() {
         val activity = activity as? MainActivity ?: return

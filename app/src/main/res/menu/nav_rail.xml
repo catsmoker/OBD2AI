@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Top-level destinations for the tablet navigation rail (sw600dp).
-     Mirrors the phone bottom dock: Home + 4 data sections. Console,
-     Settings, About are reachable from Home instead of the rail.
-     Titles reuse the screens' own title strings. -->
+     Mirrors the phone bottom dock: Console + 3 data sections. Settings
+     and About are reachable from the Home screen (system back). -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@id/onboardingFragment"
-        android:icon="@drawable/ic_home"
-        android:title="@string/dock_home" />
+        android:id="@id/consoleFragment"
+        android:icon="@drawable/ic_terminal"
+        android:title="@string/obd_console_title" />
     <item
         android:id="@+id/liveDataFragment"
         android:icon="@drawable/ic_gauge"
