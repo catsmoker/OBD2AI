@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,9 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ai.AiService
@@ -51,7 +47,6 @@ import com.catsmoker.obd2ai.diagnostics.DtcStore
 import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
 import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
-import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
@@ -62,56 +57,6 @@ import kotlinx.coroutines.launch
 data class ChatMessage(val text: String, val fromUser: Boolean)
 
 /** Fragment host: owns navigation, the message history, VIN load, and the ask coroutine. */
-class AskAiFragment : Fragment() {
-    private lateinit var obdHelper: ObdHelper
-    private lateinit var aiService: AiService
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val args = AskAiFragmentArgs.fromBundle(requireArguments())
-        val errorCode = args.errorCode
-        obdHelper = (activity as MainActivity).obdHelper
-        aiService = (activity as MainActivity).aiService
-
-        // Same lookup as the detail screen: memory first, cached scan second.
-        val dto = ObdDataHolder.dtpResults.find { it.errorCode == errorCode }
-            ?: DtcStore.load(requireContext()).find { it.errorCode == errorCode }
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    if (dto == null) {
-                        Text(
-                            text = requireContext().getString(R.string.error_detail_gone, errorCode),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(24.dp)
-                        )
-                    } else {
-                        AskAiScreen(
-                            dto = dto,
-                            errorCode = errorCode,
-                            obdHelper = obdHelper,
-                            aiService = aiService,
-                            context = requireContext(),
-                            onLogEvent = { name -> (activity as MainActivity).logAnalyticsEvent(name) },
-                            onShowError = { text ->
-                                ErrorDialogFragment.newInstance(text)
-                                    .show(parentFragmentManager, "errorDialog")
-                            },
-                            onNavBack = { findNavController().navigateUp() }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
 /** Compose content for the Ask-AI screen. */
 @Composable
 fun AskAiScreen(
@@ -125,7 +70,6 @@ fun AskAiScreen(
     onNavBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
 
     var messages by remember { mutableStateOf(listOf<ChatMessage>()) }
     var question by remember { mutableStateOf("") }
@@ -176,7 +120,6 @@ fun AskAiScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .verticalScroll(scrollState)
             ) {
                 items(items = messages, key = { it.hashCode().toString() }) { message ->
                     ChatBubble(message = message)

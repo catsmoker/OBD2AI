@@ -10,30 +10,30 @@ class SetupStateTest {
 
     @Test
     fun `next step advances and clamps at step 3`() {
-        assertEquals(SetupFragment.STEP_2, SetupFragment.nextStep(SetupFragment.STEP_1))
-        assertEquals(SetupFragment.STEP_3, SetupFragment.nextStep(SetupFragment.STEP_2))
-        assertEquals(SetupFragment.STEP_3, SetupFragment.nextStep(SetupFragment.STEP_3))
+        assertEquals(SetupState.STEP_2, SetupState.nextStep(SetupState.STEP_1))
+        assertEquals(SetupState.STEP_3, SetupState.nextStep(SetupState.STEP_2))
+        assertEquals(SetupState.STEP_3, SetupState.nextStep(SetupState.STEP_3))
     }
 
     @Test
     fun `prev step retreats and clamps at step 1`() {
-        assertEquals(SetupFragment.STEP_1, SetupFragment.prevStep(SetupFragment.STEP_2))
-        assertEquals(SetupFragment.STEP_2, SetupFragment.prevStep(SetupFragment.STEP_3))
-        assertEquals(SetupFragment.STEP_1, SetupFragment.prevStep(SetupFragment.STEP_1))
+        assertEquals(SetupState.STEP_1, SetupState.prevStep(SetupState.STEP_2))
+        assertEquals(SetupState.STEP_2, SetupState.prevStep(SetupState.STEP_3))
+        assertEquals(SetupState.STEP_1, SetupState.prevStep(SetupState.STEP_1))
     }
 
     @Test
     fun `step 1 gates on agreement`() {
-        assertFalse(SetupFragment.canGoNext(false))
-        assertTrue(SetupFragment.canGoNext(true))
+        assertFalse(SetupState.canGoNext(false))
+        assertTrue(SetupState.canGoNext(true))
     }
 
     @Test
     fun `progress fills in thirds across the three steps`() {
-        assertEquals(33, SetupFragment.progressFor(SetupFragment.STEP_1))
-        assertEquals(66, SetupFragment.progressFor(SetupFragment.STEP_2))
-        assertEquals(100, SetupFragment.progressFor(SetupFragment.STEP_3))
-        assertEquals(33, SetupFragment.progressFor(0))
-        assertEquals(100, SetupFragment.progressFor(9))
+        assertEquals(33, SetupState.progressFor(SetupState.STEP_1))
+        assertEquals(66, SetupState.progressFor(SetupState.STEP_2))
+        assertEquals(100, SetupState.progressFor(SetupState.STEP_3))
+        assertEquals(33, SetupState.progressFor(0))
+        assertEquals(100, SetupState.progressFor(9))
     }
 }

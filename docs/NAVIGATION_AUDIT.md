@@ -416,3 +416,78 @@ adapter) still get the full 3-strike budget, and the re-init recovery stays
 gated on `isConnected`. Re-verified with the echo-server drop: exactly one
 monitoring error in logcat (previously the loop retried), dock hidden
 immediately, no crash.
+
+## Phase 6 — Full single-activity Compose migration
+
+The UI layer is now **Jetpack Compose only**: no Fragments, no
+`nav_graph.xml`, no XML layouts or menus. One activity (`MainActivity`)
+hosts a single `setContent { AppRoot(...) }` tree.
+
+### Structure
+
+- `ui/AppRoot.kt` — the navigation graph (Navigation Compose), the chrome
+  (phone `NavigationBar` dock / tablet `NavigationRail` with a back-arrow
+  header) and the global ad banner (`AdBanner`, hosting the `AdView` via
+  `AndroidView`; `MainActivity` owns the instance and the load gate).
+- `ui/common/ConnectionStateStore.kt` — shared `StateFlow` of
+  `ConnectionState` + cards-mode flag. Chrome visibility is now derived
+  composition-side from `AppNav.isChromeHidden(route, linked, cardsMode)`;
+  there is no `updateNavChrome()` anymore. Transport loss just refreshes
+  the store and Compose recomposes.
+- `ui/common/AppNav.kt` — rewritten route-based (route strings replace
+  nav resource IDs). Same semantics: chrome hidden while disconnected /
+  on setup-permissions-connect / in cards mode; detail routes resolve to
+  the diagnostics section; `showBackArrow` for the rail header.
+- Destinations (`*Destination.kt` per package) are thin wrappers owning
+  navigation, DTO lookups and dialogs; the screen composables are the
+  same ones the fragments used to host (recovered verbatim).
+- Live dashboard: the fragment's logic moved into `LiveSession`
+  (+ `LiveSessionAi` extensions), pure logic into `LiveLogic` (unit
+  tested). The session starts on composition and tears down on leaving
+  it, with the same rotation exception (`isChangingConfigurations`
+  keeps the socket and the poll loop). The demo control sheet is a
+  Compose `ModalBottomSheet` driving the same `ObdDataHolder` flows.
+- Setup is a 3-step Compose flow (`SetupScreen.kt` + `SetupState`);
+  language/theme previews apply live without recreation.
+
+### Deleted
+
+All 14 fragment classes (incl. `ErrorDialogFragment` → Compose
+`ErrorDialog`), `nav_graph.xml`, every XML layout (`activity_main`,
+`fragment_*`, `demo_controls_sheet`, `nav_rail_header`, sw600dp
+variant), both menu XMLs, and the now-dead
+`fragment_settings.xml`/`WindowInsets.kt`. Gradle drops
+`navigation-fragment-ktx`, `navigation-ui-ktx`, `constraintlayout`,
+`swiperefreshlayout`; adds `compose runtime-livedata` (the Bluetooth
+permission `LiveData` is observed with `observeAsState`).
+
+### Tests
+
+`AppNavTest` rewritten for routes; `LiveDataLogicTest` now targets
+`LiveLogic`; `SetupStateTest`/`LegalConsentTest` target `SetupState`/
+`LegalPages`; `ResourceParityTest` keeps only the locale-parity check
+(there are no layout variants left to pin). 215 tests green.
+
+### Device verification (POCO X3 NFC, Android 15)
+
+- Disconnected Home: no dock, nav hint visible, no crash.
+- Try Demo → Live dashboard with live gauges (RPM/speed/coolant/voltage/
+  fuel tiles updating), dock appears, demo badge shown.
+- Compose demo sheet: opens from the tune icon, shows current values,
+  dragging the speed slider updates the flow (tile showed 176 Km/h),
+  back/Close dismisses.
+- Dock tabs: Diagnostics (honest "Not scanned yet"), Console, Trip all
+  navigate and highlight; back returns to the tile-free Home.
+- Exit demo → dock hides immediately (progressive disclosure through the
+  store, no navigation event).
+- Settings opens from the Home gear; Navigation dropdown switches
+  bar↔cards and the pref persists (`nav_style` verified via run-as).
+- Tablet (`wm density 200`): rail replaces the dock, rail items navigate
+  (Console verified), back-arrow header present. Density reset after.
+- Diagnostics scan (demo) → 2 codes (P0301/P0455) → detail route with
+  arg → Ask-AI route with arg → back chain works.
+- One real bug found and fixed during verification: `AskAiScreen`'s
+  `LazyColumn` also had `.verticalScroll()` — an illegal nesting that
+  crashed on open ("Vertically scrollable component was measured with an
+  infinity maximum height"). The redundant `verticalScroll` is removed;
+  re-verified on device.

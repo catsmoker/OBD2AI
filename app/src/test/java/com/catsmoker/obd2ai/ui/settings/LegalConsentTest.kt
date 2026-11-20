@@ -9,18 +9,18 @@ class LegalConsentTest {
 
     @Test
     fun `terms page selected only for terms key`() {
-        assertTrue(LegalFragment.isTermsPage(LegalFragment.PAGE_TERMS))
-        assertFalse(LegalFragment.isTermsPage(LegalFragment.PAGE_PRIVACY))
+        assertTrue(LegalPages.isTermsPage(LegalPages.PAGE_TERMS))
+        assertFalse(LegalPages.isTermsPage(LegalPages.PAGE_PRIVACY))
     }
 
     @Test
     fun `unknown legal page falls back to privacy`() {
-        assertFalse(LegalFragment.isTermsPage("cookies"))
-        assertFalse(LegalFragment.isTermsPage(""))
+        assertFalse(LegalPages.isTermsPage("cookies"))
+        assertFalse(LegalPages.isTermsPage(""))
     }
 
     @Test
     fun `legal page keys are distinct`() {
-        assertTrue(LegalFragment.PAGE_PRIVACY != LegalFragment.PAGE_TERMS)
+        assertTrue(LegalPages.PAGE_PRIVACY != LegalPages.PAGE_TERMS)
     }
 }

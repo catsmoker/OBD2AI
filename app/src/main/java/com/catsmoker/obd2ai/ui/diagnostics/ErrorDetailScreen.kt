@@ -37,9 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.diagnostics.DtcSource
@@ -48,7 +46,6 @@ import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
 import com.catsmoker.obd2ai.diagnostics.ErrorSeverity
 import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
-import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
@@ -259,80 +256,3 @@ fun ErrorDetailScreen(
 }
 
 /** Fragment host: owns navigation, freeze-frame load, share, and the dto lookup. */
-class ErrorDetailFragment : Fragment() {
-    private lateinit var obdHelper: ObdHelper
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val args = ErrorDetailFragmentArgs.fromBundle(requireArguments())
-        val errorCode = args.errorCode
-        obdHelper = (activity as MainActivity).obdHelper
-
-        // Results live in memory, but fall back to the last cached scan so the
-        // detail screen still works after process death.
-        val dto = ObdDataHolder.dtpResults.find { it.errorCode == errorCode }
-            ?: DtcStore.load(requireContext()).find { it.errorCode == errorCode }
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    if (dto == null) {
-                        androidx.compose.material3.Text(
-                            text = context.getString(R.string.error_detail_gone, errorCode),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(24.dp)
-                        )
-                    } else {
-                        ErrorDetailScreen(
-                            dto = dto,
-                            context = requireContext(),
-                            obdHelper = obdHelper,
-                            onAskAi = {
-                                findNavController().navigate(
-                                    com.catsmoker.obd2ai.ui.diagnostics.ErrorDetailFragmentDirections
-                                        .actionErrorDetailFragmentToAskAiFragment(dto.errorCode)
-                                )
-                            },
-                            onShare = { shareReport(dto) },
-                            onBack = { findNavController().navigateUp() }
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    /** Shares this fault's assessment as plain text (mechanic, notes app…). */
-    private fun shareReport(dto: DtpCodeDTO) {
-        val body = buildString {
-            appendLine("${dto.errorCode} — ${dto.title}")
-            appendLine(requireContext().getString(R.string.error_details_code_label, dto.severity))
-            if (dto.sources.isNotEmpty()) {
-                val names = dto.sources.sortedBy { it.ordinal }
-                    .joinToString(", ") { sourceLabel(requireContext(), it) }
-                appendLine(requireContext().getString(R.string.error_detail_sources, names))
-            }
-            appendLine()
-            appendLine(dto.detail)
-            appendLine()
-            appendLine(dto.implications)
-            if (dto.suggestedActions.isNotEmpty()) {
-                appendLine()
-                dto.suggestedActions.forEach { appendLine("- $it") }
-            }
-            appendLine()
-            append(getString(R.string.app_name))
-        }
-        val share = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "${dto.errorCode} ${dto.title}")
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
-        startActivity(Intent.createChooser(share, requireContext().getString(R.string.error_detail_share)))
-    }
-}

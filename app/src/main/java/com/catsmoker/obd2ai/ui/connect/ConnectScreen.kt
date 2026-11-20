@@ -58,8 +58,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.obd.BluetoothDeviceDTO
@@ -83,119 +81,6 @@ import kotlinx.coroutines.launch
  * owns the activity-result launcher; Compose owns the discovery receiver
  * (registered/unregistered via DisposableEffect).
  */
-class ConnectFragment : Fragment() {
-
-    private lateinit var bluetoothHelper: BluetoothHelper
-    private lateinit var obdHelper: ObdHelper
-    private val uiState = ConnectUiState()
-
-    private val enableBluetoothLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            refreshDevices()
-        } else {
-            Toast.makeText(
-                context, R.string.permissions_bluetooth_required, Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        bluetoothHelper = (activity as MainActivity).bluetoothHelper
-        obdHelper = (activity as MainActivity).obdHelper
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    ConnectScreen(
-                        uiState = uiState,
-                        bluetoothHelper = bluetoothHelper,
-                        obdHelper = obdHelper,
-                        onEnableBluetooth = {
-                            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                            enableBluetoothLauncher.launch(intent)
-                        },
-                        onRefresh = ::refreshDevices,
-                        navigateToHome = {
-                            // Bar mode: a successful connect lands in the app
-                            // (dashboard) instead of bouncing back to the Home
-                            // menu; a cancelled attempt still returns to Home.
-                            if (obdHelper.isConnected &&
-                                !AppNav.isCardsMode(navStyleTag())
-                            ) {
-                                findNavController().navigate(
-                                    R.id.action_connectFragment_to_liveDataFragment
-                                )
-                            } else {
-                                findNavController().navigate(
-                                    R.id.action_connectFragment_to_onboardingFragment
-                                )
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun navStyleTag(): String? =
-        activity?.getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
-            ?.getString(PrefsKeys.NAV_STYLE, null)
-
-    override fun onResume() {
-        super.onResume()
-        if (!bluetoothHelper.isBluetoothEnabled()) {
-            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            enableBluetoothLauncher.launch(intent)
-        } else {
-            refreshDevices()
-        }
-    }
-
-    @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT])
-    private fun refreshDevices() {
-        if (!bluetoothHelper.checkBluetoothPermissions()) {
-            Toast.makeText(
-                context, R.string.permissions_bluetooth_required, Toast.LENGTH_SHORT
-            ).show()
-            uiState.isRefreshing.value = false
-            return
-        }
-        try {
-            val pairedDevices = bluetoothHelper.getPairedDevices()
-            uiState.pairedDevices.value = pairedDevices
-            uiState.selectedDevice.value = null
-            bluetoothHelper.startDiscovery()
-            uiState.isRefreshing.value = true
-            Handler(Looper.getMainLooper()).postDelayed({
-                try { bluetoothHelper.stopDiscovery() } catch (_: Exception) {}
-                uiState.isRefreshing.value = false
-            }, 12000)
-        } catch (e: Exception) {
-            uiState.isRefreshing.value = false
-            Toast.makeText(
-                context,
-                requireActivity().getString(R.string.connect_no_devices_found, e.message),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        try { bluetoothHelper.stopDiscovery() } catch (e: SecurityException) {
-            Log.w("ConnectFragment", "Stop discovery without permission", e)
-        }
-    }
-}
-
-/** Single shared UI state for the connect screen. Fragment writes, Compose reads. */
 class ConnectUiState {
     val pairedDevices = mutableStateOf(emptyList<BluetoothDeviceDTO>())
     val selectedDevice = mutableStateOf<BluetoothDeviceDTO?>(null)

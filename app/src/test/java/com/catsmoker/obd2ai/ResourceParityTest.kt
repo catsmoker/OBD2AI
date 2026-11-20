@@ -4,9 +4,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * File-based resource contracts: every locale mirrors the default string
- * keys, and every land/tablet layout variant keeps every default view ID
- * (a missing ID is a null findViewById crash on rotation).
+ * File-based resource contract: every locale mirrors the default string
+ * keys. (The layout-ID parity check retired with the XML layouts — the UI
+ * is now fully Compose, so there are no layout variants to keep in sync.)
  * Test JVM cwd is the `app/` module dir, so paths are `src/main/res/…`.
  */
 class ResourceParityTest {
@@ -32,27 +32,6 @@ class ResourceParityTest {
             val keys = keysOf("src/main/res/$locale/strings.xml")
             assertTrue("$locale missing keys: ${base - keys}", (base - keys).isEmpty())
             assertTrue("$locale extra keys: ${keys - base}", (keys - base).isEmpty())
-        }
-    }
-
-    @Test
-    fun `land and tablet layout variants keep every default view ID`() {
-        fun idsOf(path: String): Set<String> {
-            val file = java.io.File(path)
-            assertTrue("missing layout file: $path", file.exists())
-            return Regex("""@\+id/([A-Za-z0-9_]+)""")
-                .findAll(file.readText()).map { it.groupValues[1] }.toSet()
-        }
-
-        val pairs: List<Pair<String, String>> = listOf()
-        // fragment_live_data.xml, fragment_error_overview.xml and
-        // fragment_connect.xml were migrated to Compose, so they no longer
-        // have XML layouts or land/tablet variants to keep IDs in sync with.
-        for ((default, variant) in pairs) {
-            val defaultIds = idsOf("src/main/res/$default")
-            val variantIds = idsOf("src/main/res/$variant")
-            val missing = defaultIds - variantIds
-            assertTrue("$variant missing IDs: $missing", missing.isEmpty())
         }
     }
 }

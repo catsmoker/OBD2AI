@@ -43,9 +43,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ai.AiService
@@ -58,7 +56,6 @@ import com.catsmoker.obd2ai.diagnostics.ErrorSeverity
 import com.catsmoker.obd2ai.diagnostics.MilStatus
 import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
-import com.catsmoker.obd2ai.ui.common.ErrorDialogFragment
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
@@ -445,47 +442,3 @@ fun ErrorOverviewScreen(
 }
 
 /** Fragment host: owns navigation and the shared services. */
-class ErrorOverviewFragment : Fragment() {
-    private lateinit var obdHelper: ObdHelper
-    private lateinit var aiService: AiService
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        obdHelper = (activity as MainActivity).obdHelper
-        aiService = (activity as MainActivity).aiService
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    // The activity's top bar owns the single back arrow on
-                    // phone; adding one here too would show two.
-                    ScreenScaffold(
-                        title = getString(R.string.error_overview_title),
-                        onBack = null,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        ErrorOverviewScreen(
-                            obdHelper = obdHelper,
-                            aiService = aiService,
-                            context = requireContext(),
-                            onCodeClick = { code ->
-                                findNavController().navigate(
-                                    ErrorOverviewFragmentDirections
-                                        .actionErrorOverviewFragmentToErrorDetailFragment(code)
-                                )
-                            },
-                            showError = { text ->
-                                ErrorDialogFragment.newInstance(text)
-                                    .show(parentFragmentManager, "errorDialog")
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}

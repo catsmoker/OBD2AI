@@ -33,8 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.obd.ObdHelper
@@ -54,34 +52,6 @@ import kotlinx.coroutines.launch
  * Clear wipes the log. Shows "Not connected to an adapter." when there is
  * no active connection.
  */
-class ConsoleFragment : Fragment() {
-
-    private lateinit var obdHelper: ObdHelper
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        obdHelper = (activity as MainActivity).obdHelper
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    ConsoleScreen(
-                        obdHelper = obdHelper,
-                        onBack = { findNavController().navigateUp() }
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** Bounded transcript for the raw OBD console: newest-first thinking with a
- * fixed cap (200 lines) so a chatty adapter can never grow memory without
- * bound. Pure logic, tested. */
 class ConsoleLog(private val capacity: Int = 200) {
     private val lines = ArrayDeque<String>()
 

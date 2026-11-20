@@ -2,7 +2,6 @@ package com.catsmoker.obd2ai
 
 import android.os.Bundle
 import android.util.Log
-import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,10 +11,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.catsmoker.obd2ai.ads.AdBillingManager
 import kotlinx.coroutines.launch
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.NavOptions
-import com.catsmoker.obd2ai.ui.common.AppNav
-import com.catsmoker.obd2ai.ui.common.ConnectionState
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -38,7 +33,8 @@ import com.catsmoker.obd2ai.prefs.AppLanguage
 import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
-import com.catsmoker.obd2ai.ui.common.applySystemBarInsets
+import com.catsmoker.obd2ai.ui.AppRoot
+import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,12 +47,11 @@ class MainActivity : AppCompatActivity() {
     /** Created on first use (off the launch path): Firebase init does disk I/O. */
     val firebaseAnalytics: FirebaseAnalytics by lazy { Firebase.analytics }
 
-    // Navigation chrome. Null where the active layout lacks it: the bottom
-    // dock exists only on phones, the rail + back arrow only on tablets.
-    private var navController: androidx.navigation.NavController? = null
-    private var rail: com.google.android.material.navigationrail.NavigationRailView? = null
-    private var railHeaderBack: View? = null
-    private var bottomNav: com.google.android.material.bottomnavigation.BottomNavigationView? = null
+    /** The banner instance, hosted by the Compose tree (see AppRoot's
+     * AdBanner). Null until composition mounts it; every ad call is
+     * null-safe so entitlement flips before first composition are no-ops. */
+    var adView: AdView? = null
+        private set
 
     /** Stored analytics choice (default ON). Effective only after the
      * first-launch choice exists — see [analyticsEffective]. */
@@ -194,8 +189,34 @@ class MainActivity : AppCompatActivity() {
      * start (fresh Activity, fresh AdView), so this never flips back. */
     private var adsRemovedApplied = false
 
-    private fun applyAdChoice() {
-        val adView = findViewById<AdView>(R.id.adView) ?: return
+    /** Creates and wires the banner view; called from the Compose tree. */
+    fun createAdView(): AdView = AdView(this).also { view ->
+        adView = view
+        view.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                Log.d("AdListener", "Ad loaded.")
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Log.e("AdListener", "Ad failed to load: ${adError.message}, code: ${adError.code}")
+            }
+
+            override fun onAdOpened() {
+                Log.d("AdListener", "Ad opened.")
+            }
+
+            override fun onAdClicked() {
+                Log.d("AdListener", "Ad clicked.")
+            }
+
+            override fun onAdClosed() {
+                Log.d("AdListener", "Ad closed.")
+            }
+        }
+    }
+
+    fun applyAdChoice() {
+        val adView = adView ?: return
         if (adBilling.isAdsRemoved.value) {
             // Paid entitlement: never load an ad, and tear down any
             // creative already on screen instead of merely hiding it.
@@ -251,17 +272,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.pause()
+        if (!adsRemovedApplied) adView?.pause()
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.resume()
+        if (!adsRemovedApplied) adView?.resume()
     }
 
     override fun onDestroy() {
-        if (!adsRemovedApplied) findViewById<AdView>(R.id.adView)?.destroy()
+        if (!adsRemovedApplied) adView?.destroy()
+        adView = null
         super.onDestroy()
     }
 
@@ -317,10 +339,10 @@ class MainActivity : AppCompatActivity() {
         bluetoothHelper = BluetoothHelper(this)
         obdHelper = ObdHelper(bluetoothHelper)
         // A spontaneous transport loss (adapter powered off, BT drop, WiFi
-        // reset) must hide the chrome immediately, not on the next
-        // destination change. ObdHelper fires on the IO thread.
+        // reset) refreshes the shared connection state; the Compose chrome
+        // observes it and hides itself without any navigation event.
         obdHelper.onConnectionLost = {
-            runOnUiThread { updateNavChrome() }
+            runOnUiThread { ConnectionStateStore.refresh(obdHelper) }
         }
         aiService = AiService(this)
         adBilling = AdBillingManager(this)
@@ -329,150 +351,17 @@ class MainActivity : AppCompatActivity() {
         // the single ad gate: grant tears the banner down immediately.
         lifecycleScope.launch { adBilling.isAdsRemoved.collect { applyAdChoice() } }
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        findViewById<View>(R.id.activityRoot).applySystemBarInsets()
+        // Single-activity Compose root: navigation, chrome and the ad banner
+        // all live in the composition — no fragments, no XML layouts.
+        setContent {
+            AppRoot(this, startOnSetup = !prefs.contains(PrefsKeys.CONSENT_SET))
+        }
 
         // Banner ads are always on (they fund the free app); analytics
         // collection stays off (manifest default + choice rules) until the
         // setup screen records the choice. The UMP flow runs first so a
         // required consent form (EEA/UK) shows before any ad request.
         syncAdsConsent {}
-
-        val adView = findViewById<AdView>(R.id.adView)
-        adView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                Log.d("AdListener", "Ad loaded.")
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                Log.e("AdListener", "Ad failed to load: ${adError.message}, code: ${adError.code}")
-            }
-
-            override fun onAdOpened() {
-                Log.d("AdListener", "Ad opened.")
-            }
-
-            override fun onAdClicked() {
-                Log.d("AdListener", "Ad clicked.")
-            }
-
-            override fun onAdClosed() {
-                Log.d("AdListener", "Ad closed.")
-            }
-        }
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-        // Tablets (sw600dp layout) navigate with the rail instead.
-        rail =
-            findViewById<com.google.android.material.navigationrail.NavigationRailView>(
-                R.id.navigation_rail
-            )
-        // Tablet rail back arrow in the header.
-        railHeaderBack = findViewById(R.id.rail_back)
-        // Phones navigate with a bottom navigation dock (Home / Live /
-        // Diagnostics / Trip). Secondary screens (Console, Settings, About)
-        // live on the Home screen; nothing highlights in the dock for them.
-        // Null on the tablet layout (sw600dp), which uses the rail instead —
-        // every dock reference must be null-safe or tablets crash at launch.
-        bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView?>(
-            R.id.bottom_nav
-        )
-
-        navController?.addOnDestinationChangedListener { _, _, _ ->
-            // Visibility depends on both the destination and the live
-            // connection state — updateNavChrome reads both.
-            updateNavChrome()
-        }
-
-        /** Collapse the nav stack to a known destination; reuse when already there. */
-        fun goSection(destId: Int) {
-            val nav = navController ?: return
-            if (nav.currentDestination?.id == destId) return
-            nav.navigate(
-                destId,
-                null,
-                NavOptions.Builder()
-                    .setLaunchSingleTop(true)
-                    .setPopUpTo(R.id.onboardingFragment, false)
-                    .build()
-            )
-        }
-
-        // Single dispatch for dock taps. Re-taps on the active tab are the
-        // standard no-op — every destination has its own tab or Home tile.
-        bottomNav?.setOnItemSelectedListener { item ->
-            bottomNav?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            goSection(item.itemId)
-            true
-        }
-
-        val railView = rail
-        railView?.setOnItemSelectedListener { item ->
-            railView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            goSection(item.itemId)
-            true
-        }
-        railHeaderBack?.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            navController?.navigateUp()
-        }
-
-        // First launch shows the setup screen once, on top of the menu;
-        // every later launch starts directly on the menu.
-        if (!prefs.contains(PrefsKeys.CONSENT_SET)) {
-            navController?.navigate(R.id.setupFragment)
-        }
-    }
-
-    /** Check the menu item for [section], or clear all when it has none. */
-    private fun syncHighlight(menu: android.view.Menu, section: Int?) {
-        val item = section?.let { menu.findItem(it) }
-        if (item != null) {
-            item.isChecked = true
-        } else {
-            for (i in 0 until menu.size()) {
-                menu.getItem(i).isChecked = false
-            }
-        }
-    }
-
-    /**
-     * Recompute chrome (dock/rail) visibility and highlight for the current
-     * destination. Chrome appears only once the app has a data world to
-     * navigate — the user picked Connect or Try Demo — and hides again on
-     * disconnect: every tab leads to a screen that needs a connection.
-     * Called on every destination change and from the Home menu's
-     * refreshState(), so starting demo makes the bar appear in place,
-     * with no navigation.
-     */
-    fun updateNavChrome() {
-        val nav = navController ?: return
-        val dest = nav.currentDestination ?: return
-        val linked = ConnectionState.resolve(
-            obdHelper.demoMode,
-            obdHelper.isConnected
-        ) != ConnectionState.DISCONNECTED
-        // Cards mode (chosen at first start) means hub-and-spoke: no bar.
-        val cardsMode = AppNav.isCardsMode(
-            getSharedPreferences(PrefsKeys.PREFS_NAME, MODE_PRIVATE)
-                .getString(PrefsKeys.NAV_STYLE, null)
-        )
-        val hidden = AppNav.isChromeHidden(dest.id, linked, cardsMode)
-        val section = AppNav.sectionFor(dest.id)
-        val railView = rail
-        if (railView != null) {
-            // Tablet: the rail owns top-level navigation.
-            railView.visibility = if (hidden) View.GONE else View.VISIBLE
-            syncHighlight(railView.menu, section)
-            railHeaderBack?.visibility =
-                if (AppNav.showBackArrow(dest.id)) View.VISIBLE else View.GONE
-        } else {
-            // Phone: the bottom dock.
-            bottomNav?.visibility = if (hidden) View.GONE else View.VISIBLE
-            bottomNav?.let { syncHighlight(it.menu, section) }
-        }
     }
 
     override fun onRequestPermissionsResult(

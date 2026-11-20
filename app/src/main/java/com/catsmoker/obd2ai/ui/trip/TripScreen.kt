@@ -31,9 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.fragment.findNavController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.obd.ObdDataHolder
@@ -58,32 +56,6 @@ import kotlinx.coroutines.launch
  * [ObdDataHolder] flows ("--"/"ERROR" parse to unknown), the screen owns the
  * [TripComputer] instance, and units are read once from preferences.
  */
-class TripFragment : Fragment() {
-
-    private lateinit var prefs: SharedPreferences
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        prefs = requireActivity().getSharedPreferences(PrefsKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        val imperial = Units.isImperial(prefs)
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                Obd2AiTheme(darkTheme = isSystemInDarkTheme()) {
-                    TripScreen(
-                        imperial = imperial,
-                        onBack = { findNavController().navigateUp() }
-                    )
-                }
-            }
-        }
-    }
-}
-
 /** Compose content for the trip screen. */
 @Composable
 fun TripScreen(

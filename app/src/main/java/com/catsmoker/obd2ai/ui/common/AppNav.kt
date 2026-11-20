@@ -1,53 +1,44 @@
 package com.catsmoker.obd2ai.ui.common
 
-import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.prefs.NavStyle
 
 /**
- * Single source of truth for top-level navigation state. The welcome screen
- * (onboarding) is the root and main menu; MainActivity's phone bottom-dock
- * and tablet rail both read this, so highlighting and the visible back
- * arrow stay consistent. Pure logic, tested.
+ * Single source of truth for top-level navigation state, now route-based:
+ * the single-activity Compose app navigates by route string, and the
+ * bottom dock / navigation rail read this for visibility and highlight.
+ * Pure logic, tested.
  */
 object AppNav {
+    /** Dock/rail tabs in display order: Console replaced the Home tab. */
+    val TAB_ROUTES = listOf("console", "live", "diagnostics", "trip")
+
+    /** Transient setup screens: chrome is hidden while they are visible. */
+    private val CHROME_FREE_ROUTES = setOf("setup", "permissions", "connect")
+
     /**
-     * Screens without section chrome. The transient setup screens hide the
-     * whole chrome (setup, permissions, connect). When [linked] is false —
-     * no connection and no demo — chrome is hidden everywhere: the dock/rail
-     * tabs all lead to screens that need a connection, so a disconnected app
-     * shows only the Home connection card (progressive disclosure). In
-     * [cardsMode] the user chose hub-and-spoke navigation at first start:
-     * chrome never shows, screens are reached from the Home cards.
+     * Screens without section chrome. When [linked] is false — no connection
+     * and no demo — chrome is hidden everywhere: the tabs all lead to screens
+     * that need a connection, so a disconnected app shows only the Home
+     * connection card (progressive disclosure). In [cardsMode] the user chose
+     * hub-and-spoke navigation at first start: chrome never shows.
      */
     fun isChromeHidden(
-        destinationId: Int,
+        route: String,
         linked: Boolean = true,
         cardsMode: Boolean = false
-    ): Boolean =
-        cardsMode || !linked || destinationId in setOf(
-            R.id.setupFragment,
-            R.id.permissionsFragment,
-            R.id.connectFragment
-        )
+    ): Boolean = cardsMode || !linked || route in CHROME_FREE_ROUTES
 
     /**
-     * Top-level section for a destination, or null when nothing highlights
-     * (setup screens and the secondary screens — settings, about, legal —
-     * which belong to no dock tab). The welcome root resolves to no tab:
-     * the dock's first tab is the OBD Console, and Home sits above the tabs
-     * (reachable via system back). Detail screens resolve to their parent
-     * section.
+     * Top-level section for a route, or null when nothing highlights
+     * (the welcome root and the secondary screens — settings, about, legal —
+     * belong to no tab). Detail screens resolve to their parent section.
      */
-    fun sectionFor(destinationId: Int): Int? = when (destinationId) {
-        // Data sections (Console replaced the Home tab in the dock)
-        R.id.consoleFragment -> R.id.consoleFragment
-        R.id.liveDataFragment -> R.id.liveDataFragment
-        R.id.errorOverviewFragment,
-        R.id.errorDetailFragment,
-        R.id.askAiFragment -> R.id.errorOverviewFragment
-        R.id.tripFragment -> R.id.tripFragment
-
-        // Welcome root and secondary screens: no tab highlights
+    fun sectionFor(route: String): String? = when {
+        route == "console" -> "console"
+        route == "live" -> "live"
+        route == "diagnostics" || route.startsWith("errorDetail/") || route.startsWith("askAi/") ->
+            "diagnostics"
+        route == "trip" -> "trip"
         else -> null
     }
 
@@ -55,8 +46,8 @@ object AppNav {
      * Visible up-arrow: every chromed screen except the welcome root
      * (nowhere meaningful to go back to).
      */
-    fun showBackArrow(destinationId: Int): Boolean =
-        !isChromeHidden(destinationId) && destinationId != R.id.onboardingFragment
+    fun showBackArrow(route: String): Boolean =
+        !isChromeHidden(route) && route != "home"
 
     /**
      * True when the user chose hub-and-spoke (cards) navigation: Home tiles
