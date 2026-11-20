@@ -9,7 +9,7 @@ providers are supported, and how to add one.
 the user picked in Settings, then parses the returned JSON assessment into
 `DtpCodeDTO` (severity, title, details, implications, suggested actions).
 Each DTC is assessed **in parallel** on `Dispatchers.IO` and the results
-rejoin for display in `ErrorOverviewFragment`.
+rejoin for display in the Diagnostics screen (`ErrorOverviewScreen`).
 
 Calls go over plain `HttpURLConnection` — there is deliberately **no vendor
 SDK** (smaller supply chain, no key handling inside third-party code).

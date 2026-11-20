@@ -9,22 +9,28 @@ contributing so new code reads like the code around it.
   `app/src/main/java/com/catsmoker/obd2ai/`, split by responsibility:
   `prefs/`, `obd/`, `diagnostics/`, `vehicle/`, `ai/`, `audio/`,
   `speedometers/`, `instruments/` (tachometer + coolant/voltage/fuel gauges),
-  `ui/` (dashboard, settings, connect, diagnostics, trip,
-  console, onboarding, common) + `MainActivity.kt` (wiring; fragments reach
-  helpers via `(activity as MainActivity)`).
+  `ui/` (Compose screens + destinations per feature, `AppRoot`, `common`,
+  `components`, `theme`) + `MainActivity.kt` (helpers +
+  `setContent { AppRoot(...) }`).
 - Put new code in the package that owns it; one file per coherent
   responsibility — no giant files, but no pointless micro-files either.
 
-## Kotlin / Views
+## Kotlin / Compose
 
-- **Compose is disabled — do not add Compose code.** UI is Views/Fragments
-  with Navigation (fragment + ui KTX, Safe Args).
+- **UI is Jetpack Compose only — no XML layouts, no Fragments, no
+  `nav_graph.xml`.** One activity hosts one composition
+  (`AppRoot`); navigation is Navigation Compose with route strings.
 - **State drives UI.** Telemetry and DTC results flow through
-  `ObdDataHolder` flows; fragments collect them lifecycle-aware.
+  `ObdDataHolder` flows; screens collect them with
+  `collectAsStateWithLifecycle` (or a session scope in `LiveSession`).
+- Screens are composables; thin `*Destination` wrappers own navigation,
+  lookups and dialogs. Never reach into `MainActivity` internals from a
+  screen — take what you need as parameters.
 - Blocking I/O (Bluetooth sockets, OBD reads, `HttpURLConnection`) goes on
   `Dispatchers.IO`, never the main thread.
-- Parsing logic belongs in **companion objects as pure functions** so it is
-  JVM-testable without Android imports.
+- Parsing logic belongs in **objects/companion objects as pure functions**
+  (see `LiveLogic`, `SetupState`, `AppNav`) so it is JVM-testable without
+  Android imports.
 
 ## OBD & demo-mode discipline
 
@@ -85,14 +91,14 @@ A reviewer will expect these:
 ## Strings, sizes & localization
 
 - User-visible copy goes in `res/values/strings.xml` — never hardcoded in
-  Kotlin or layouts. A unit test pins **key parity across all locale**
+  Kotlin or composables. A unit test pins **key parity across all locale**
   `strings.xml`, so every new string must land in **every** locale file
   (`values`, `values-es`, `values-ar`, `values-zh-rCN`).
 - Keep format args identical across locales and avoid apostrophes in
   translations. Use numbered placeholders (`%1$s`) so translations can
   reorder arguments. See [TRANSLATION.md](TRANSLATION.md).
 - Sizes live in `values/dimens.xml` (+ `values-sw600dp` tablet overrides) —
-  no hardcoded dp in layouts.
+  no hardcoded dp in composables.
 - Launcher icons are XML-only (adaptive `mipmap-anydpi-v26` + vectors) —
   don't add PNGs.
 

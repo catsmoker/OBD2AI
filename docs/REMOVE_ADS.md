@@ -2,8 +2,9 @@
 
 Paid ad removal for OBD2AI: a single non-consumable Google Play Billing
 product. There is no free ad switch anywhere in the app — the banner
-(`activity_main.xml` + `layout-sw600dp`, loaded only from
-`MainActivity.applyAdChoice()`) stays on until Play confirms ownership.
+(hosted by the Compose tree in `ui/AppRoot.kt` via `AndroidView`, loaded
+only from `MainActivity.applyAdChoice()`) stays on until Play confirms
+ownership.
 
 ## What lives where
 

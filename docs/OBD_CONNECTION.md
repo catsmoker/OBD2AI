@@ -30,7 +30,7 @@ ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0, ATAT1
 - Stored, pending and permanent codes are read after init and mapped to
   `DtpCodeDTO` with SAE J2012 system/generic-origin classification.
 - Results are cached to the internal file `dtc_results.json` (`DtcStore`).
-  `ErrorDetailFragment` falls back to that cache when `ObdDataHolder` is
+  `ErrorDetailScreen` falls back to that cache when `ObdDataHolder` is
   empty (e.g. after process death or navigation back).
 - Each code is then assessed by the configured AI provider in parallel; see
   [AI_PROVIDERS.md](AI_PROVIDERS.md). Codes assessed without AI carry

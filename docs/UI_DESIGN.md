@@ -10,11 +10,12 @@ The visual model is a rally instrument book: warm paper for reading, graphite
 instruments for measurements, and phosphor lettering for the main readout. The
 16-pin socket illustration on Home and setup is decorative. Its pins never
 indicate connection status. Home indexes destinations in one or two columns
-according to the available width. Live uses segmented scales; Trip puts elapsed
+according to the available width (cards mode only — in bar mode the dock
+covers navigation and the tile grid is hidden). Live uses segmented scales; Trip puts elapsed
 time above a ruled timing sheet; the fault report distinguishes a fresh scan
 from an unread vehicle; the console has a dedicated monospace transcript.
-About opens from the last row of Settings, not from Home — Home stays a
-connection console plus the destinations that produce data.
+Settings and About open from the Home header icons; the dock's tabs are
+Console / Live / Diagnostics / Trip — Home itself is not a tab in bar mode.
 
 The day/night colors in `app/src/main/res/values/colors.xml` and `values-night/colors.xml`
 are shared by Views and the Compose theme. Compose derives surface tones from

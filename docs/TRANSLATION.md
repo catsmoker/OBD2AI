@@ -16,14 +16,12 @@ change strings.
 
 ## How strings flow today
 
-Fragments/layouts read through resources, never hardcoded literals:
+Composables read through resources, never hardcoded literals:
 
 ```kotlin
+stringResource(R.string.some_key, arg)
+// or, outside composition:
 context.getString(R.string.some_key, arg)
-```
-
-```xml
-android:text="@string/some_key"
 ```
 
 Formatting placeholders (`%1$s`, `%2$d`) are numbered so translations can
@@ -42,7 +40,7 @@ reorder arguments per language.
    into two resources; that defeats per-language reordering.
 5. **Don't translate identifiers.** App name, URLs, package names, OBD
    command strings and pref keys stay identical.
-6. **No hardcoded dp/strings in layouts.** Sizes live in
+6. **No hardcoded dp/strings in composables.** Sizes live in
    `values/dimens.xml` (+ `values-sw600dp` tablet overrides).
 
 ## Adding a new locale
