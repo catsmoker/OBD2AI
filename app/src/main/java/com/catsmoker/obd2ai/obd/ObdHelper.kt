@@ -591,6 +591,11 @@ class ObdHelper(private val bluetoothHelper: BluetoothHelper) {
                 errorCount++
                 Log.e("ObdHelper", "Error during live data monitoring (Attempt $errorCount):", e)
 
+                // A dead transport (onTransportLoss already tore it down) or a
+                // manual disconnect ends the session immediately: retrying
+                // against a missing link is pointless.
+                if (!demoMode && !isConnected) errorCount = 3
+
                 // Bus-level failures get one best-effort re-init so the next
                 // cycle does not fail the same way; the 3-strike rule below
                 // still gives up on a truly dead link.

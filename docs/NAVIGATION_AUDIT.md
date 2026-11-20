@@ -406,3 +406,13 @@ session. Verified on device with a scripted ELM327-over-WiFi echo server
 server drops the socket, the dock disappears immediately, and back shows
 the disconnected Home connect card. No crash; the poll loop logs its
 expected read error once.
+
+### Live polling stops on the first transport-loss cycle
+The monitoring loop's catch now short-circuits the 3-strike rule when the
+connection is already gone (`!demoMode && !isConnected` → `errorCount = 3`),
+so a dead link ends the session on its first failing cycle with the honest
+ERROR flows instead of three pointless retries. Pure timeouts (slow
+adapter) still get the full 3-strike budget, and the re-init recovery stays
+gated on `isConnected`. Re-verified with the echo-server drop: exactly one
+monitoring error in logcat (previously the loop retried), dock hidden
+immediately, no crash.
