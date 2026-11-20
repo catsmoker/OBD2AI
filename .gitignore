@@ -33,6 +33,7 @@ app/release/
 *.jks
 *.keystore
 keystore.properties
+signing.properties
 
 # OS
 .DS_Store
