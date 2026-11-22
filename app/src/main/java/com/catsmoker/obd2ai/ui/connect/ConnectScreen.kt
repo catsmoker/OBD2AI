@@ -45,7 +45,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.outlined.Bluetooth
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -64,8 +70,16 @@ import com.catsmoker.obd2ai.obd.BluetoothDeviceDTO
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.prefs.PrefsKeys
-import com.catsmoker.obd2ai.ui.common.AppNav
+import com.catsmoker.obd2ai.ui.common.DemoSession
 import com.catsmoker.obd2ai.ui.components.ObdButton
+import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+import com.catsmoker.obd2ai.ui.components.SectionCard
+import com.catsmoker.obd2ai.ui.theme.ObdRadius
+import com.catsmoker.obd2ai.ui.theme.ObdSpacing
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
 import kotlinx.coroutines.launch
@@ -86,6 +100,8 @@ class ConnectUiState {
     val selectedDevice = mutableStateOf<BluetoothDeviceDTO?>(null)
     val isRefreshing = mutableStateOf(false)
     val isConnecting = mutableStateOf(false)
+    /** Why the last scan produced nothing, shown in the empty state. */
+    val scanError = mutableStateOf<String?>(null)
     val showWifiDialog = mutableStateOf(false)
     val wifiHost = mutableStateOf("")
     val wifiPort = mutableStateOf("")
@@ -99,7 +115,9 @@ fun ConnectScreen(
     obdHelper: ObdHelper,
     onEnableBluetooth: () -> Unit,
     onRefresh: () -> Unit,
+    onStopScan: () -> Unit = {},
     navigateToHome: () -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -110,6 +128,17 @@ fun ConnectScreen(
     val isRefreshing by uiState.isRefreshing
     val isConnecting by uiState.isConnecting
 
+    // A failed attempt is sticky and readable: a toast is gone before you can
+    // act on it, and "Could not connect" without the reason is not a diagnosis.
+    var connectError by rememberSaveable { mutableStateOf<String?>(null) }
+    // Resolved here because the connect attempts run in a coroutine, not in
+    // composition. Keyed on the locale so a language change re-resolves it.
+    val unknownDetail = stringResource(R.string.connect_error_unknown)
+    // Which adapter the attempt is talking to, so the wait is a named wait and
+    // a Wi-Fi attempt no longer claims to be "scanning for devices".
+    var connectingLabel by rememberSaveable { mutableStateOf<String?>(null) }
+    // Read once per visit: advisory hint, never a preference that hides options.
+    val lastTransport = remember { TransportMemory.last(context) }
     var wifiDialogOpen by remember { mutableStateOf(uiState.showWifiDialog.value) }
     var wifiHost by remember { mutableStateOf(uiState.wifiHost.value) }
     var wifiPort by remember { mutableStateOf(uiState.wifiPort.value) }
@@ -166,31 +195,46 @@ fun ConnectScreen(
         }
     }
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    // The subtitle carries the truth about discovery: a hardcoded
+    // "Scanning…" line kept claiming to scan long after it stopped, and
+    // contradicted the button next to it.
+    val statusLine = when {
+        isRefreshing -> stringResource(R.string.connect_scanning_for_devices)
+        devices.isNotEmpty() -> stringResource(R.string.connect_devices_found, devices.size)
+        else -> stringResource(R.string.connect_select_device)
+    }
+
+    ScreenScaffold(
+        title = stringResource(R.string.connect_title),
+        subtitle = statusLine,
+        onBack = onBack,
+        modifier = modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.connect_select_device),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = stringResource(R.string.connect_scanning_for_devices),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        lastTransport?.let { used ->
+            Row(
+                modifier = Modifier.padding(bottom = ObdSpacing.CardGap),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.connect_last_transport,
+                        stringResource(
+                            if (used == ObdTransport.WIFI) R.string.connect_transport_wifi
+                            else R.string.connect_transport_bluetooth
+                        )
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 24.dp),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)
+                .weight(1f),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)
         ) {
             items(
                 items = devices,
@@ -202,43 +246,29 @@ fun ConnectScreen(
                     onClick = { uiState.selectedDevice.value = device }
                 )
             }
+            if (devices.isEmpty() && !isRefreshing) {
+                item {
+                    // Informational only: the screen-level Rescan button below
+                    // already owns that action, and two identical buttons in
+                    // one viewport is one too many.
+                    EmptyAdaptersCard(scanError = uiState.scanError.value)
+                }
+            }
         }
 
-        if (devices.isEmpty() && !isRefreshing) {
-            Text(
-                text = stringResource(R.string.connect_no_devices_found, "no devices"),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        connectError?.let { detail ->
+            Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
+            ConnectFailureCard(detail = detail)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        selectedDevice?.let {
-            Text(
-                text = stringResource(R.string.connected_to, it.name),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+        if (isConnecting && connectingLabel != null) {
+            Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
+            ConnectingCard(target = connectingLabel!!)
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
 
-        // Rescan action.
-        androidx.compose.material3.Button(
-            onClick = { onRefresh() },
-            enabled = !isRefreshing,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = if (isRefreshing) stringResource(R.string.connect_scanning_for_devices)
-                else stringResource(R.string.connect_button)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Connect to the selected device.
+        // Primary action: connect to the highlighted adapter.
         ObdButton(
             onClick = {
                 scope.launch {
@@ -249,28 +279,23 @@ fun ConnectScreen(
                         return@launch
                     }
                     val device = selectedDevice ?: return@launch
+                    connectError = null
+                    connectingLabel = device.name.takeIf { it.isNotBlank() } ?: device.address
                     uiState.isConnecting.value = true
                     try {
-                        Toast.makeText(
-                            context, R.string.connect_scanning_for_devices, Toast.LENGTH_LONG
-                        ).show()
                         obdHelper.setupObd(device.address)
                         obdHelper.initializeObd()
+                        TransportMemory.remember(context, ObdTransport.BLUETOOTH)
                         navigateToHome()
                     } catch (e: SecurityException) {
-                        Log.e("ConnectFragment", "Bluetooth permission revoked", e)
-                        Toast.makeText(
-                            context, R.string.permissions_bluetooth_required, Toast.LENGTH_LONG
-                        ).show()
-                        uiState.isConnecting.value = false
+                        Log.e("ConnectScreen", "Bluetooth permission revoked", e)
+                        connectError = context.getString(R.string.permissions_bluetooth_required)
                     } catch (e: Exception) {
-                        Log.e("ConnectFragment", "Connection failed", e)
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.could_not_connect_to_obd2_adapter, e.message),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Log.e("ConnectScreen", "Connection failed", e)
+                        connectError = failureDetail(e, unknownDetail)
+                    } finally {
                         uiState.isConnecting.value = false
+                        connectingLabel = null
                     }
                 }
             },
@@ -278,34 +303,59 @@ fun ConnectScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = if (isConnecting) stringResource(R.string.connect_button) + "…"
+                text = if (isConnecting) stringResource(R.string.connect_connecting)
                 else stringResource(R.string.connect_button)
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
 
+        // While a scan runs this button stops it: the screen otherwise sits on
+        // "Scanning…" for the full 12 s window with no way out.
         ObdOutlinedButton(
-            onClick = {
-                uiState.showWifiDialog.value = true
-                wifiDialogOpen = true
-            },
+            onClick = { if (isRefreshing) onStopScan() else onRefresh() },
             modifier = Modifier.fillMaxWidth()
         ) {
-            RowWithIconLabel(label = stringResource(R.string.connect_wifi_button))
+            Text(
+                text = if (isRefreshing) stringResource(R.string.connect_stop_scan)
+                else stringResource(R.string.connect_rescan)
+            )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
 
-        ObdOutlinedButton(
-            onClick = {
-                obdHelper.setupDemo()
-                navigateToHome()
-            },
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)
         ) {
-            RowWithIconLabel(label = stringResource(R.string.connect_demo_button))
+            ObdOutlinedButton(
+                onClick = {
+                    uiState.showWifiDialog.value = true
+                    wifiDialogOpen = true
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(R.string.connect_wifi_button),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            ObdOutlinedButton(
+                onClick = {
+                    obdHelper.setupDemo()
+                    DemoSession.remember(context)
+                    navigateToHome()
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(R.string.connect_demo_button),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
         }
+
+        Spacer(modifier = Modifier.height(ObdSpacing.CardGap))
     }
 
     // Wi-Fi dialog
@@ -330,32 +380,32 @@ fun ConnectScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
+                TextButton(enabled = !isConnecting, onClick = {
                     val host = wifiHost.trim()
                     val port = wifiPort.toIntOrNull()
                     if (host.isEmpty() || port == null || port !in 1..65535) {
-                        Toast.makeText(context, R.string.connect_wifi_invalid, Toast.LENGTH_LONG).show()
+                        connectError = context.getString(R.string.connect_wifi_invalid)
                         return@TextButton
                     }
+                    connectError = null
                     wifiDialogOpen = false
                     uiState.showWifiDialog.value = false
                     uiState.wifiHost.value = host
                     uiState.wifiPort.value = port.toString()
                     scope.launch {
+                        connectingLabel = "$host:$port"
+                        uiState.isConnecting.value = true
                         try {
-                            Toast.makeText(
-                                context, R.string.connect_scanning_for_devices, Toast.LENGTH_LONG
-                            ).show()
                             obdHelper.setupWifi(host, port)
                             obdHelper.initializeObd()
+                            TransportMemory.remember(context, ObdTransport.WIFI)
                             navigateToHome()
                         } catch (e: Exception) {
                             Log.e("ConnectFragment", "WiFi connection failed", e)
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.could_not_connect_to_obd2_adapter, e.message),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            connectError = failureDetail(e, unknownDetail)
+                        } finally {
+                            uiState.isConnecting.value = false
+                            connectingLabel = null
                         }
                     }
                 }) {
@@ -367,31 +417,172 @@ fun ConnectScreen(
     }
 }
 
-/** Single selectable device row. */
+/**
+ * Nothing to connect to yet. Says what "nothing" means and what to do next,
+ * instead of one raw sentence with an error string pasted into it.
+ */
+@Composable
+private fun EmptyAdaptersCard(scanError: String?) {
+    SectionCard {
+        Row(verticalAlignment = Alignment.Top) {
+            Icon(
+                imageVector = Icons.Outlined.Bluetooth,
+                contentDescription = null,
+                // Neutral guidance, not the brand red: nothing failed here.
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(22.dp)
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = stringResource(R.string.connect_empty_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = stringResource(R.string.connect_empty_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (scanError != null) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        // The scan failure keeps its real reason, just demoted
+                        // from "the whole message" to a detail line.
+                        text = scanError,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** Named progress: "Connecting to 192.168.0.10:35000…", not a generic spinner. */
+@Composable
+private fun ConnectingCard(target: String) {
+    SectionCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = stringResource(R.string.connect_connecting_to, target),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+/**
+ * Persisted failure notice: a cause the app is sure about, plus the adapter's
+ * own words underneath. A toast is gone before you can act on it, and
+ * "Could not connect" without the reason is not a diagnosis.
+ */
+@Composable
+private fun ConnectFailureCard(detail: String) {
+    val error = MaterialTheme.colorScheme.error
+    val kind = ConnectFailureKind.classify(detail)
+    val title = when (kind) {
+        ConnectFailureKind.UNREACHABLE -> stringResource(R.string.connect_failed_unreachable)
+        ConnectFailureKind.NOT_PAIRED -> stringResource(R.string.connect_failed_not_paired)
+        ConnectFailureKind.BLUETOOTH_UNAVAILABLE -> stringResource(R.string.connect_failed_bluetooth)
+        ConnectFailureKind.GENERIC -> stringResource(R.string.connect_failed_generic)
+    }
+    SectionCard {
+        Row(verticalAlignment = Alignment.Top) {
+            Icon(
+                imageVector = Icons.Outlined.ErrorOutline,
+                contentDescription = null,
+                tint = error,
+                modifier = Modifier
+                    .size(20.dp)
+                    .padding(top = 1.dp)
+            )
+            Spacer(Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = error
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    // The technical detail stays available, demoted below the
+                    // plain-language cause instead of being the whole message.
+                    text = detail,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+/** The adapter's own message, or an honest "no details" instead of a blank. */
+private fun failureDetail(e: Exception, fallback: String): String =
+    e.message?.trim()?.takeIf { it.isNotEmpty() } ?: fallback
+
+/** Single selectable adapter row, styled as a radio card. */
 @Composable
 private fun DeviceRow(
     device: BluetoothDeviceDTO,
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    androidx.compose.foundation.layout.Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    val border = if (selected) {
+        androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    }
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(ObdRadius.Inner),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = if (selected) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
+        border = border,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = device.name,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = device.address,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = device.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = device.address,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Outlined.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
 }
 

@@ -2,30 +2,31 @@ package com.catsmoker.obd2ai.ui.settings
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.text.method.LinkMovementMethod
+import android.net.Uri
 import android.text.util.Linkify
 import android.widget.TextView
 import android.widget.Toast
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
+import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+import com.catsmoker.obd2ai.ui.components.SectionCard
 import com.catsmoker.obd2ai.ui.theme.ObdSpacing
 
 /**
@@ -36,53 +37,59 @@ import com.catsmoker.obd2ai.ui.theme.ObdSpacing
  * [LegalPages.openHostedLegal]. Ports the old fragment_legal.xml.
  */
 @Composable
-fun LegalDestination(page: String) {
+fun LegalDestination(page: String, onBack: () -> Unit = {}) {
     val context = LocalContext.current
     val isTerms = LegalPages.isTermsPage(page)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = ObdSpacing.ScreenHorizontal, vertical = ObdSpacing.HeaderVertical)
+
+    ScreenScaffold(
+        title = if (isTerms) stringResource(R.string.legal_terms_title)
+        else stringResource(R.string.legal_privacy_title),
+        onBack = onBack,
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = if (isTerms) stringResource(R.string.legal_terms_title)
-            else stringResource(R.string.legal_privacy_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(Modifier.height(ObdSpacing.SectionGap))
-        val bodyText = if (isTerms) stringResource(R.string.legal_terms_body)
-        else stringResource(R.string.legal_privacy_body)
-        // Linkified URLs + selectable text, like the XML autoLink/isSelectable.
-        val onSurface = MaterialTheme.colorScheme.onSurface.toArgb()
-        AndroidView(
-            factory = { ctx ->
-                TextView(ctx).apply {
-                    autoLinkMask = Linkify.WEB_URLS
-                    movementMethod = LinkMovementMethod.getInstance()
-                    setTextIsSelectable(true)
-                    setTextColor(onSurface)
-                    textSize = 14f
-                }
-            },
-            update = { it.text = bodyText },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(ObdSpacing.SectionGap))
-        ObdOutlinedButton(
-            onClick = {
-                if (!LegalPages.openHostedLegal(context)) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.no_errors_found, context.getString(R.string.legal_url)),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = stringResource(R.string.about_legal_online_button))
+            val bodyText = if (isTerms) stringResource(R.string.legal_terms_body)
+            else stringResource(R.string.legal_privacy_body)
+            // Linkified URLs + selectable text, like the XML autoLink/isSelectable.
+            val onSurface = MaterialTheme.colorScheme.onSurface.toArgb()
+            SectionCard {
+                AndroidView(
+                    factory = { ctx ->
+                        TextView(ctx).apply {
+                            autoLinkMask = Linkify.WEB_URLS
+                            movementMethod = LinkMovementMethod.getInstance()
+                            setTextIsSelectable(true)
+                            setTextColor(onSurface)
+                            textSize = 14f
+                        }
+                    },
+                    update = { it.text = bodyText },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
+
+            ObdOutlinedButton(
+                onClick = {
+                    if (!LegalPages.openHostedLegal(context)) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.no_errors_found, context.getString(R.string.legal_url)),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.about_legal_online_button))
+            }
+
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
         }
     }
 }

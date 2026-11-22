@@ -100,6 +100,8 @@ class LiveSession(
     val onlineCardText = mutableStateOf<String?>(null)
     val onlineSeconds = mutableStateOf(0)
     val demoSheet = mutableStateOf<DemoSheetState?>(null)
+    /** Why monitoring gave up (null = running or never started). */
+    val liveError = mutableStateOf<String?>(null)
 
     internal var bannerJob: kotlinx.coroutines.Job? = null
     internal var onlineJob: kotlinx.coroutines.Job? = null
@@ -272,6 +274,22 @@ class LiveSession(
         collectDashboardFlows()
     }
 
+    /**
+     * Restarts polling after a give-up. The stale "ERROR" placeholders are
+     * cleared first so the dials show unknown, not a stale failure, until the
+     * first good read arrives.
+     */
+    fun retryMonitoring() {
+        if (!active || demoMode || !obdHelper.isConnected) return
+        ObdDataHolder.liveErrorFlow.value = null
+        liveError.value = null
+        ObdDataHolder.speedFlow.value = "-- km/h"
+        ObdDataHolder.rpmFlow.value = "-- RPM"
+        ObdDataHolder.coolantTempFlow.value = "-- °C"
+        ObdDataHolder.engineLoadFlow.value = "-- %"
+        scope.launch { obdHelper.startLiveDataMonitoring() }
+    }
+
     /** GPS speed source: no adapter reads, so no RPM/telemetry tiles at all. */
     private fun startGpsSpeed() {
         fireOfflineAiOnce(OfflineAiEvent.WELCOME, activity.getString(R.string.offline_ai_online))
@@ -298,6 +316,9 @@ class LiveSession(
     }
 
     internal fun collectDashboardFlows() {
+        scope.launch {
+            ObdDataHolder.liveErrorFlow.collect { liveError.value = it }
+        }
         scope.launch {
             ObdDataHolder.speedFlow.collect { handleSpeed(it) }
         }

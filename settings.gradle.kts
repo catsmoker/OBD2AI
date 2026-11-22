@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "obd2ai"
 include(":app")
+include(":core:prefs", ":core:diagnostics", ":core:obd", ":core:ai")

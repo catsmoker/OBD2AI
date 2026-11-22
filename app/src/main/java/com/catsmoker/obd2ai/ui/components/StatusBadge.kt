@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +20,9 @@ import com.catsmoker.obd2ai.ui.theme.NothingRed
 import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
 
 /**
- * Small state chip: a dot plus a label. [active] keeps the dot neutral grey
- * when a capability is unavailable, while the label still says what the state
- * is — color is never the only signal.
+ * Small state chip: a dot plus a label on a soft tonal pill. [active] keeps
+ * the dot neutral when a capability is unavailable, while the label still
+ * says what the state is — color is never the only signal.
  */
 @Composable
 fun StatusBadge(
@@ -31,13 +32,22 @@ fun StatusBadge(
     activeColor: Color = NothingRed
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .background(
+                color = if (active) {
+                    activeColor.copy(alpha = 0.12f)
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+                shape = RoundedCornerShape(50)
+            )
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(7.dp)
+                .size(6.dp)
                 .background(
                     if (active) activeColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                     CircleShape
@@ -45,7 +55,7 @@ fun StatusBadge(
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = if (active) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

@@ -11,9 +11,9 @@ import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ai.AiProvider
 import com.catsmoker.obd2ai.ai.AiSwitchRules
-import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
+import com.catsmoker.obd2ai.ui.common.UiSettings
 
 /**
  * Settings destination: the same wiring the old SettingsFragment performed,
@@ -32,10 +32,12 @@ fun SettingsDestination(activity: MainActivity, navController: NavHostController
         prefs = prefs,
         adBilling = activity.adBilling,
         context = context,
+        onBack = { navController.navigateUp() },
         onThemeChange = { mode ->
             prefs.edit { putString(PrefsKeys.THEME_MODE, mode.prefValue) }
             activity.applyThemeMode(mode)
         },
+        onDynamicColorChange = { enabled -> UiSettings.setDynamicColor(prefs, enabled) },
         onLanguageChange = { tag ->
             prefs.edit { putString(PrefsKeys.APP_LANGUAGE, tag) }
             activity.applyAppLanguage(tag)
@@ -56,11 +58,6 @@ fun SettingsDestination(activity: MainActivity, navController: NavHostController
                     if (device) PrefsKeys.SPEED_SOURCE_DEVICE else PrefsKeys.SPEED_SOURCE_OBD
                 )
             }
-        },
-        onNavStyleChange = { style ->
-            prefs.edit { putString(PrefsKeys.NAV_STYLE, style.prefValue) }
-            // Applies immediately: the chrome observes ConnectionStateStore.
-            ConnectionStateStore.setNavStyle(style)
         },
         onMuteChange = { prefs.edit { putBoolean(PrefsKeys.MUTE_SOUND, it) } },
         onKeepScreenChange = { prefs.edit { putBoolean(PrefsKeys.KEEP_SCREEN_ON, it) } },

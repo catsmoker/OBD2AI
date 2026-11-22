@@ -18,5 +18,13 @@ enum class ConnectionState {
             isConnected -> CONNECTED
             else -> DISCONNECTED
         }
+
+        /**
+         * The drop reason to show: only while genuinely disconnected, and only
+         * when there is something to say. A blank/absent reason must leave the
+         * card unchanged rather than claim a failure.
+         */
+        fun visibleLossReason(state: ConnectionState, reason: String?): String? =
+            reason?.trim()?.takeIf { it.isNotEmpty() && state == DISCONNECTED }
     }
 }

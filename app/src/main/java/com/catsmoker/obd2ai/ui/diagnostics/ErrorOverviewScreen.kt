@@ -1,18 +1,10 @@
 package com.catsmoker.obd2ai.ui.diagnostics
 
 import android.content.Context
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,100 +12,90 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.material3.Button
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
-import com.catsmoker.obd2ai.ai.AiService
-import com.catsmoker.obd2ai.diagnostics.DtcDictionary
-import com.catsmoker.obd2ai.diagnostics.DtcInfo
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.catsmoker.obd2ai.ui.components.CollapsibleSectionCard
 import com.catsmoker.obd2ai.diagnostics.DtcSource
-import com.catsmoker.obd2ai.diagnostics.DtcStore
 import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
 import com.catsmoker.obd2ai.diagnostics.ErrorSeverity
-import com.catsmoker.obd2ai.diagnostics.MilStatus
-import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
-import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+import com.catsmoker.obd2ai.ui.components.SectionCard
+import com.catsmoker.obd2ai.ui.connect.ConnectFailureKind
 import com.catsmoker.obd2ai.ui.components.StatusBadge
-import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.catsmoker.obd2ai.ui.glass.GlassCard
+import com.catsmoker.obd2ai.ui.theme.ObdRadius
+import com.catsmoker.obd2ai.ui.theme.ObdSpacing
+import com.catsmoker.obd2ai.ui.theme.ObdTheme
 
-/** Cached bundled dictionary, loaded once per process. */
-private object DictionaryCache {
-    var dictionary: Map<String, DtcInfo>? = null
+/** Severity color, paired with text so color is never the only signal. */
+@Composable
+private fun severityColor(severity: ErrorSeverity): Color = when (severity) {
+    ErrorSeverity.HIGH -> MaterialTheme.colorScheme.error
+    ErrorSeverity.MEDIUM -> ObdTheme.colors.warning
+    ErrorSeverity.LOW -> MaterialTheme.colorScheme.onSurfaceVariant
 }
 
-/**
- * What the screen knows about its fault-code data. Never claim an empty
- * result before a successful read: [IDLE] means "not read yet" and
- * [FAILED] means "the read failed" — only [DONE] may say "no codes".
- */
-private enum class ScanState { IDLE, SCANNING, DONE, FAILED }
-
-/** One fault-code row: severity dot, code, title, detail, source pills. */
+/** One fault-code row inside the results card. */
 @Composable
 private fun ErrorCodeRow(
     item: DtpCodeDTO,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
+    val context = androidx.compose.ui.platform.LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .size(10.dp)
-                .background(
-                    when (item.severity) {
-                        ErrorSeverity.HIGH -> MaterialTheme.colorScheme.error
-                        ErrorSeverity.MEDIUM -> MaterialTheme.colorScheme.primary
-                        ErrorSeverity.LOW -> MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                    androidx.compose.foundation.shape.CircleShape
-                )
-        )
-        Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = item.errorCode,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(severityColor(item.severity), CircleShape)
+                )
+                Spacer(Modifier.size(8.dp))
+                Text(
+                    text = item.errorCode,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = item.title,
                 style = MaterialTheme.typography.bodyLarge,
@@ -126,8 +108,8 @@ private fun ErrorCodeRow(
                 maxLines = 2
             )
             if (item.sources.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Spacer(Modifier.height(8.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (DtcSource.STORED in item.sources) {
                         StatusBadge(label = context.getString(R.string.dtc_source_stored), active = true)
                     }
@@ -140,6 +122,12 @@ private fun ErrorCodeRow(
                 }
             }
         }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
@@ -148,245 +136,206 @@ private fun ErrorCodeRow(
  * result list is real Compose state (the previous version wrote to
  * [ObdDataHolder] but rendered a state that could never change, so the list
  * stayed empty no matter what the ECU reported).
+ *
+ * States are explicit: not-read, scanning, failed, done-healthy, done-with-
+ * codes. A failed read never renders as "no codes".
  */
 @Composable
 fun ErrorOverviewScreen(
     obdHelper: ObdHelper,
-    aiService: AiService,
     context: Context,
-    onCodeClick: (String) -> Unit,
+    onCodeClick: (DtpCodeDTO) -> Unit,
     showError: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var codes by remember { mutableStateOf<List<DtpCodeDTO>>(emptyList()) }
-    var mil by remember { mutableStateOf<MilStatus?>(null) }
-    var adapterLine by remember { mutableStateOf("") }
-    var showAdapter by remember { mutableStateOf(false) }
-    var scanState by remember { mutableStateOf(ScanState.IDLE) }
-    var failureMessage by remember { mutableStateOf("") }
-    var clearDialog by remember { mutableStateOf(false) }
-    var cleared by remember { mutableStateOf(false) }
+    val viewModel: ErrorOverviewViewModel = hiltViewModel()
+    val codes by viewModel.codes
+    val mil by viewModel.mil
+    val adapterLine by viewModel.adapterLine
+    val showAdapter by viewModel.showAdapter
+    val scanState by viewModel.scanState
+    val failureMessage by viewModel.failureMessage
+    var clearDialog by viewModel.clearDialog
+    val cleared by viewModel.cleared
+    val cachedAt by viewModel.cachedAt
     val demoMode = remember { obdHelper.demoMode }
-    val scope = rememberCoroutineScope()
 
-    // Adapter/vehicle identity is informational: never blocks the scan.
-    LaunchedEffect(Unit) {
-        if (!obdHelper.isConnected) return@LaunchedEffect
-        val health = async(Dispatchers.IO) { runCatching { obdHelper.getAdapterHealth() } }
-        val vehicle = async(Dispatchers.IO) { runCatching { obdHelper.getVehicleInfo() } }
-        val healthResult = health.await().getOrNull()
-        val vehicleResult = vehicle.await().getOrNull()
-        if (healthResult != null || vehicleResult != null) {
-            adapterLine = listOfNotNull(
-                healthResult?.let {
-                    context.getString(R.string.error_overview_adapter_health, it.first, it.second, it.third)
-                },
-                vehicleResult?.let {
-                    context.getString(R.string.error_overview_vehicle_info, it.first, it.second, it.third)
-                }
-            ).joinToString("\n")
-            showAdapter = true
-        }
+    LaunchedEffect(Unit) { viewModel.loadAdapterInfo() }
+
+    var openGroups by rememberSaveable { mutableStateOf(listOf(DtcSource.STORED.name)) }
+    val toggleGroup: (String) -> Unit = { key ->
+        openGroups = if (openGroups.contains(key)) openGroups - key else openGroups + key
     }
 
-    fun scan() {
-        if (scanState == ScanState.SCANNING) return
-        scanState = ScanState.SCANNING
-        failureMessage = ""
-        cleared = false
-        scope.launch {
-            try {
-                val stored = async(Dispatchers.IO) { runCatching { obdHelper.getDtpCodes() } }
-                val pending = async(Dispatchers.IO) { runCatching { obdHelper.getPendingDtpCodes() } }
-                val permanent = async(Dispatchers.IO) { runCatching { obdHelper.getPermanentDtpCodes() } }
-                val milRead = async(Dispatchers.IO) { runCatching { obdHelper.getMilStatus() } }
-                val reads = listOf(stored.await(), pending.await(), permanent.await())
-                // One unsupported mode must not discard the others; only a
-                // cycle where every read failed is a real failure.
-                if (reads.all { it.isFailure }) {
-                    throw reads.firstNotNullOf { it.exceptionOrNull() }
-                }
-                val allCodes = reads.mapNotNull { it.getOrNull() }.flatten().distinct()
-                val sourceMap = ObdHelper.mergeCodeSources(
-                    stored.await().getOrDefault(emptyList()),
-                    pending.await().getOrDefault(emptyList()),
-                    permanent.await().getOrDefault(emptyList())
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Hero: the lamp that matters is the check-engine light.
+        GlassCard(
+            shape = RoundedCornerShape(ObdRadius.Card),
+            elevation = 4.dp
+        ) {
+            Column(Modifier.fillMaxWidth()) {
+                StatusBadge(
+                    label = when {
+                        mil?.milOn == true -> stringResource(R.string.error_overview_mil_badge_on)
+                        mil != null -> stringResource(R.string.error_overview_mil_badge_off)
+                        else -> stringResource(R.string.error_overview_mil_badge_unknown)
+                    },
+                    active = mil?.milOn == true,
+                    activeColor = ObdTheme.colors.warning
                 )
-                val milStatus = milRead.await().getOrNull()
-                withContext(Dispatchers.Main) {
-                    mil = milStatus
-                    ObdDataHolder.lastMil = milStatus
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = when {
+                        mil?.milOn == true ->
+                            context.getString(R.string.error_overview_mil_on, mil!!.storedCount)
+                        mil != null -> context.getString(R.string.error_overview_mil_off)
+                        else -> context.getString(R.string.error_overview_mil_unknown)
+                    },
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (showAdapter) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = adapterLine,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-                if (allCodes.isEmpty()) {
-                    ObdDataHolder.dtpResults = emptyList()
-                    DtcStore.save(context, emptyList())
-                    withContext(Dispatchers.Main) {
-                        codes = emptyList()
-                        scanState = ScanState.DONE
-                    }
-                    return@launch
-                }
-                // Without a key every network call would fail: assess offline
-                // up front. With a key, a failed call degrades to offline info.
-                val useOffline = !aiService.hasApiKey()
-                val dict = DictionaryCache.dictionary ?: runCatching {
-                    context.resources.openRawResource(R.raw.dtc_generic)
-                        .bufferedReader().use { it.readText() }
-                }.mapCatching { DtcDictionary.fromJson(it) }.getOrDefault(emptyMap()).also {
-                    DictionaryCache.dictionary = it
-                }
-                val results = allCodes.map { code ->
-                    async(Dispatchers.IO) {
-                        val entry = DtcDictionary.lookup(code, dict)
-                        val assessed = if (useOffline) {
-                            AiService.buildOfflineAssessment(code, entry)
-                        } else {
-                            runCatching { aiService.getDtpCodeAssessment(code) }
-                                .getOrElse { AiService.buildOfflineAssessment(code, entry) }
-                        }
-                        assessed.copy(
-                            sources = sourceMap[code.trim().uppercase()] ?: emptySet()
-                        )
-                    }
-                }.awaitAll()
-                ObdDataHolder.dtpResults = results
-                DtcStore.save(context, results)
-                withContext(Dispatchers.Main) {
-                    codes = results
-                    scanState = ScanState.DONE
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e("ErrorOverviewFragment", "Error loading/assessing codes", e)
-                withContext(Dispatchers.Main) {
-                    failureMessage = e.message ?: e.javaClass.simpleName
-                    scanState = ScanState.FAILED
-                }
-            }
-        }
-    }
-
-    fun clearCodes() {
-        scope.launch {
-            try {
-                withContext(Dispatchers.IO) { obdHelper.clearTroubleCodes() }
-                ObdDataHolder.dtpResults = emptyList()
-                DtcStore.save(context, emptyList())
-                withContext(Dispatchers.Main) {
-                    codes = emptyList()
-                    mil = null
-                    ObdDataHolder.lastMil = null
-                    scanState = ScanState.DONE
-                    cleared = true
-                    failureMessage = ""
-                }
-                Toast.makeText(
-                    context,
-                    R.string.error_overview_clear_done,
-                    Toast.LENGTH_LONG
-                ).show()
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e("ErrorOverviewFragment", "Error clearing codes", e)
-                withContext(Dispatchers.Main) {
-                    showError(
-                        context.getString(R.string.no_errors_found, e.message.orEmpty())
+                if (demoMode) {
+                    Spacer(Modifier.height(8.dp))
+                    StatusBadge(
+                        label = context.getString(R.string.error_overview_demo_badge),
+                        active = true
                     )
                 }
             }
         }
-    }
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(Modifier.height(ObdSpacing.CardGap))
 
-        ObdButton(
-            onClick = { scan() },
-            enabled = scanState != ScanState.SCANNING,
-            modifier = Modifier.fillMaxWidth()
+        // One dominant action, one destructive secondary: side-by-side made the
+        // longer label wrap and the two buttons disagree on height.
+        Button(
+            onClick = { viewModel.scan() },
+            // Demo has no fault-code source: without a transport every scan
+            // ends in "connection not established", so say it up front instead
+            // of running a read that cannot work.
+            enabled = !demoMode && scanState != ScanState.SCANNING,
+            shape = RoundedCornerShape(50),
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 52.dp)
         ) {
-            Text(text = context.getString(R.string.error_overview_scan_button))
+            Text(
+                text = context.getString(R.string.error_overview_scan_button),
+                textAlign = TextAlign.Center
+            )
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(Modifier.height(ObdSpacing.CardGap))
         ObdOutlinedButton(
             onClick = { clearDialog = true },
-            enabled = scanState != ScanState.SCANNING,
+            enabled = !demoMode && scanState != ScanState.SCANNING,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = context.getString(R.string.error_overview_clear_button))
+            Text(
+                text = context.getString(R.string.error_overview_clear_button),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        if (!demoMode && cachedAt != null && scanState == ScanState.IDLE) {
+            // Restored from disk: say where it came from, never present it as
+            // the current state of the car.
+            Spacer(Modifier.height(ObdSpacing.CardGap))
+            Text(
+                text = savedScanLine(cachedAt),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 4.dp)
+            )
         }
 
         if (demoMode) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = context.getString(R.string.error_overview_demo_badge),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
+            Spacer(Modifier.height(ObdSpacing.CardGap))
+            StatePanel(
+                icon = Icons.Outlined.ErrorOutline,
+                text = context.getString(R.string.diag_demo_no_codes),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = when {
-                mil?.milOn == true ->
-                    context.getString(R.string.error_overview_mil_on, mil!!.storedCount)
-                mil != null -> context.getString(R.string.error_overview_mil_off)
-                else -> context.getString(R.string.error_overview_mil_unknown)
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        Spacer(Modifier.height(ObdSpacing.SectionGap))
 
-        if (showAdapter) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = adapterLine,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        // A list restored from disk is shown as a result, never as "not
+        // scanned yet" — its freshness is stated by the line above.
+        val displayState =
+            if (!demoMode && scanState == ScanState.IDLE && cachedAt != null && codes.isNotEmpty()) {
+                ScanState.DONE
+            } else {
+                scanState
+            }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        when (scanState) {
-            ScanState.IDLE -> Text(
+        when (displayState) {
+            // In demo the note above already explains why there is nothing to
+            // scan; "tap Scan for Fault Codes" would point at a dead button.
+            // A restored saved scan renders through DONE below.
+            ScanState.IDLE -> if (!demoMode && codes.isEmpty()) StatePanel(
+                icon = Icons.Outlined.ErrorOutline,
                 text = context.getString(R.string.diag_scan_state_idle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            ScanState.SCANNING -> {
+            ScanState.SCANNING -> SectionCard {
                 Text(
                     text = context.getString(R.string.diag_scan_state_scanning),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(12.dp))
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             }
 
-            ScanState.FAILED -> Text(
-                text = context.getString(R.string.diag_scan_state_failed, failureMessage),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error
-            )
+            ScanState.FAILED -> {
+                // Same classification as Connect and Live, so one failure is
+                // described the same way wherever it surfaces.
+                val headline = when (ConnectFailureKind.classify(failureMessage)) {
+                    ConnectFailureKind.UNREACHABLE ->
+                        context.getString(R.string.connect_failed_unreachable)
+                    ConnectFailureKind.NOT_PAIRED ->
+                        context.getString(R.string.connect_failed_not_paired)
+                    ConnectFailureKind.BLUETOOTH_UNAVAILABLE ->
+                        context.getString(R.string.connect_failed_bluetooth)
+                    ConnectFailureKind.GENERIC -> null
+                }
+                StatePanel(
+                    icon = Icons.Outlined.ErrorOutline,
+                    text = if (headline != null && failureMessage.isNotBlank()) {
+                        headline + "\n" + failureMessage
+                    } else {
+                        context.getString(R.string.diag_scan_state_failed, failureMessage)
+                    },
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
 
             ScanState.DONE -> {
                 if (codes.isEmpty()) {
-                    Text(
+                    StatePanel(
+                        icon = Icons.Outlined.CheckCircle,
                         text = if (cleared) {
                             context.getString(R.string.error_overview_clear_done)
                         } else {
                             context.getString(R.string.error_overview_no_errors)
                         },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = ObdTheme.colors.success
                     )
                 } else {
                     val allOffline = codes.all { it.offline }
@@ -401,33 +350,62 @@ fun ErrorOverviewScreen(
                     Text(
                         text = stats,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 4.dp, bottom = ObdSpacing.LabelGap)
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth().weight(1f, fill = false),
-                        contentPadding = PaddingValues(vertical = 8.dp)
-                    ) {
-                        items(items = sorted, key = { it.errorCode }) { item ->
-                            ErrorCodeRow(item = item, onClick = { onCodeClick(item.errorCode) })
+                    // A code can be stored and pending at the same time, so it
+                    // is listed under every source it reports; the chips on the
+                    // row and the unique totals above keep that honest.
+                    val groups = listOf(
+                        DtcSource.STORED to context.getString(R.string.dtc_source_stored),
+                        DtcSource.PENDING to context.getString(R.string.dtc_source_pending),
+                        DtcSource.PERMANENT to context.getString(R.string.dtc_source_permanent)
+                    )
+                    groups.forEachIndexed { index, (source, label) ->
+                        val members = if (source == DtcSource.STORED) {
+                            sorted.filter { source in it.sources || it.sources.isEmpty() }
+                        } else {
+                            sorted.filter { source in it.sources }
+                        }
+                        if (members.isEmpty()) return@forEachIndexed
+                        if (index > 0) Spacer(Modifier.height(ObdSpacing.CardGap))
+                        CollapsibleSectionCard(
+                            title = context.getString(
+                                R.string.error_overview_source_group,
+                                label,
+                                members.size
+                            ),
+                            expanded = openGroups.contains(source.name),
+                            onToggle = { toggleGroup(source.name) },
+                            expandLabel = context.getString(R.string.settings_section_expand),
+                            collapseLabel = context.getString(R.string.settings_section_collapse)
+                        ) {
+                            members.forEachIndexed { i, item ->
+                                ErrorCodeRow(item = item, onClick = { onCodeClick(item) })
+                                if (i < members.lastIndex) {
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(ObdSpacing.SectionGap))
     }
 
     if (clearDialog) {
         AlertDialog(
             onDismissRequest = { clearDialog = false },
+            shape = RoundedCornerShape(ObdRadius.Card),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             title = { Text(text = stringResource(R.string.error_overview_clear_confirm_title)) },
             text = { Text(text = stringResource(R.string.error_overview_clear_confirm_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     clearDialog = false
-                    clearCodes()
+                    viewModel.clearCodes(onError = showError)
                 }) {
                     Text(text = stringResource(R.string.dialog_clear))
                 }
@@ -441,4 +419,47 @@ fun ErrorOverviewScreen(
     }
 }
 
-/** Fragment host: owns navigation and the shared services. */
+/** Centered icon + message for empty/error states. */
+@Composable
+private fun StatePanel(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    text: String,
+    tint: Color
+) {
+    SectionCard {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+/**
+ * The saved-scan caption: a date only when the file really carries one, so a
+ * legacy cache never invents when it was written.
+ */
+@Composable
+private fun savedScanLine(cachedAt: Long?): String {
+    if (!CachedScanLabel.hasDate(cachedAt)) {
+        return stringResource(R.string.diag_saved_scan_undated)
+    }
+    val stamp = remember(cachedAt) {
+        java.text.DateFormat
+            .getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT)
+            .format(java.util.Date(cachedAt ?: 0L))
+    }
+    return stringResource(R.string.diag_saved_scan, stamp)
+}

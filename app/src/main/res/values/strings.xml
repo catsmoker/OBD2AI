@@ -30,7 +30,6 @@
     <string name="connect_scanning_for_devices">Scanning for devices…</string>
     <string name="connect_button">Connect</string>
     <string name="connected_to">Selected: %1$s</string>
-    <string name="could_not_connect_to_obd2_adapter">Could not connect to OBD2 adapter: %1$s</string>
     <string name="connect_no_devices_found">Could not get paired devices: %1$s</string>
     <string name="connect_demo_button">Try demo mode (no adapter needed)</string>
     <string name="connect_wifi_title">Wi-Fi adapter</string>
@@ -38,8 +37,26 @@
     <string name="connect_wifi_port_hint">Port</string>
     <string name="connect_wifi_button">Connect via Wi-Fi</string>
     <string name="connect_wifi_invalid">Enter a valid IP address and port</string>
+    <string name="connect_error_unknown">no details from the adapter</string>
+    <string name="connect_connecting">Connecting…</string>
+    <string name="connect_empty_title">No adapter paired yet</string>
+    <string name="connect_empty_body">Pair your ELM327 adapter in the Bluetooth settings of the phone, then rescan. Wi-Fi adapters skip pairing.</string>
+    <string name="connect_rescan">Rescan</string>
+    <string name="connect_stop_scan">Stop scanning</string>
+    <string name="connect_devices_found">Adapters found: %1$d</string>
+    <string name="connect_last_transport">Last connected via %1$s</string>
+    <string name="connect_failed_unreachable">Could not reach the adapter</string>
+    <string name="connect_failed_not_paired">That adapter is no longer paired</string>
+    <string name="connect_failed_bluetooth">Bluetooth is not available</string>
+    <string name="connect_failed_generic">Could not connect to the OBD2 adapter</string>
+    <string name="live_data_stopped">Live data stopped</string>
+    <string name="live_data_retry">Retry</string>
+    <string name="connect_transport_bluetooth">Bluetooth</string>
+    <string name="connect_transport_wifi">Wi-Fi</string>
+    <string name="connect_connecting_to">Connecting to %1$s…</string>
 
     <!-- Error Codes -->
+    <string name="error_overview_source_group">%1$s (%2$d)</string>
     <string name="error_overview_title">Diagnostic Report</string>
     <string name="error_overview_scan_button">Scan for Fault Codes</string>
     <string name="error_overview_error_counts">Low: %1$d | Med: %2$d | High: %3$d</string>
@@ -48,6 +65,8 @@
     <string name="error_overview_mil_off">Engine light: OFF</string>
     <string name="error_overview_mil_unknown">Engine light: unknown</string>
     <string name="diag_scan_state_idle">Not scanned yet — tap Scan for Fault Codes.</string>
+    <string name="diag_saved_scan">Saved scan from %1$s — scan again for live codes.</string>
+    <string name="diag_saved_scan_undated">Showing a saved scan — scan again for live codes.</string>
     <string name="diag_scan_state_scanning">Reading fault codes…</string>
     <string name="diag_scan_state_failed">Could not read fault codes: %1$s</string>
     <string name="error_overview_offline_note">offline info — add an API key in Settings for AI assessments</string>
@@ -58,6 +77,7 @@
     <string name="error_offline_suffix">%1$s · offline info</string>
     <string name="error_detail_gone">Saved result for %1$s is no longer available. Please scan again.</string>
     <string name="error_overview_demo_badge">Demo mode — simulated data</string>
+    <string name="diag_demo_no_codes">Fault codes come from the adapter, so demo mode cannot read them. Connect your ELM327 to scan.</string>
     <string name="error_overview_adapter_health">Adapter: %1$s · ECU: %2$s · Protocol: %3$s</string>
     <string name="error_overview_vehicle_info">VIN: %1$s · Since clear: %2$s / %3$s</string>
     <string name="error_detail_title">Fault Code Details</string>
@@ -72,6 +92,8 @@
     <string name="ask_ai_button">Ask AI</string>
     <string name="ask_ai_welcome">Questions about %1$s? Ask below — answers use the diagnosis above.</string>
     <string name="ask_ai_hint">Ask about %1$s…</string>
+    <string name="ask_ai_interrupted">The answer was interrupted.</string>
+    <string name="ask_ai_retry">Retry</string>
     <string name="ask_ai_send">Send</string>
     <string name="ask_ai_thinking">Thinking…</string>
     <string name="ask_ai_no_key">Add an AI API key in Settings to chat about this fault.</string>
@@ -90,11 +112,14 @@
     <string name="obd_console_title">OBD Console</string>
     <string name="obd_console_hint">Type an AT command or PID (e.g. 010C)</string>
     <string name="obd_console_send">Send</string>
+    <string name="obd_console_copy">Copy</string>
+    <string name="obd_console_copied">Copied to clipboard</string>
     <string name="obd_console_clear">Clear</string>
     <string name="obd_console_not_connected">Not connected to an adapter.</string>
 
     <!-- Freeze frame -->
     <string name="freeze_title">Freeze frame</string>
+    <string name="freeze_reading">Reading freeze frame…</string>
     <string name="freeze_unavailable">Freeze frame not available.</string>
     <string name="freeze_dtc">Fault: %1$s</string>
     <string name="freeze_rpm">RPM: %1$d</string>
@@ -117,6 +142,7 @@
 
     <!-- Trip computer -->
     <string name="trip_title">Trip computer</string>
+    <string name="trip_distance_hint">Trip distance updates while the Live dashboard is open.</string>
     <string name="trip_overview_button">Trip computer</string>
     <string name="trip_start">Start trip</string>
     <string name="trip_stop">Stop</string>
@@ -281,19 +307,14 @@
     <string name="setup_continue">Continue</string>
     <string name="setup_step_indicator">Step %1$d of %2$d</string>
     <string name="setup_step2_title">Language &amp; appearance</string>
-    <string name="setup_nav_title">Navigation</string>
-    <string name="setup_nav_desc">Choose how you move between screens.</string>
-    <string name="setup_nav_bar">Navigation bar</string>
-    <string name="setup_nav_bar_desc">A persistent bar with Home, Live, Diagnostics and Trip tabs.</string>
-    <string name="setup_nav_cards">Cards</string>
-    <string name="setup_nav_cards_desc">Hub and spoke: everything opens from the Home screen; press back to return.</string>
-    <string name="home_nav_hint">Navigation style can be changed anytime in Settings.</string>
     <string name="setup_next">Next</string>
     <string name="setup_back">Back</string>
     <string name="setup_cookies_note">This app sets no cookies and loads no tracking pixels. The operator website has its own policy:</string>
     <string name="setup_language_desc">Choose the language for OBD2AI.</string>
     <string name="setup_appearance_desc">Choose how OBD2AI looks on this device.</string>
     <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_section_expand">Expand section</string>
+    <string name="settings_section_collapse">Collapse section</string>
     <string name="settings_privacy_desc">Usage analytics and ad personalization are on by default; turn either off anytime. Your car data and AI key stay on this device.</string>
     <string name="settings_analytics_title">Usage analytics</string>
     <string name="settings_analytics_desc">Reports which screens are used, plus device and app identifiers, to Firebase Analytics to improve the app. On by default; turn off anytime.</string>
@@ -341,11 +362,14 @@
     <string name="home_section_title">Features</string>
     <string name="home_status_connected">Connected</string>
     <string name="home_status_offline">Not connected</string>
+    <string name="home_connection_lost">Connection lost: %1$s</string>
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_exit_demo">Exit demo</string>
     <string name="nav_back_desc">Back</string>
     <string name="home_card_dashboard_desc">Live speed, RPM and engine data.</string>
     <string name="home_card_diagnostics_desc">Read fault codes with AI explanations.</string>
+    <string name="home_card_saved_scan_title">Saved fault codes</string>
+    <string name="home_card_saved_scan_desc">Review the last scan; connect to read the car again</string>
     <string name="home_card_trip_desc">Track distance, time and top speed.</string>
     <string name="home_card_console_desc">Send raw OBD commands.</string>
 
@@ -362,4 +386,13 @@
     <string name="instrument_coolant">Coolant</string>
     <string name="instrument_voltage">Voltage</string>
     <string name="instrument_fuel">Fuel</string>
+    <string name="trip_running">Running</string>
+    <string name="trip_idle_state">Idle</string>
+    <string name="trip_section_stats">Statistics</string>
+    <string name="settings_dynamic_color">Wallpaper colors</string>
+    <string name="settings_dynamic_color_desc">Use the system palette on Android 12 and newer</string>
+    <string name="obd_console_placeholder">Type ATZ, 010C… and press send</string>
+    <string name="error_overview_mil_badge_on">Check engine on</string>
+    <string name="error_overview_mil_badge_off">Check engine off</string>
+    <string name="error_overview_mil_badge_unknown">Check engine unknown</string>
 </resources>

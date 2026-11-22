@@ -3,25 +3,20 @@ package com.catsmoker.obd2ai.ui.connect
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import android.Manifest
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
 import com.catsmoker.obd2ai.ui.home.sectionOptions
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * Connect destination: ports the old fragment's non-UI wiring — the
@@ -32,50 +27,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConnectDestination(activity: MainActivity, navController: NavHostController) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val bluetoothHelper = activity.bluetoothHelper
     val obdHelper = activity.obdHelper
-    val uiState = remember { ConnectUiState() }
+    val viewModel: ConnectViewModel = hiltViewModel()
+    val uiState = viewModel.uiState
 
-    @RequiresPermission(
-        allOf = [Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT]
-    )
-    fun refreshDevices() {
-        if (!bluetoothHelper.checkBluetoothPermissions()) {
-            Toast.makeText(context, R.string.permissions_bluetooth_required, Toast.LENGTH_SHORT)
-                .show()
-            uiState.isRefreshing.value = false
-            return
-        }
-        try {
-            val pairedDevices = bluetoothHelper.getPairedDevices()
-            uiState.pairedDevices.value = pairedDevices
-            uiState.selectedDevice.value = null
-            bluetoothHelper.startDiscovery()
-            uiState.isRefreshing.value = true
-            scope.launch {
-                delay(12000)
-                try {
-                    bluetoothHelper.stopDiscovery()
-                } catch (_: Exception) {
-                }
-                uiState.isRefreshing.value = false
-            }
-        } catch (e: Exception) {
-            uiState.isRefreshing.value = false
-            Toast.makeText(
-                context,
-                context.getString(R.string.connect_no_devices_found, e.message),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    val enableBluetoothLauncher = rememberLauncherForActivityResult(
+val enableBluetoothLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            refreshDevices()
+            viewModel.refreshDevices()
         } else {
             Toast.makeText(context, R.string.permissions_bluetooth_required, Toast.LENGTH_LONG)
                 .show()
@@ -84,14 +45,9 @@ fun ConnectDestination(activity: MainActivity, navController: NavHostController)
 
     fun navigateAfterConnect() {
         ConnectionStateStore.refresh(obdHelper)
-        if (obdHelper.isConnected && !ConnectionStateStore.cardsMode.value) {
-            // Bar mode: a successful connect lands in the app (dashboard)
-            // instead of bouncing back to the Home menu.
-            navController.navigate("live") { sectionOptions() }
-        } else {
-            // Cards mode or a cancelled attempt: back to Home.
-            navController.popBackStack("home", inclusive = false)
-        }
+        // Home is the hub now: a successful connect returns there, where the
+        // feature tiles (and the live dashboard) are one tap away.
+        navController.popBackStack("home", inclusive = false)
     }
 
     // Resume behavior from the old fragment: prompt to enable Bluetooth or
@@ -102,7 +58,7 @@ fun ConnectDestination(activity: MainActivity, navController: NavHostController)
                 if (!bluetoothHelper.isBluetoothEnabled()) {
                     enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
                 } else {
-                    refreshDevices()
+                    viewModel.refreshDevices()
                 }
             }
         }
@@ -123,7 +79,9 @@ fun ConnectDestination(activity: MainActivity, navController: NavHostController)
         onEnableBluetooth = {
             enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
         },
-        onRefresh = { refreshDevices() },
-        navigateToHome = { navigateAfterConnect() }
+        onRefresh = { viewModel.refreshDevices() },
+        onStopScan = { viewModel.stopScan() },
+        navigateToHome = { navigateAfterConnect() },
+        onBack = { navController.navigateUp() }
     )
 }

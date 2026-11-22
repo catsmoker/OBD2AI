@@ -25,6 +25,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +54,6 @@ import com.catsmoker.obd2ai.ai.AiPersonality
 import com.catsmoker.obd2ai.ai.AiProvider
 import com.catsmoker.obd2ai.ai.AiSwitchRules
 import com.catsmoker.obd2ai.prefs.AppLanguage
-import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.prefs.Units
@@ -55,6 +61,7 @@ import com.catsmoker.obd2ai.speedometers.SpeedometerHost
 import com.catsmoker.obd2ai.speedometers.SpeedometerStyle
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
+import com.catsmoker.obd2ai.ui.components.CollapsibleSectionCard
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
 import com.catsmoker.obd2ai.ui.components.SectionCard
 import com.catsmoker.obd2ai.ui.components.SectionLabel
@@ -69,11 +76,12 @@ fun SettingsScreen(
     prefs: SharedPreferences,
     adBilling: com.catsmoker.obd2ai.ads.AdBillingManager,
     context: Context,
+    onBack: () -> Unit,
     onThemeChange: (ThemeMode) -> Unit,
+    onDynamicColorChange: (Boolean) -> Unit,
     onLanguageChange: (String) -> Unit,
     onUnitsChange: (Boolean) -> Unit,
     onSpeedSourceChange: (Boolean) -> Unit,
-    onNavStyleChange: (NavStyle) -> Unit,
     onMuteChange: (Boolean) -> Unit,
     onKeepScreenChange: (Boolean) -> Unit,
     onEngineSoundChange: (Boolean) -> Unit,
@@ -116,6 +124,7 @@ fun SettingsScreen(
     val ctx = LocalContext.current
 
     var themeMode by remember { mutableStateOf(ThemeMode.fromPref(prefs.getString(PrefsKeys.THEME_MODE, null))) }
+    var dynamicColor by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.DYNAMIC_COLOR, false)) }
     var appLang by remember { mutableStateOf(AppLanguage.fromTag(prefs.getString(PrefsKeys.APP_LANGUAGE, null))) }
     var imperial by remember { mutableStateOf(Units.isImperial(prefs)) }
     var speedSourceDevice by remember {
@@ -123,7 +132,6 @@ fun SettingsScreen(
             prefs.getString(PrefsKeys.SPEED_SOURCE, PrefsKeys.SPEED_SOURCE_OBD) == PrefsKeys.SPEED_SOURCE_DEVICE
         )
     }
-    var navStyle by remember { mutableStateOf(NavStyle.fromPref(prefs.getString(PrefsKeys.NAV_STYLE, null))) }
     var mute by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.MUTE_SOUND, false)) }
     var keepScreen by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.KEEP_SCREEN_ON, false)) }
     var engineSound by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.ENGINE_SOUND_ENABLED, false)) }
@@ -178,6 +186,13 @@ fun SettingsScreen(
         mutableStateOf(AiPersonality.fromPref(prefs.getString(PrefsKeys.AI_PERSONALITY, null)))
     }
 
+    // Open sections survive rotation; everything but General starts folded so
+    // the list stays short on a phone.
+    var openSections by rememberSaveable { mutableStateOf(listOf("general")) }
+    val toggleSection: (String) -> Unit = { id ->
+        openSections = if (openSections.contains(id)) openSections - id else openSections + id
+    }
+
     var analytics by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.ANALYTICS_ENABLED, true)) }
     var personalizedAds by remember { mutableStateOf(prefs.getBoolean(PrefsKeys.PERSONALIZED_ADS, true)) }
 
@@ -220,9 +235,8 @@ fun SettingsScreen(
     }
 
     ScreenScaffold(
-        // The activity's top bar already shows the single back arrow on phone.
         title = ctx.getString(R.string.settings_title),
-        onBack = null,
+        onBack = onBack,
         modifier = modifier.fillMaxSize()
     ) {
         Column(
@@ -231,9 +245,13 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             // ---- General ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_category_general), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_category_general),
+                expanded = openSections.contains("general"),
+                onToggle = { toggleSection("general") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 DropdownRow(
                     title = ctx.getString(R.string.settings_theme_title),
                     value = when (themeMode) {
@@ -282,32 +300,32 @@ fun SettingsScreen(
                         onSpeedSourceChange(speedSourceDevice)
                     }
                 )
+
                 Spacer(modifier = Modifier.height(12.dp))
-                // Same labels the setup flow uses — one concept, one name.
-                DropdownRow(
-                    title = ctx.getString(R.string.setup_nav_title),
-                    value = when (navStyle) {
-                        NavStyle.BAR -> ctx.getString(R.string.setup_nav_bar)
-                        NavStyle.CARDS -> ctx.getString(R.string.setup_nav_cards)
-                    },
-                    options = listOf(
-                        ctx.getString(R.string.setup_nav_bar),
-                        ctx.getString(R.string.setup_nav_cards)
-                    ),
-                    onSelect = { index ->
-                        navStyle = if (index == 1) NavStyle.CARDS else NavStyle.BAR
-                        onNavStyleChange(navStyle)
-                    }
-                )
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    SwitchRow(
+                        title = ctx.getString(R.string.settings_dynamic_color),
+                        subtitle = ctx.getString(R.string.settings_dynamic_color_desc),
+                        checked = dynamicColor,
+                        onCheckedChange = {
+                            dynamicColor = it
+                            onDynamicColorChange(it)
+                        }
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // ---- Driving alerts ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_category_driving), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_category_driving),
+                expanded = openSections.contains("driving"),
+                onToggle = { toggleSection("driving") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 SwitchRow(
                     title = ctx.getString(R.string.settings_mute_sound),
                     checked = mute,
@@ -355,9 +373,13 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // ---- Speedometer ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_speedometer_title), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_speedometer_title),
+                expanded = openSections.contains("speedometer"),
+                onToggle = { toggleSection("speedometer") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 Text(
                     text = ctx.getString(R.string.settings_speedometer_desc),
                     style = MaterialTheme.typography.bodyMedium,
@@ -425,9 +447,13 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // ---- Offline AI ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_offline_ai_title), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_offline_ai_title),
+                expanded = openSections.contains("offline_ai"),
+                onToggle = { toggleSection("offline_ai") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 Text(
                     text = ctx.getString(R.string.settings_offline_ai_desc),
                     style = MaterialTheme.typography.bodySmall,
@@ -601,9 +627,13 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // ---- Online AI ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_online_ai_title), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_online_ai_title),
+                expanded = openSections.contains("online_ai"),
+                onToggle = { toggleSection("online_ai") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 Text(
                     text = ctx.getString(R.string.settings_online_ai_desc),
                     style = MaterialTheme.typography.bodySmall,
@@ -772,9 +802,13 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // ---- Privacy ----
-            SectionCard {
-                SectionLabel(text = ctx.getString(R.string.settings_privacy_title), accent = true)
-                Spacer(modifier = Modifier.height(8.dp))
+            CollapsibleSectionCard(
+                title = ctx.getString(R.string.settings_privacy_title),
+                expanded = openSections.contains("privacy"),
+                onToggle = { toggleSection("privacy") },
+                expandLabel = ctx.getString(R.string.settings_section_expand),
+                collapseLabel = ctx.getString(R.string.settings_section_collapse)
+            ) {
                 Text(
                     text = ctx.getString(R.string.settings_privacy_desc),
                     style = MaterialTheme.typography.bodySmall,
@@ -875,19 +909,31 @@ private fun displayName(raw: String): String =
 private fun SwitchRow(
     title: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    subtitle: String? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 48.dp)
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
+        Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
         Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
@@ -901,10 +947,11 @@ private fun SliderRow(
     step: Int,
     onChange: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
@@ -914,7 +961,7 @@ private fun SliderRow(
             if (valueText.isNotEmpty()) {
                 Text(
                     text = valueText,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -928,6 +975,11 @@ private fun SliderRow(
     }
 }
 
+/**
+ * Label row with the current value in a tonal pill. The pill is what makes
+ * the row read as a control rather than as text, and it keeps long
+ * translations from colliding with the label.
+ */
 @Composable
 private fun DropdownRow(
     title: String,
@@ -940,8 +992,9 @@ private fun DropdownRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .heightIn(min = 48.dp)
                 .clickable { expanded = true }
-                .padding(vertical = 8.dp),
+                .padding(vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -950,17 +1003,24 @@ private fun DropdownRow(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = "▾",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Row(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(50))
+                    .padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Icon(
+                    imageVector = Icons.Filled.ExpandMore,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEachIndexed { index, label ->
@@ -989,21 +1049,34 @@ private fun RadioTile(
 ) {
     Row(
         modifier = modifier
+            .heightIn(min = 48.dp)
             .clickable(onClick = onClick)
-            .padding(vertical = 6.dp),
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .width(18.dp)
-                .height(18.dp)
-                .background(
-                    if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                    CircleShape
+                .size(20.dp)
+                .border(
+                    width = 2.dp,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selected) {
+                Box(
+                    Modifier
+                        .size(10.dp)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape)
                 )
-                .scale(if (selected) 1f else 0.72f)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
+            }
+        }
+        Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,

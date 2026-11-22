@@ -28,7 +28,6 @@
     <string name="connect_scanning_for_devices">جارٍ البحث عن الأجهزة…</string>
     <string name="connect_button">اتصال</string>
     <string name="connected_to">المحدد: %1$s</string>
-    <string name="could_not_connect_to_obd2_adapter">تعذّر الاتصال بمحوّل OBD2: %1$s</string>
     <string name="connect_no_devices_found">تعذّر الحصول على الأجهزة المقترنة: %1$s</string>
     <string name="connect_demo_button">جرّب الوضع التجريبي (بدون محوّل)</string>
     <string name="connect_wifi_title">محوّل Wi-Fi</string>
@@ -36,8 +35,26 @@
     <string name="connect_wifi_port_hint">المنفذ</string>
     <string name="connect_wifi_button">اتصال عبر Wi-Fi</string>
     <string name="connect_wifi_invalid">أدخل عنوان IP ومنفذًا صالحين</string>
+    <string name="connect_error_unknown">لا توجد تفاصيل من المحول</string>
+    <string name="connect_connecting">جارٍ الاتصال…</string>
+    <string name="connect_empty_title">لا يوجد محول مقترن بعد</string>
+    <string name="connect_empty_body">اقترن بمحول ELM327 من إعدادات البلوتوث في الهاتف ثم أعد البحث. محولات Wi-Fi لا تحتاج إلى اقتران.</string>
+    <string name="connect_rescan">إعادة البحث</string>
+    <string name="connect_stop_scan">إيقاف البحث</string>
+    <string name="connect_devices_found">المحولات التي تم العثور عليها: %1$d</string>
+    <string name="connect_last_transport">آخر اتصال عبر %1$s</string>
+    <string name="connect_failed_unreachable">تعذر الوصول إلى المحول</string>
+    <string name="connect_failed_not_paired">هذا المحول لم يعد مقترناً</string>
+    <string name="connect_failed_bluetooth">البلوتوث غير متاح</string>
+    <string name="connect_failed_generic">تعذر الاتصال بمحول OBD2</string>
+    <string name="live_data_stopped">توقفت البيانات الحية</string>
+    <string name="live_data_retry">إعادة المحاولة</string>
+    <string name="connect_transport_bluetooth">البلوتوث</string>
+    <string name="connect_transport_wifi">Wi-Fi</string>
+    <string name="connect_connecting_to">جارٍ الاتصال بـ %1$s…</string>
 
     <!-- Error Codes -->
+    <string name="error_overview_source_group">%1$s (%2$d)</string>
     <string name="error_overview_title">تقرير التشخيص</string>
     <string name="error_overview_scan_button">فحص رموز الأعطال</string>
     <string name="error_overview_error_counts">طفيفة: %1$d | متوسطة: %2$d | خطيرة: %3$d</string>
@@ -46,6 +63,8 @@
     <string name="error_overview_mil_off">مصباح المحرك: مطفأ</string>
     <string name="error_overview_mil_unknown">مصباح المحرك: غير معروف</string>
     <string name="diag_scan_state_idle">لم يتم الفحص بعد — اضغط على فحص رموز الأعطال.</string>
+    <string name="diag_saved_scan">فحص محفوظ من %1$s — أعد الفحص للحصول على الأكواد الحالية.</string>
+    <string name="diag_saved_scan_undated">يتم عرض فحص محفوظ — أعد الفحص للحصول على الأكواد الحالية.</string>
     <string name="diag_scan_state_scanning">جارٍ قراءة رموز الأعطال…</string>
     <string name="diag_scan_state_failed">تعذّرت قراءة رموز الأعطال: %1$s</string>
     <string name="error_overview_offline_note">معلومات دون اتصال — أضف مفتاح API في الإعدادات لتحليلات الذكاء الاصطناعي</string>
@@ -56,6 +75,7 @@
     <string name="error_offline_suffix">%1$s · معلومات دون اتصال</string>
     <string name="error_detail_gone">النتيجة المحفوظة لـ %1$s لم تعد متاحة. يرجى الفحص مجددًا.</string>
     <string name="error_overview_demo_badge">الوضع التجريبي — بيانات محاكاة</string>
+    <string name="diag_demo_no_codes">أكواد الأعطال تأتي من المحول، لذا لا يمكن لوضع العرض التجريبي قراءتها. اتصل بمحول ELM327 لإجراء الفحص.</string>
     <string name="error_overview_adapter_health">المحوّل: %1$s · ECU: %2$s · البروتوكول: %3$s</string>
     <string name="error_overview_vehicle_info">رقم الهيكل: %1$s · منذ المسح: %2$s / %3$s</string>
     <string name="error_detail_title">تفاصيل رمز العطل</string>
@@ -70,6 +90,8 @@
     <string name="ask_ai_button">اسأل الذكاء الاصطناعي</string>
     <string name="ask_ai_welcome">هل لديك أسئلة عن %1$s؟ اكتب أدناه — تستند الإجابات إلى التشخيص أعلاه.</string>
     <string name="ask_ai_hint">اسأل عن %1$s…</string>
+    <string name="ask_ai_interrupted">تمت مقاطعة الإجابة.</string>
+    <string name="ask_ai_retry">إعادة المحاولة</string>
     <string name="ask_ai_send">إرسال</string>
     <string name="ask_ai_thinking">جارٍ التفكير…</string>
     <string name="ask_ai_no_key">أضف مفتاح API للذكاء الاصطناعي في الإعدادات للدردشة حول هذا العطل.</string>
@@ -88,11 +110,14 @@
     <string name="obd_console_title">وحدة تحكم OBD</string>
     <string name="obd_console_hint">اكتب أمر AT أو PID (مثال 010C)</string>
     <string name="obd_console_send">إرسال</string>
+    <string name="obd_console_copy">نسخ</string>
+    <string name="obd_console_copied">تم النسخ إلى الحافظة</string>
     <string name="obd_console_clear">مسح</string>
     <string name="obd_console_not_connected">غير متصل بالمحول.</string>
 
     <!-- Freeze frame -->
     <string name="freeze_title">الإطار المتجمد</string>
+    <string name="freeze_reading">جارٍ قراءة الإطار المتجمد…</string>
     <string name="freeze_unavailable">الإطار المتجمد غير متاح.</string>
     <string name="freeze_dtc">العطل: %1$s</string>
     <string name="freeze_rpm">RPM: %1$d</string>
@@ -115,6 +140,7 @@
 
     <!-- Trip computer -->
     <string name="trip_title">كمبيوتر الرحلة</string>
+    <string name="trip_distance_hint">تتحدث مسافة الرحلة أثناء فتح لوحة البيانات المباشرة.</string>
     <string name="trip_overview_button">الرحلة</string>
     <string name="trip_start">بدء الرحلة</string>
     <string name="trip_stop">إيقاف</string>
@@ -277,13 +303,6 @@
     <string name="setup_continue">متابعة</string>
     <string name="setup_step_indicator">الخطوة %1$d من %2$d</string>
     <string name="setup_step2_title">اللغة والمظهر</string>
-    <string name="setup_nav_title">التنقل</string>
-    <string name="setup_nav_desc">اختر كيفية التنقل بين الشاشات.</string>
-    <string name="setup_nav_bar">شريط التنقل</string>
-    <string name="setup_nav_bar_desc">شريط ثابت بعلامات التبويب: الرئيسية والمباشر والتشخيص والرحلة.</string>
-    <string name="setup_nav_cards">البطاقات</string>
-    <string name="setup_nav_cards_desc">كل شيء يُفتح من الشاشة الرئيسية؛ اضغط رجوع للعودة.</string>
-    <string name="home_nav_hint">يمكن تغيير نمط التنقل في أي وقت من الإعدادات.</string>
     <string name="setup_next">التالي</string>
     <string name="setup_back">رجوع</string>
     <string name="setup_cookies_note">هذا التطبيق لا يستخدم ملفات تعريف الارتباط ولا يحمل بكسلات التتبع. موقع المشغل له سياسة خاصة به:</string>
@@ -337,11 +356,14 @@
     <string name="home_section_title">المزايا</string>
     <string name="home_status_connected">متصل</string>
     <string name="home_status_offline">غير متصل</string>
+    <string name="home_connection_lost">انقطع الاتصال: %1$s</string>
     <string name="menu_disconnect">قطع الاتصال</string>
     <string name="menu_exit_demo">إنهاء العرض التجريبي</string>
     <string name="nav_back_desc">رجوع</string>
     <string name="home_card_dashboard_desc">السرعة والدوران وبيانات المحرك مباشرة.</string>
     <string name="home_card_diagnostics_desc">اقرأ رموز الأعطال مع شروح الذكاء الاصطناعي.</string>
+    <string name="home_card_saved_scan_title">أكواد محفوظة</string>
+    <string name="home_card_saved_scan_desc">راجع آخر فحص؛ اتصل لقراءة السيارة مرة أخرى</string>
     <string name="home_card_trip_desc">تتبع المسافة والوقت والسرعة القصوى.</string>
     <string name="home_card_console_desc">أرسل أوامر OBD مباشرة.</string>
 
@@ -358,4 +380,15 @@
     <string name="instrument_coolant">سائل التبريد</string>
     <string name="instrument_voltage">الجهد</string>
     <string name="instrument_fuel">الوقود</string>
+    <string name="trip_running">قيد التشغيل</string>
+    <string name="trip_idle_state">متوقف</string>
+    <string name="trip_section_stats">الإحصاءات</string>
+    <string name="settings_dynamic_color">ألوان الخلفية</string>
+    <string name="settings_dynamic_color_desc">استخدام ألوان النظام في أندرويد 12 وما بعده</string>
+    <string name="obd_console_placeholder">اكتب ATZ أو 010C… ثم اضغط إرسال</string>
+    <string name="error_overview_mil_badge_on">لمبة المحرك مضاءة</string>
+    <string name="error_overview_mil_badge_off">لمبة المحرك مطفأة</string>
+    <string name="error_overview_mil_badge_unknown">لمبة المحرك غير معروفة</string>
+    <string name="settings_section_expand">توسيع القسم</string>
+    <string name="settings_section_collapse">طي القسم</string>
 </resources>

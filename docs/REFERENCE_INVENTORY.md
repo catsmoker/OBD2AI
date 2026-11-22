@@ -13,12 +13,15 @@ Extra deep docs: `carsense-app/MVI_ARCHITECTURE.md`,
 
 ## Where OBD2AI stands (baseline for the gaps below)
 
-Single-module `:app`, Kotlin + Views/Fragments, 3 source files. Bluetooth SPP
-+ WiFi TCP + demo, raw AT init `ATZ/ATE0/ATL0/ATS0/ATH0/ATSP0/ATAT1`,
-stored/pending/permanent DTC + MIL + `dtc_results.json` cache, 4 AI providers
-with offline fallback, Offline AI (fully offline voice+banner) + Online AI
-(network brain + chat card), LiveData gauges + shift cue + edge-flash + siren,
- 4-card Settings, 5 locales, 3 themes, pure-logic unit tests mirroring the packages.
+Five Gradle modules (`:app` + `:core:prefs`, `:core:diagnostics`, `:core:obd`,
+`:core:ai`), Kotlin + Compose (single activity, Home hub, no tabs/rail).
+Bluetooth SPP + WiFi TCP + demo, raw AT init
+`ATZ/ATE0/ATL0/ATS0/ATH0/ATSP0/ATAT1`, stored/pending/permanent DTC + MIL +
+`dtc_results.json` cache with assessments, 4 AI providers with offline
+fallback, Offline AI (fully offline voice+banner) + Online AI (network brain +
+chat card), live gauges + shift cue + edge-flash + siren, Liquid Glass design
+system with API gating, 5 locales, 3 themes, trip persistence, and pure-logic
+unit tests in every module.
 
 ---
 

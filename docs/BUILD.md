@@ -23,18 +23,19 @@ $env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"; $env:Path="$env:JA
 
 | Item          | Value                                    |
 | ------------- | ---------------------------------------- |
-| AGP           | 9.4.0                                    |
-| Kotlin        | 2.4.20                                   |
-| Compile SDK   | 37                                       |
+| AGP           | 9.5.2                                    |
+| Kotlin        | 2.4.21                                   |
+| Compile SDK   | 37 (minor 2: `minorApiLevel = 2`)        |
 | Target SDK    | 36                                       |
 | Min SDK       | 24 (Android 7.0)                         |
 | Build-tools   | 36.1.0                                   |
 | Java          | 17                                       |
-| Navigation    | 2.10.1                                   |
+| Navigation    | 2.10.2                                   |
 | kotlin-obd-api| 1.4.1 (via JitPack)                      |
-| Version       | 1.0.0 (code 1)                           |
+| Version       | 1.3.1 (code 4)                           |
 
-All dependency versions live in `gradle/libs.versions.toml` (version
+Modules: `:app` plus `:core:prefs`, `:core:diagnostics`, `:core:obd`,
+`:core:ai`. All dependency versions live in `gradle/libs.versions.toml` (version
 catalog) — never edit them as string literals in `app/build.gradle.kts`.
 `gradle.properties` pins `android.newDsl=false`.
 
@@ -62,32 +63,41 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 
 ## Running unit tests
 
+Every module owns tests, so run the ones you touched:
+
 ```powershell
 .\gradlew.bat :app:testDebugUnitTest
+.\gradlew.bat :core:obd:testDebugUnitTest
+.\gradlew.bat :core:prefs:testDebugUnitTest
+.\gradlew.bat :core:diagnostics:testDebugUnitTest
+.\gradlew.bat :core:ai:testDebugUnitTest
 ```
 
 Single class / method (backtick test names contain spaces — use a wildcard):
 
 ```powershell
-.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.*"
-.\gradlew.bat :app:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.ObdHelperLogicTest.splitErrors*"
+.\gradlew.bat :core:obd:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.*"
+.\gradlew.bat :core:obd:testDebugUnitTest --tests "com.catsmoker.obd2ai.obd.ObdHelperLogicTest.splitErrors*"
 ```
 
 Full check:
 
 ```powershell
-.\gradlew.bat assembleDebug assembleRelease :app:testDebugUnitTest
+.\gradlew.bat assembleDebug assembleRelease :app:testDebugUnitTest `
+  :core:prefs:testDebugUnitTest :core:diagnostics:testDebugUnitTest `
+  :core:obd:testDebugUnitTest :core:ai:testDebugUnitTest
 ```
 
-Tests mirror the source packages (`app/src/test/.../obd/ObdCommandsTest.kt`,
-etc.) and cover pure parsing logic in companion objects. Notes:
+Tests mirror the source packages inside each module (`core/obd/src/test/...`,
+`app/src/test/...`) and cover pure parsing logic in companion objects. Notes:
 
 - `android.util.Log` is a no-op on the JVM
   (`unitTests.isReturnDefaultValues = true`).
 - `org.json` comes from `testImplementation(libs.org.json)` because the
   `android.jar` stubs throw "not mocked".
-- The test JVM working directory is the `app/` module dir, so resource-file
-  tests use `src/main/res/…` relative paths.
+- The test JVM working directory is the module dir, so resource-file tests in
+  `:app` use `src/main/res/…` relative paths; `:core:diagnostics` reaches its
+  bundled dictionary through `DiagnosticsR.raw.dtc_generic`.
 - Bluetooth, UI, TTS and AI-provider network code have **no tests** — don't
   claim changes there are "safe"; build + review instead.
 

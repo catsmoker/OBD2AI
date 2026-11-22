@@ -19,6 +19,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -35,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.activity.compose.BackHandler
@@ -43,10 +49,11 @@ import androidx.navigation.NavHostController
 import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.prefs.AppLanguage
-import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
+import com.catsmoker.obd2ai.ui.components.CircleIconButton
+import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.components.SectionCard
 import com.catsmoker.obd2ai.ui.settings.LegalPages
 import com.catsmoker.obd2ai.ui.theme.ObdSpacing
@@ -84,14 +91,11 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
     var themeMode by rememberSaveable {
         mutableStateOf(activity.currentThemeMode(prefs).name)
     }
-    var navStyle by rememberSaveable {
-        mutableStateOf(NavStyle.fromPref(prefs.getString(PrefsKeys.NAV_STYLE, null)).name)
-    }
 
     fun tap() = haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
 
     fun showStep(target: Int) {
-        step = target.coerceIn(SetupState.STEP_1, SetupState.STEP_3)
+        step = target.coerceIn(SetupState.STEP_1, SetupState.STEP_2)
     }
 
     // Setup must finish before Home: system Back walks steps, never drops
@@ -123,23 +127,28 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(ObdSpacing.CardGap))
-        Text(
-            text = stringResource(R.string.setup_step_indicator, step, SetupState.TOTAL_STEPS),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(Modifier.height(ObdSpacing.LabelGap))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.setup_step_indicator, step, SetupState.TOTAL_STEPS),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(50))
+                    .padding(horizontal = 12.dp, vertical = 5.dp)
+            )
+        }
+        Spacer(Modifier.height(ObdSpacing.CardGap))
         LinearProgressIndicator(
             progress = { SetupState.progressFor(step) / 100f },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(50)),
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
         Spacer(Modifier.height(ObdSpacing.CardGap))
         Text(
             text = stringResource(
                 when (step) {
                     SetupState.STEP_1 -> R.string.setup_agreement_title
-                    SetupState.STEP_2 -> R.string.setup_step2_title
-                    else -> R.string.setup_nav_title
+                    else -> R.string.setup_step2_title
                 }
             ),
             style = MaterialTheme.typography.titleLarge,
@@ -154,7 +163,7 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(ObdSpacing.CardGap))
-            OutlinedButton(
+            ObdOutlinedButton(
                 onClick = {
                     tap()
                     navController.navigate("legal/${LegalPages.PAGE_TERMS}")
@@ -162,7 +171,7 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) { Text(stringResource(R.string.about_terms_button)) }
             Spacer(Modifier.height(ObdSpacing.CardGap))
-            OutlinedButton(
+            ObdOutlinedButton(
                 onClick = {
                     tap()
                     navController.navigate("legal/${LegalPages.PAGE_PRIVACY}")
@@ -176,7 +185,7 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(ObdSpacing.CardGap))
-            OutlinedButton(
+            ObdOutlinedButton(
                 onClick = {
                     tap()
                     if (!LegalPages.openHostedLegal(context)) {
@@ -245,116 +254,79 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) { Text(stringResource(R.string.setup_next)) }
         } else {
-            if (step == SetupState.STEP_2) {
-                IconButton(onClick = {
+            CircleIconButton(
+                icon = painterResource(R.drawable.ic_arrow_back),
+                contentDescription = stringResource(R.string.nav_back_desc),
+                onClick = {
                     tap()
                     showStep(SetupState.prevStep(step))
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.nav_back_desc),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
                 }
-                Spacer(Modifier.height(ObdSpacing.LabelGap))
-                Text(
-                    text = stringResource(R.string.settings_language_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(ObdSpacing.LabelGap))
-                Text(
-                    text = stringResource(R.string.setup_language_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(ObdSpacing.CardGap))
-                SectionCard {
-                    listOf(
-                        AppLanguage.SYSTEM, AppLanguage.ENGLISH, AppLanguage.SPANISH,
-                        AppLanguage.ARABIC, AppLanguage.CHINESE
-                    ).forEach { lang ->
-                        RadioRow(
-                            selected = languageTag == lang.tag,
-                            label = lang.displayName,
-                            onClick = {
-                                if (languageTag != lang.tag) {
-                                    languageTag = lang.tag
-                                    prefs.edit { putString(PrefsKeys.APP_LANGUAGE, lang.tag) }
-                                    // No recreation (manifest configChanges):
-                                    // Compose re-reads the new locale's strings.
-                                    activity.applyAppLanguage(lang.tag)
-                                }
-                            }
-                        )
-                    }
-                }
-                Spacer(Modifier.height(ObdSpacing.SectionGap))
-                Text(
-                    text = stringResource(R.string.settings_theme_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(ObdSpacing.LabelGap))
-                Text(
-                    text = stringResource(R.string.setup_appearance_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(ObdSpacing.CardGap))
-                SectionCard {
-                    listOf(ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK).forEach { mode ->
-                        RadioRow(
-                            selected = themeMode == mode.name,
-                            label = stringResource(
-                                when (mode) {
-                                    ThemeMode.SYSTEM -> R.string.settings_theme_system
-                                    ThemeMode.LIGHT -> R.string.settings_theme_light
-                                    ThemeMode.DARK -> R.string.settings_theme_dark
-                                }
-                            ),
-                            onClick = {
-                                if (themeMode != mode.name) {
-                                    themeMode = mode.name
-                                    prefs.edit { putString(PrefsKeys.THEME_MODE, mode.prefValue) }
-                                    // No recreation (manifest configChanges):
-                                    // DayNight resources update in place.
-                                    activity.applyThemeMode(mode)
-                                }
-                            }
-                        )
-                    }
-                }
-            } else {
-                Text(
-                    text = stringResource(R.string.setup_nav_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(ObdSpacing.LabelGap))
-                Text(
-                    text = stringResource(R.string.setup_nav_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(ObdSpacing.CardGap))
-                SectionCard {
+            )
+            Spacer(Modifier.height(ObdSpacing.LabelGap))
+            Text(
+                text = stringResource(R.string.settings_language_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(ObdSpacing.LabelGap))
+            Text(
+                text = stringResource(R.string.setup_language_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(ObdSpacing.CardGap))
+            SectionCard {
+                listOf(
+                    AppLanguage.SYSTEM, AppLanguage.ENGLISH, AppLanguage.SPANISH,
+                    AppLanguage.ARABIC, AppLanguage.CHINESE
+                ).forEach { lang ->
                     RadioRow(
-                        selected = navStyle == NavStyle.BAR.name,
-                        label = stringResource(R.string.setup_nav_bar),
+                        selected = languageTag == lang.tag,
+                        label = lang.displayName,
                         onClick = {
-                            navStyle = NavStyle.BAR.name
-                            prefs.edit { putString(PrefsKeys.NAV_STYLE, NavStyle.BAR.prefValue) }
-                            ConnectionStateStore.setNavStyle(NavStyle.BAR)
+                            if (languageTag != lang.tag) {
+                                languageTag = lang.tag
+                                prefs.edit { putString(PrefsKeys.APP_LANGUAGE, lang.tag) }
+                                // No recreation (manifest configChanges):
+                                // Compose re-reads the new locale's strings.
+                                activity.applyAppLanguage(lang.tag)
+                            }
                         }
                     )
+                }
+            }
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
+            Text(
+                text = stringResource(R.string.settings_theme_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(ObdSpacing.LabelGap))
+            Text(
+                text = stringResource(R.string.setup_appearance_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(ObdSpacing.CardGap))
+            SectionCard {
+                listOf(ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK).forEach { mode ->
                     RadioRow(
-                        selected = navStyle == NavStyle.CARDS.name,
-                        label = stringResource(R.string.setup_nav_cards),
+                        selected = themeMode == mode.name,
+                        label = stringResource(
+                            when (mode) {
+                                ThemeMode.SYSTEM -> R.string.settings_theme_system
+                                ThemeMode.LIGHT -> R.string.settings_theme_light
+                                ThemeMode.DARK -> R.string.settings_theme_dark
+                            }
+                        ),
                         onClick = {
-                            navStyle = NavStyle.CARDS.name
-                            prefs.edit { putString(PrefsKeys.NAV_STYLE, NavStyle.CARDS.prefValue) }
-                            ConnectionStateStore.setNavStyle(NavStyle.CARDS)
+                            if (themeMode != mode.name) {
+                                themeMode = mode.name
+                                prefs.edit { putString(PrefsKeys.THEME_MODE, mode.prefValue) }
+                                // No recreation (manifest configChanges):
+                                // DayNight resources update in place.
+                                activity.applyThemeMode(mode)
+                            }
                         }
                     )
                 }
@@ -364,7 +336,7 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedButton(
+                ObdOutlinedButton(
                     onClick = {
                         tap()
                         showStep(SetupState.prevStep(step))
@@ -374,26 +346,28 @@ fun SetupDestination(activity: MainActivity, navController: NavHostController) {
                 Button(
                     onClick = {
                         tap()
-                        // Step 2 advances to the navigation-style step;
-                        // step 3 completes setup.
-                        if (step == SetupState.STEP_2) {
-                            showStep(SetupState.STEP_3)
-                            return@Button
-                        }
+                        // Step 2 is the last step: it records consent and
+                        // leaves setup for Home.
                         prefs.edit {
                             putBoolean(PrefsKeys.TERMS_ACCEPTED, true)
                             putBoolean(PrefsKeys.ANALYTICS_ENABLED, analytics)
                             putBoolean(PrefsKeys.PERSONALIZED_ADS, personalized)
                             putBoolean(PrefsKeys.CONSENT_SET, true)
-                            // NAV_STYLE was already saved live by the
-                            // step-3 radios, like language/theme.
                         }
                         // Language/theme were applied live during the steps;
                         // settle UMP (form if required) and apply everything,
                         // then home.
                         activity.syncAdsConsent {
                             ConnectionStateStore.refresh(activity.obdHelper)
-                            navController.popBackStack("home", inclusive = false)
+                            // First run starts on setup with no Home entry
+                            // beneath it, so popBackStack alone would strand
+                            // the user here: replace setup with Home.
+                            if (!navController.popBackStack("home", inclusive = false)) {
+                                navController.navigate("home") {
+                                    popUpTo("setup") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     },
                     modifier = Modifier.weight(1f)
@@ -456,22 +430,20 @@ private fun RadioRow(selected: Boolean, label: String, onClick: () -> Unit) {
 object SetupState {
     const val STEP_1 = 1
     const val STEP_2 = 2
-    const val STEP_3 = 3
-    const val TOTAL_STEPS = 3
+    const val TOTAL_STEPS = 2
 
     /** Next advances one step, clamped. */
-    fun nextStep(current: Int): Int = (current + 1).coerceIn(STEP_1, STEP_3)
+    fun nextStep(current: Int): Int = (current + 1).coerceIn(STEP_1, STEP_2)
 
     /** Back retreats one step, clamped. */
-    fun prevStep(current: Int): Int = (current - 1).coerceIn(STEP_1, STEP_3)
+    fun prevStep(current: Int): Int = (current - 1).coerceIn(STEP_1, STEP_2)
 
-    /** Step 1 gates on the Terms agreement; steps 2-3 are ungated. */
+    /** Step 1 gates on the Terms agreement; step 2 is ungated. */
     fun canGoNext(agreed: Boolean): Boolean = agreed
 
     /** Header progress for the step indicator. */
-    fun progressFor(step: Int): Int = when (step.coerceIn(STEP_1, STEP_3)) {
-        STEP_1 -> 33
-        STEP_2 -> 66
+    fun progressFor(step: Int): Int = when (step.coerceIn(STEP_1, STEP_2)) {
+        STEP_1 -> 50
         else -> 100
     }
 }

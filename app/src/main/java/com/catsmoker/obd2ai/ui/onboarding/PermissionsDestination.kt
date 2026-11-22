@@ -9,7 +9,13 @@ import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,6 +61,23 @@ fun PermissionsDestination(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Box(
+                modifier = Modifier
+                    .size(96.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                        RoundedCornerShape(50)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_bluetooth),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(28.dp))
             Text(
                 text = stringResource(R.string.permissions_description),
                 style = MaterialTheme.typography.bodyLarge,
@@ -62,7 +85,7 @@ fun PermissionsDestination(navController: NavHostController) {
                 modifier = Modifier.padding(horizontal = 32.dp),
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             ObdButton(
                 onClick = { bluetoothHelper.requestPermissions(activity) },
                 modifier = Modifier.fillMaxWidth()

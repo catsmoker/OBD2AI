@@ -43,7 +43,7 @@ import kotlinx.coroutines.SupervisorJob
  * polling loop alive).
  */
 @Composable
-fun LiveDestination(activity: MainActivity) {
+fun LiveDestination(activity: MainActivity, navController: androidx.navigation.NavHostController) {
     var errorText by remember { mutableStateOf<String?>(null) }
     val session = remember { LiveSession(activity, { text -> errorText = text }) }
 
@@ -77,7 +77,7 @@ fun LiveDestination(activity: MainActivity) {
         }
     }
 
-    LiveContent(session)
+    LiveContent(session, onBack = { navController.navigateUp() })
 
     session.demoSheet.value?.let { state ->
         DemoSheet(

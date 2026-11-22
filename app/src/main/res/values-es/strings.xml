@@ -28,7 +28,6 @@
     <string name="connect_scanning_for_devices">Buscando dispositivos…</string>
     <string name="connect_button">Conectar</string>
     <string name="connected_to">Seleccionado: %1$s</string>
-    <string name="could_not_connect_to_obd2_adapter">No se pudo conectar al adaptador OBD2: %1$s</string>
     <string name="connect_no_devices_found">No se pudieron obtener los dispositivos emparejados: %1$s</string>
     <string name="connect_demo_button">Probar modo demo (sin adaptador)</string>
     <string name="connect_wifi_title">Adaptador Wi-Fi</string>
@@ -36,8 +35,26 @@
     <string name="connect_wifi_port_hint">Puerto</string>
     <string name="connect_wifi_button">Conectar por Wi-Fi</string>
     <string name="connect_wifi_invalid">Ingresa una dirección IP y un puerto válidos</string>
+    <string name="connect_error_unknown">sin detalles del adaptador</string>
+    <string name="connect_connecting">Conectando…</string>
+    <string name="connect_empty_title">Aún no hay ningún adaptador emparejado</string>
+    <string name="connect_empty_body">Empareja tu adaptador ELM327 en los ajustes de Bluetooth del teléfono y vuelve a buscar. Los adaptadores Wi-Fi no necesitan emparejamiento.</string>
+    <string name="connect_rescan">Buscar de nuevo</string>
+    <string name="connect_stop_scan">Detener búsqueda</string>
+    <string name="connect_devices_found">Adaptadores encontrados: %1$d</string>
+    <string name="connect_last_transport">Última conexión por %1$s</string>
+    <string name="connect_failed_unreachable">No se pudo alcanzar el adaptador</string>
+    <string name="connect_failed_not_paired">Ese adaptador ya no está emparejado</string>
+    <string name="connect_failed_bluetooth">Bluetooth no está disponible</string>
+    <string name="connect_failed_generic">No se pudo conectar al adaptador OBD2</string>
+    <string name="live_data_stopped">Datos en vivo detenidos</string>
+    <string name="live_data_retry">Reintentar</string>
+    <string name="connect_transport_bluetooth">Bluetooth</string>
+    <string name="connect_transport_wifi">Wi-Fi</string>
+    <string name="connect_connecting_to">Conectando con %1$s…</string>
 
     <!-- Error Codes -->
+    <string name="error_overview_source_group">%1$s (%2$d)</string>
     <string name="error_overview_title">Informe de diagnóstico</string>
     <string name="error_overview_scan_button">Buscar códigos de falla</string>
     <string name="error_overview_error_counts">Leves: %1$d | Medios: %2$d | Graves: %3$d</string>
@@ -46,6 +63,8 @@
     <string name="error_overview_mil_off">Testigo del motor: APAGADO</string>
     <string name="error_overview_mil_unknown">Testigo del motor: desconocido</string>
     <string name="diag_scan_state_idle">Aún no escaneado: toca Escanear códigos de falla.</string>
+    <string name="diag_saved_scan">Escaneo guardado del %1$s: vuelve a escanear para ver los códigos actuales.</string>
+    <string name="diag_saved_scan_undated">Mostrando un escaneo guardado: vuelve a escanear para ver los códigos actuales.</string>
     <string name="diag_scan_state_scanning">Leyendo códigos de falla…</string>
     <string name="diag_scan_state_failed">No se pudieron leer los códigos de falla: %1$s</string>
     <string name="error_overview_offline_note">info sin conexión — agrega una clave API en Ajustes para análisis con IA</string>
@@ -56,6 +75,7 @@
     <string name="error_offline_suffix">%1$s · info sin conexión</string>
     <string name="error_detail_gone">El resultado guardado de %1$s ya no está disponible. Escanea de nuevo.</string>
     <string name="error_overview_demo_badge">Modo demo — datos simulados</string>
+    <string name="diag_demo_no_codes">Los códigos de avería provienen del adaptador, así que el modo demo no puede leerlos. Conecta tu ELM327 para escanear.</string>
     <string name="error_overview_adapter_health">Adaptador: %1$s · ECU: %2$s · Protocolo: %3$s</string>
     <string name="error_overview_vehicle_info">VIN: %1$s · Desde el borrado: %2$s / %3$s</string>
     <string name="error_detail_title">Detalles del código de falla</string>
@@ -70,6 +90,8 @@
     <string name="ask_ai_button">Preguntar a la IA</string>
     <string name="ask_ai_welcome">¿Preguntas sobre %1$s? Escribe abajo — las respuestas usan el diagnóstico anterior.</string>
     <string name="ask_ai_hint">Pregunta sobre %1$s…</string>
+    <string name="ask_ai_interrupted">La respuesta se interrumpió.</string>
+    <string name="ask_ai_retry">Reintentar</string>
     <string name="ask_ai_send">Enviar</string>
     <string name="ask_ai_thinking">Pensando…</string>
     <string name="ask_ai_no_key">Agrega una clave de API de IA en Ajustes para conversar sobre esta falla.</string>
@@ -88,11 +110,14 @@
     <string name="obd_console_title">Consola OBD</string>
     <string name="obd_console_hint">Escribe un comando AT o PID (p. ej. 010C)</string>
     <string name="obd_console_send">Enviar</string>
+    <string name="obd_console_copy">Copiar</string>
+    <string name="obd_console_copied">Copiado al portapapeles</string>
     <string name="obd_console_clear">Borrar</string>
     <string name="obd_console_not_connected">Sin conexión al adaptador.</string>
 
     <!-- Freeze frame -->
     <string name="freeze_title">Datos congelados</string>
+    <string name="freeze_reading">Leyendo datos congelados…</string>
     <string name="freeze_unavailable">Datos congelados no disponibles.</string>
     <string name="freeze_dtc">Falla: %1$s</string>
     <string name="freeze_rpm">RPM: %1$d</string>
@@ -115,6 +140,7 @@
 
     <!-- Trip computer -->
     <string name="trip_title">Computadora de viaje</string>
+    <string name="trip_distance_hint">La distancia se actualiza mientras el panel en vivo está abierto.</string>
     <string name="trip_overview_button">Viaje</string>
     <string name="trip_start">Iniciar viaje</string>
     <string name="trip_stop">Detener</string>
@@ -277,13 +303,6 @@
     <string name="setup_continue">Continuar</string>
     <string name="setup_step_indicator">Paso %1$d de %2$d</string>
     <string name="setup_step2_title">Idioma y apariencia</string>
-    <string name="setup_nav_title">Navegación</string>
-    <string name="setup_nav_desc">Elige cómo te mueves entre las pantallas.</string>
-    <string name="setup_nav_bar">Barra de navegación</string>
-    <string name="setup_nav_bar_desc">Una barra fija con las pestañas Inicio, En vivo, Diagnóstico y Viaje.</string>
-    <string name="setup_nav_cards">Tarjetas</string>
-    <string name="setup_nav_cards_desc">Todo se abre desde la pantalla de inicio; pulsa atrás para volver.</string>
-    <string name="home_nav_hint">Puedes cambiar el estilo de navegación cuando quieras en Ajustes.</string>
     <string name="setup_next">Siguiente</string>
     <string name="setup_back">Atrás</string>
     <string name="setup_cookies_note">Esta app no usa cookies ni carga píxeles de rastreo. El sitio web del operador tiene su propia política:</string>
@@ -337,11 +356,14 @@
     <string name="home_section_title">Funciones</string>
     <string name="home_status_connected">Conectado</string>
     <string name="home_status_offline">Sin conexión</string>
+    <string name="home_connection_lost">Conexión perdida: %1$s</string>
     <string name="menu_disconnect">Desconectar</string>
     <string name="menu_exit_demo">Salir de la demo</string>
     <string name="nav_back_desc">Atrás</string>
     <string name="home_card_dashboard_desc">Velocidad, RPM y datos del motor en vivo.</string>
     <string name="home_card_diagnostics_desc">Lee códigos de falla con explicaciones de IA.</string>
+    <string name="home_card_saved_scan_title">Códigos guardados</string>
+    <string name="home_card_saved_scan_desc">Revisa el último escaneo; conéctate para leer el coche de nuevo</string>
     <string name="home_card_trip_desc">Registra distancia, tiempo y velocidad máxima.</string>
     <string name="home_card_console_desc">Envía comandos OBD directos.</string>
 
@@ -358,4 +380,15 @@
     <string name="instrument_coolant">Refrigerante</string>
     <string name="instrument_voltage">Voltaje</string>
     <string name="instrument_fuel">Combustible</string>
+    <string name="trip_running">En curso</string>
+    <string name="trip_idle_state">En espera</string>
+    <string name="trip_section_stats">Estadísticas</string>
+    <string name="settings_dynamic_color">Colores del fondo de pantalla</string>
+    <string name="settings_dynamic_color_desc">Usar la paleta del sistema en Android 12 o posterior</string>
+    <string name="obd_console_placeholder">Escribe ATZ, 010C… y pulsa enviar</string>
+    <string name="error_overview_mil_badge_on">Testigo encendido</string>
+    <string name="error_overview_mil_badge_off">Testigo apagado</string>
+    <string name="error_overview_mil_badge_unknown">Testigo desconocido</string>
+    <string name="settings_section_expand">Expandir sección</string>
+    <string name="settings_section_collapse">Contraer sección</string>
 </resources>

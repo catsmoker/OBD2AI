@@ -9,105 +9,123 @@ import androidx.compose.ui.unit.sp
 import com.catsmoker.obd2ai.R
 
 /**
- * Dot-matrix display face for headers and numeric readouts. Body copy stays
- * on the system sans face so long text stays readable and script fallback
- * (Arabic/CJK) behaves normally.
+ * Dot-matrix display face for headers and numeric readouts — the instrument
+ * half of the product. Labels and body copy stay on the system sans face:
+ * dot-matrix at 11–14 sp is pretty but tiring to read, and it cannot carry
+ * Arabic/CJK glyphs.
  */
 val NdotFontFamily = FontFamily(
     Font(R.font.ndot57_regular, FontWeight.Normal),
     Font(R.font.ndot57_caps_regular, FontWeight.Bold)
 )
 
+private val display = NdotFontFamily
+private val text = FontFamily.SansSerif
+
 val ObdTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp
+        lineHeight = 62.sp,
+        letterSpacing = (-0.5).sp
     ),
     displayMedium = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 45.sp,
-        lineHeight = 52.sp,
+        lineHeight = 50.sp,
+        letterSpacing = (-0.25).sp
+    ),
+    displaySmall = TextStyle(
+        fontFamily = display,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp,
+        lineHeight = 42.sp,
         letterSpacing = 0.sp
     ),
     headlineLarge = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 32.sp,
-        lineHeight = 40.sp,
+        lineHeight = 38.sp,
         letterSpacing = 0.sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 28.sp,
-        lineHeight = 36.sp,
+        lineHeight = 34.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = display,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        lineHeight = 30.sp,
         letterSpacing = 0.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = NdotFontFamily,
+        fontFamily = display,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
+        lineHeight = 22.sp,
+        letterSpacing = 0.sp
     ),
     titleSmall = TextStyle(
-        fontFamily = NdotFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = text,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = text,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.15.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = text,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
+        letterSpacing = 0.2.sp
     ),
     bodySmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = text,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        letterSpacing = 0.3.sp
     ),
     labelLarge = TextStyle(
-        fontFamily = NdotFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = text,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     labelMedium = TextStyle(
-        fontFamily = NdotFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = text,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.4.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = NdotFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = text,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        lineHeight = 15.sp,
+        letterSpacing = 0.6.sp
     )
 )

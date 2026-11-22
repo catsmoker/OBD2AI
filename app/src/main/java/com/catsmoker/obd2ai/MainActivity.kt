@@ -32,11 +32,12 @@ import com.catsmoker.obd2ai.ai.AiService
 import com.catsmoker.obd2ai.obd.BluetoothHelper
 import com.catsmoker.obd2ai.obd.ObdHelper
 import com.catsmoker.obd2ai.prefs.AppLanguage
-import com.catsmoker.obd2ai.prefs.NavStyle
 import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.ThemeMode
 import com.catsmoker.obd2ai.ui.AppRoot
 import com.catsmoker.obd2ai.ui.common.ConnectionStateStore
+import com.catsmoker.obd2ai.ui.common.DemoSession
+import com.catsmoker.obd2ai.ui.trip.TripSession
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -286,6 +287,12 @@ class MainActivity : AppCompatActivity() {
         if (!adsRemovedApplied) adView?.resume()
     }
 
+    override fun onStop() {
+        // Persist the trip before the process can be killed in the background.
+        TripSession.checkpoint()
+        super.onStop()
+    }
+
     override fun onDestroy() {
         if (!adsRemovedApplied) adView?.destroy()
         adView = null
@@ -342,10 +349,18 @@ class MainActivity : AppCompatActivity() {
         // Helpers are field-injected by Hilt before onCreate. The transport
         // loss hook must be re-armed here because injection creates a fresh
         // ObdHelper per activity instance.
-        obdHelper.onConnectionLost = {
-            runOnUiThread { ConnectionStateStore.refresh(obdHelper) }
+        obdHelper.onConnectionLost = { reason ->
+            runOnUiThread { ConnectionStateStore.reportLoss(reason) }
         }
         adBilling.start()
+        // Restores a trip that outlived the process (killed app, low memory).
+        TripSession.init(this)
+        // A demo that was running when the process died comes back; a real
+        // adapter never reconnects itself.
+        if (DemoSession.isRemembered(this)) {
+            obdHelper.setupDemo()
+            ConnectionStateStore.refresh(obdHelper)
+        }
         // Entitlement flips (restore on start, purchase any time) re-run
         // the single ad gate: grant tears the banner down immediately.
         lifecycleScope.launch { adBilling.isAdsRemoved.collect { applyAdChoice() } }

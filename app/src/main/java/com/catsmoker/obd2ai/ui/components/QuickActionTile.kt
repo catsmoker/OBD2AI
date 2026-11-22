@@ -1,8 +1,11 @@
 package com.catsmoker.obd2ai.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,17 +28,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
+import com.catsmoker.obd2ai.ui.theme.ObdMotion
+import com.catsmoker.obd2ai.ui.theme.ObdRadius
 import com.catsmoker.obd2ai.ui.theme.ObdSpacing
 
 /**
@@ -43,7 +50,8 @@ import com.catsmoker.obd2ai.ui.theme.ObdSpacing
  *
  * Two layouts, one signature. [isFullWidth] lays it out as a list row; the
  * default is a grid tile whose subtitle reserves two lines so neighbouring
- * tiles keep the same height.
+ * tiles keep the same height. The tile springs slightly under the finger,
+ * which makes a grid of cards feel like physical keys.
  */
 @Composable
 fun QuickActionTile(
@@ -59,16 +67,33 @@ fun QuickActionTile(
     iconContentColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val clickable = enabled && !isLoading
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (pressed && clickable) 0.975f else 1f,
+        animationSpec = ObdMotion.Press,
+        label = "tilePress"
+    )
+
     Card(
         onClick = onClick,
         enabled = clickable,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        interactionSource = interaction,
+        modifier = modifier
+            .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
+        shape = RoundedCornerShape(ObdRadius.Card),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            DotGridBackground(modifier = Modifier.matchParentSize())
+            DotGridBackground(
+                modifier = Modifier.matchParentSize(),
+                alpha = 0.035f
+            )
 
             if (isFullWidth) {
                 Row(
@@ -94,7 +119,7 @@ fun QuickActionTile(
                         Spacer(Modifier.height(2.dp))
                         Text(
                             text = subtitle,
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -125,9 +150,16 @@ fun QuickActionTile(
                         )
                         if (isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                        } else {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f),
+                                modifier = Modifier.size(18.dp)
+                            )
                         }
                     }
-                    Spacer(Modifier.height(22.dp))
+                    Spacer(Modifier.height(20.dp))
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
@@ -136,10 +168,10 @@ fun QuickActionTile(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(Modifier.height(3.dp))
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         minLines = 2,
                         maxLines = 2,
@@ -160,7 +192,7 @@ private fun IconBadge(
     Box(
         modifier = Modifier
             .size(46.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(ObdRadius.Inner))
             .background(
                 Brush.verticalGradient(
                     listOf(containerColor, containerColor.copy(alpha = 0.5f))
@@ -174,7 +206,7 @@ private fun IconBadge(
                         contentColor.copy(alpha = 0.15f)
                     )
                 ),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(ObdRadius.Inner)
             ),
         contentAlignment = Alignment.Center
     ) {

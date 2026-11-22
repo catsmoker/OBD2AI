@@ -6,6 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +27,48 @@ import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.diagnostics.DtcSource
 import com.catsmoker.obd2ai.diagnostics.DtcStore
 import com.catsmoker.obd2ai.diagnostics.DtpCodeDTO
-import com.catsmoker.obd2ai.obd.ObdDataHolder
 import com.catsmoker.obd2ai.ui.components.ErrorDialog
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
+
+/**
+ * The fault row the user tapped, handed to the detail screen so it never has
+ * to re-derive it (and never has to touch disk before its first frame).
+ * Purely in-memory: after process death the destinations fall back to the
+ * cached scan.
+ */
+internal object DiagnosticsSelection {
+    @Volatile
+    var selected: DtpCodeDTO? = null
+}
+
+/**
+ * The row to show for [errorCode]: the handed-over one when it is really this
+ * code, otherwise the cached scan. Pure so the handoff rule stays tested.
+ */
+internal fun resolveSelectedCode(
+    errorCode: String,
+    handedOver: DtpCodeDTO?,
+    cached: List<DtpCodeDTO>
+): DtpCodeDTO? =
+    handedOver?.takeIf { it.errorCode == errorCode }
+        ?: cached.find { it.errorCode == errorCode }
+
+/** Memory first, then the cached scan read off the main thread. */
+@Composable
+private fun rememberResolvedCode(errorCode: String): Pair<DtpCodeDTO?, Boolean> {
+    val context = LocalContext.current
+    val handedOver = remember(errorCode) { DiagnosticsSelection.selected }
+    var cached by remember(errorCode) { mutableStateOf<List<DtpCodeDTO>>(emptyList()) }
+    var attempted by remember(errorCode) { mutableStateOf(false) }
+    LaunchedEffect(errorCode) {
+        if (handedOver?.errorCode != errorCode) {
+            cached = withContext(Dispatchers.IO) { DtcStore.load(context) }
+            attempted = true
+        }
+    }
+    val resolved = resolveSelectedCode(errorCode, handedOver, cached)
+    return resolved to (resolved != null || attempted)
+}
 
 /**
  * Destinations for the diagnostics flow. The screens themselves
@@ -36,15 +81,15 @@ fun ErrorOverviewDestination(activity: MainActivity, navController: NavHostContr
     var errorText by remember { mutableStateOf<String?>(null) }
     ScreenScaffold(
         title = stringResource(R.string.error_overview_title),
-        onBack = null,
+        onBack = { navController.navigateUp() },
         modifier = Modifier.fillMaxSize()
     ) {
         ErrorOverviewScreen(
             obdHelper = activity.obdHelper,
-            aiService = activity.aiService,
             context = LocalContext.current,
-            onCodeClick = { code ->
-                navController.navigate("errorDetail/$code") {
+            onCodeClick = { dto ->
+                DiagnosticsSelection.selected = dto
+                navController.navigate("errorDetail/${dto.errorCode}") {
                     launchSingleTop = true
                 }
             },
@@ -61,13 +106,14 @@ fun ErrorDetailDestination(
     errorCode: String
 ) {
     val context = LocalContext.current
-    // Results live in memory, but fall back to the last cached scan so the
-    // detail screen still works after process death.
-    val dto: DtpCodeDTO? = remember(errorCode) {
-        ObdDataHolder.dtpResults.find { it.errorCode == errorCode }
-            ?: DtcStore.load(context).find { it.errorCode == errorCode }
-    }
+    val (dto, resolved) = rememberResolvedCode(errorCode)
     if (dto == null) {
+        if (!resolved) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            return
+        }
         Text(
             text = stringResource(R.string.error_detail_gone, errorCode),
             style = MaterialTheme.typography.bodyMedium,
@@ -93,12 +139,14 @@ fun ErrorDetailDestination(
 @Composable
 fun AskAiDestination(activity: MainActivity, navController: NavHostController, errorCode: String) {
     val context = LocalContext.current
-    // Same lookup as the detail screen: memory first, cached scan second.
-    val dto: DtpCodeDTO? = remember(errorCode) {
-        ObdDataHolder.dtpResults.find { it.errorCode == errorCode }
-            ?: DtcStore.load(context).find { it.errorCode == errorCode }
-    }
+    val (dto, resolved) = rememberResolvedCode(errorCode)
     if (dto == null) {
+        if (!resolved) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            return
+        }
         Text(
             text = stringResource(R.string.error_detail_gone, errorCode),
             style = MaterialTheme.typography.bodyMedium,

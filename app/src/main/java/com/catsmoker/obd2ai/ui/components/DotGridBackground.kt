@@ -15,15 +15,19 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 
 /**
- * The faint dot texture behind quick-action tiles. One 10 dp tile is rendered
- * once and repeated by a shader instead of issuing a draw call per dot.
+ * The faint dot texture behind quick-action tiles — a nod to the dot-matrix
+ * instrument language. One 12 dp tile is rendered once and repeated by a
+ * shader instead of issuing a draw call per dot.
  */
 @Composable
-fun DotGridBackground(modifier: Modifier = Modifier) {
-    val dotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
+fun DotGridBackground(
+    modifier: Modifier = Modifier,
+    alpha: Float = 0.05f
+) {
+    val dotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
     Spacer(
         modifier = modifier.drawWithCache {
-            val step = 10.dp.toPx()
+            val step = 12.dp.toPx()
             val dotRadius = 1.dp.toPx()
 
             val tile = ImageBitmap(step.toInt(), step.toInt())

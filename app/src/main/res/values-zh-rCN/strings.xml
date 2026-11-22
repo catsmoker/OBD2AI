@@ -28,7 +28,6 @@
     <string name="connect_scanning_for_devices">正在搜索设备…</string>
     <string name="connect_button">连接</string>
     <string name="connected_to">已选择：%1$s</string>
-    <string name="could_not_connect_to_obd2_adapter">无法连接到 OBD2 适配器：%1$s</string>
     <string name="connect_no_devices_found">无法获取已配对设备：%1$s</string>
     <string name="connect_demo_button">试用演示模式（无需适配器）</string>
     <string name="connect_wifi_title">Wi-Fi 适配器</string>
@@ -36,8 +35,26 @@
     <string name="connect_wifi_port_hint">端口</string>
     <string name="connect_wifi_button">通过 Wi-Fi 连接</string>
     <string name="connect_wifi_invalid">请输入有效的 IP 地址和端口</string>
+    <string name="connect_error_unknown">适配器未提供详情</string>
+    <string name="connect_connecting">正在连接…</string>
+    <string name="connect_empty_title">尚未配对适配器</string>
+    <string name="connect_empty_body">请先在手机的蓝牙设置中配对 ELM327 适配器，然后重新扫描。Wi-Fi 适配器无需配对。</string>
+    <string name="connect_rescan">重新扫描</string>
+    <string name="connect_stop_scan">停止扫描</string>
+    <string name="connect_devices_found">已找到的适配器：%1$d</string>
+    <string name="connect_last_transport">上次通过%1$s连接</string>
+    <string name="connect_failed_unreachable">无法连接到该适配器</string>
+    <string name="connect_failed_not_paired">该适配器已取消配对</string>
+    <string name="connect_failed_bluetooth">蓝牙不可用</string>
+    <string name="connect_failed_generic">无法连接到 OBD2 适配器</string>
+    <string name="live_data_stopped">实时数据已停止</string>
+    <string name="live_data_retry">重试</string>
+    <string name="connect_transport_bluetooth">蓝牙</string>
+    <string name="connect_transport_wifi">Wi-Fi</string>
+    <string name="connect_connecting_to">正在连接到 %1$s…</string>
 
     <!-- Error Codes -->
+    <string name="error_overview_source_group">%1$s（%2$d）</string>
     <string name="error_overview_title">诊断报告</string>
     <string name="error_overview_scan_button">扫描故障码</string>
     <string name="error_overview_error_counts">轻微：%1$d | 中等：%2$d | 严重：%3$d</string>
@@ -46,6 +63,8 @@
     <string name="error_overview_mil_off">发动机故障灯：灭</string>
     <string name="error_overview_mil_unknown">发动机故障灯：未知</string>
     <string name="diag_scan_state_idle">尚未扫描 — 点按“扫描故障码”。</string>
+    <string name="diag_saved_scan">已保存的扫描（%1$s）— 重新扫描获取当前故障码。</string>
+    <string name="diag_saved_scan_undated">正在显示已保存的扫描 — 重新扫描获取当前故障码。</string>
     <string name="diag_scan_state_scanning">正在读取故障码…</string>
     <string name="diag_scan_state_failed">无法读取故障码：%1$s</string>
     <string name="error_overview_offline_note">离线信息 — 请在设置中添加 API 密钥以获取 AI 解析</string>
@@ -56,6 +75,7 @@
     <string name="error_offline_suffix">%1$s · 离线信息</string>
     <string name="error_detail_gone">%1$s 的已保存结果不再可用，请重新扫描。</string>
     <string name="error_overview_demo_badge">演示模式 — 模拟数据</string>
+    <string name="diag_demo_no_codes">故障码来自适配器，演示模式无法读取。请连接 ELM327 进行扫描。</string>
     <string name="error_overview_adapter_health">适配器：%1$s · ECU：%2$s · 协议：%3$s</string>
     <string name="error_overview_vehicle_info">车架号：%1$s · 清除后：%2$s / %3$s</string>
     <string name="error_detail_title">故障码详情</string>
@@ -70,6 +90,8 @@
     <string name="ask_ai_button">咨询 AI</string>
     <string name="ask_ai_welcome">对 %1$s 有疑问？请在下方提问——回答将基于上述诊断。</string>
     <string name="ask_ai_hint">咨询关于 %1$s…</string>
+    <string name="ask_ai_interrupted">回答已中断。</string>
+    <string name="ask_ai_retry">重试</string>
     <string name="ask_ai_send">发送</string>
     <string name="ask_ai_thinking">思考中…</string>
     <string name="ask_ai_no_key">请在设置中添加 AI API 密钥以咨询此故障。</string>
@@ -88,11 +110,14 @@
     <string name="obd_console_title">OBD 控制台</string>
     <string name="obd_console_hint">输入 AT 命令或 PID（例如 010C）</string>
     <string name="obd_console_send">发送</string>
+    <string name="obd_console_copy">复制</string>
+    <string name="obd_console_copied">已复制到剪贴板</string>
     <string name="obd_console_clear">清空</string>
     <string name="obd_console_not_connected">未连接到适配器。</string>
 
     <!-- Freeze frame -->
     <string name="freeze_title">冻结帧</string>
+    <string name="freeze_reading">正在读取冻结帧…</string>
     <string name="freeze_unavailable">无冻结帧数据。</string>
     <string name="freeze_dtc">故障：%1$s</string>
     <string name="freeze_rpm">转速：%1$d</string>
@@ -115,6 +140,7 @@
 
     <!-- Trip computer -->
     <string name="trip_title">行程电脑</string>
+    <string name="trip_distance_hint">行程里程在实时仪表板打开时更新。</string>
     <string name="trip_overview_button">行程</string>
     <string name="trip_start">开始行程</string>
     <string name="trip_stop">停止</string>
@@ -277,13 +303,6 @@
     <string name="setup_continue">继续</string>
     <string name="setup_step_indicator">第 %1$d 步，共 %2$d 步</string>
     <string name="setup_step2_title">语言和外观</string>
-    <string name="setup_nav_title">导航方式</string>
-    <string name="setup_nav_desc">选择在各个界面之间移动的方式。</string>
-    <string name="setup_nav_bar">导航栏</string>
-    <string name="setup_nav_bar_desc">固定栏，包含主页、实时、诊断和行程标签。</string>
-    <string name="setup_nav_cards">卡片</string>
-    <string name="setup_nav_cards_desc">所有功能都从主屏幕打开；按返回键回到主页。</string>
-    <string name="home_nav_hint">随时可以在设置中更改导航方式。</string>
     <string name="setup_next">下一步</string>
     <string name="setup_back">返回</string>
     <string name="setup_cookies_note">此应用不使用 Cookie，也不加载跟踪像素。运营商网站有其自己的政策：</string>
@@ -337,11 +356,14 @@
     <string name="home_section_title">功能</string>
     <string name="home_status_connected">已连接</string>
     <string name="home_status_offline">未连接</string>
+    <string name="home_connection_lost">连接已断开：%1$s</string>
     <string name="menu_disconnect">断开连接</string>
     <string name="menu_exit_demo">退出演示</string>
     <string name="nav_back_desc">返回</string>
     <string name="home_card_dashboard_desc">实时车速、转速与发动机数据。</string>
     <string name="home_card_diagnostics_desc">读取故障码并获取 AI 解释。</string>
+    <string name="home_card_saved_scan_title">已保存的故障码</string>
+    <string name="home_card_saved_scan_desc">查看上次扫描；连接后可重新读取车辆</string>
     <string name="home_card_trip_desc">记录里程、时间与最高车速。</string>
     <string name="home_card_console_desc">发送原始 OBD 命令。</string>
 
@@ -358,4 +380,15 @@
     <string name="instrument_coolant">冷却液</string>
     <string name="instrument_voltage">电压</string>
     <string name="instrument_fuel">燃油</string>
+    <string name="trip_running">进行中</string>
+    <string name="trip_idle_state">未开始</string>
+    <string name="trip_section_stats">统计</string>
+    <string name="settings_dynamic_color">壁纸颜色</string>
+    <string name="settings_dynamic_color_desc">在 Android 12 及更高版本使用系统配色</string>
+    <string name="obd_console_placeholder">输入 ATZ、010C… 并发送</string>
+    <string name="error_overview_mil_badge_on">故障灯亮</string>
+    <string name="error_overview_mil_badge_off">故障灯灭</string>
+    <string name="error_overview_mil_badge_unknown">故障灯未知</string>
+    <string name="settings_section_expand">展开分区</string>
+    <string name="settings_section_collapse">收起分区</string>
 </resources>

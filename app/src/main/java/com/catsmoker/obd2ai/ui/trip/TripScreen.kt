@@ -1,12 +1,5 @@
 package com.catsmoker.obd2ai.ui.trip
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
@@ -24,156 +21,190 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.catsmoker.obd2ai.MainActivity
 import com.catsmoker.obd2ai.R
 import com.catsmoker.obd2ai.obd.ObdDataHolder
-import com.catsmoker.obd2ai.prefs.PrefsKeys
 import com.catsmoker.obd2ai.prefs.Units
+import com.catsmoker.obd2ai.ui.components.CardGroup
 import com.catsmoker.obd2ai.ui.components.ObdButton
 import com.catsmoker.obd2ai.ui.components.ObdOutlinedButton
 import com.catsmoker.obd2ai.ui.components.ScreenScaffold
 import com.catsmoker.obd2ai.ui.components.SectionCard
 import com.catsmoker.obd2ai.ui.components.SectionLabel
-import com.catsmoker.obd2ai.ui.theme.Obd2AiTheme
+import com.catsmoker.obd2ai.ui.components.StatusBadge
+import com.catsmoker.obd2ai.ui.glass.GlassCard
+import com.catsmoker.obd2ai.ui.theme.ObdRadius
+import com.catsmoker.obd2ai.ui.theme.ObdSpacing
 import com.catsmoker.obd2ai.vehicle.TripComputer
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * Trip computer screen: start/stop/reset plus time, distance, average and
  * top speed, top RPM and idle time. Samples the shared SI flows once a
  * second; display converts to the user's units. Nothing is persisted.
  *
- * Mirrors the XML fragment's behavior exactly: speed/RPM come from
- * [ObdDataHolder] flows ("--"/"ERROR" parse to unknown), the screen owns the
- * [TripComputer] instance, and units are read once from preferences.
+ * The two numbers a driver actually watches — elapsed time and distance —
+ * get a glass hero; everything else is secondary and lives in a compact grid.
  */
-/** Compose content for the trip screen. */
 @Composable
 fun TripScreen(
     imperial: Boolean,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    demoMode: Boolean = false
 ) {
-    // Lifecycle-aware collection of the live OBD flows ("--"/"ERROR" = unknown).
-    val speedText by ObdDataHolder.speedFlow.collectAsStateWithLifecycle("-- km/h")
-    val rpmText by ObdDataHolder.rpmFlow.collectAsStateWithLifecycle("-- RPM")
-
-    val trip = remember { TripComputer() }
-    var snapshot by remember { mutableStateOf(trip.snapshot(System.currentTimeMillis())) }
-
-    // Sample once a second and re-render; cancelled when the composition ends.
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000)
-            val now = System.currentTimeMillis()
-            val speed = parseSpeed(speedText)
-            val rpm = parseRpm(rpmText)
-            trip.sample(speed, rpm, now)
-            snapshot = trip.snapshot(now)
-        }
-    }
+    // The trip is owned by TripSession, not by this composition: leaving the
+    // screen (or rotating) no longer wipes it. Sampling happens once a second
+    // in the app root while the app is resumed.
+    val snapshot by TripSession.snapshot.collectAsStateWithLifecycle()
+    val running by TripSession.isRunning.collectAsStateWithLifecycle()
+    // Distance only grows while the dashboard polls; say so instead of looking
+    // stuck. Demo mode keeps receiving values, so it needs no hint.
+    val showDistanceHint = TripNotice.showDistanceHint(running, demoMode)
 
     ScreenScaffold(
         title = stringResource(R.string.trip_title),
         onBack = onBack,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        trailingContent = {
+            StatusBadge(
+                label = if (running) {
+                    stringResource(R.string.trip_running)
+                } else {
+                    stringResource(R.string.trip_idle_state)
+                },
+                active = running
+            )
+        }
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            SectionCard {
-                TripRow(label = stringResource(R.string.trip_duration), value = TripComputer.formatDuration(snapshot.durationMs))
-                Spacer(modifier = Modifier.height(8.dp))
-                TripRow(
-                    label = stringResource(R.string.trip_distance),
-                    value = if (imperial) {
-                        stringResource(R.string.trip_dist_mi, Units.kmhToMph(snapshot.distanceKm))
-                    } else {
-                        stringResource(R.string.trip_dist_km, snapshot.distanceKm)
-                    }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TripRow(label = stringResource(R.string.trip_avg_speed), value = null) {
-                    speedReadout(snapshot.avgKmh, imperial)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (showDistanceHint) {
+                SectionCard {
+                    Text(
+                        text = stringResource(R.string.trip_distance_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                TripRow(label = stringResource(R.string.trip_max_speed), value = null) {
-                    speedReadout(snapshot.maxKmh, imperial)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                TripRow(label = stringResource(R.string.trip_max_rpm), value = snapshot.maxRpm.toString())
-                Spacer(modifier = Modifier.height(8.dp))
-                TripRow(label = stringResource(R.string.trip_idle), value = TripComputer.formatDuration(snapshot.idleMs))
+                Spacer(Modifier.height(ObdSpacing.CardGap))
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            GlassCard(
+                shape = RoundedCornerShape(ObdRadius.Card),
+                elevation = 4.dp
+            ) {
+                Column(Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        HeroStat(
+                            label = stringResource(R.string.trip_duration),
+                            value = TripComputer.formatDuration(snapshot.durationMs),
+                            modifier = Modifier.weight(1f)
+                        )
+                        HeroStat(
+                            label = stringResource(R.string.trip_distance),
+                            value = if (imperial) {
+                                stringResource(R.string.trip_dist_mi, Units.kmhToMph(snapshot.distanceKm))
+                            } else {
+                                stringResource(R.string.trip_dist_km, snapshot.distanceKm)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
+
+            SectionLabel(text = stringResource(R.string.trip_section_stats), accent = true)
+            CardGroup {
+                SectionCard {
+                    StatRow(
+                        label = stringResource(R.string.trip_avg_speed),
+                        value = displaySpeed(snapshot.avgKmh, imperial)
+                    )
+                    StatDivider()
+                    StatRow(
+                        label = stringResource(R.string.trip_max_speed),
+                        value = displaySpeed(snapshot.maxKmh, imperial)
+                    )
+                    StatDivider()
+                    StatRow(
+                        label = stringResource(R.string.trip_max_rpm),
+                        value = snapshot.maxRpm.toString()
+                    )
+                    StatDivider()
+                    StatRow(
+                        label = stringResource(R.string.trip_idle),
+                        value = TripComputer.formatDuration(snapshot.idleMs)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(ObdSpacing.CardGap)
             ) {
                 ObdButton(
-                    onClick = {
-                        trip.start(System.currentTimeMillis())
-                        snapshot = trip.snapshot(System.currentTimeMillis())
-                    },
-                    enabled = !trip.isRunning,
-                    modifier = Modifier.weight(1f).fillMaxWidth()
+                    onClick = { TripSession.start(System.currentTimeMillis()) },
+                    enabled = !running,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = stringResource(R.string.trip_start))
                 }
                 ObdOutlinedButton(
-                    onClick = {
-                        trip.stop(System.currentTimeMillis())
-                        snapshot = trip.snapshot(System.currentTimeMillis())
-                    },
-                    enabled = trip.isRunning,
-                    modifier = Modifier.weight(1f).fillMaxWidth()
+                    onClick = { TripSession.stop(System.currentTimeMillis()) },
+                    enabled = running,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = stringResource(R.string.trip_stop))
                 }
                 ObdOutlinedButton(
-                    onClick = {
-                        trip.reset()
-                        snapshot = trip.snapshot(System.currentTimeMillis())
-                    },
-                    modifier = Modifier.weight(1f).fillMaxWidth()
+                    onClick = { TripSession.reset(System.currentTimeMillis()) },
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = stringResource(R.string.trip_reset))
                 }
             }
+
+            Spacer(Modifier.height(ObdSpacing.SectionGap))
         }
     }
 }
 
-/** Parse the leading numeric token from a flow value like "120 km/h" or "--". */
-private fun parseSpeed(s: String): Double? = s.split(" ").firstOrNull()?.toFloatOrNull()?.toDouble()
-private fun parseRpm(s: String): Int? = s.split(" ").firstOrNull()?.toIntOrNull()
-
-/** Speed value converted to the user's units, rendered as a Text. */
+/** The one number a user looks at: big, dot-matrix, labelled above. */
 @Composable
-private fun speedReadout(kmh: Double, imperial: Boolean) {
-    val display = Units.displaySpeed(kmh, imperial).toInt()
-    val text = if (imperial) {
-        stringResource(R.string.trip_speed_mph, display)
-    } else {
-        stringResource(R.string.trip_speed_kmh, display)
+private fun HeroStat(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
-    Text(text = text, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
 }
 
-/** One stat row: label + right-aligned value or trailing content. */
+/** Compact label/value row inside the stats card. */
 @Composable
-private fun TripRow(label: String, value: String? = null, trailing: @Composable () -> Unit = {}) {
+private fun StatRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -182,13 +213,29 @@ private fun TripRow(label: String, value: String? = null, trailing: @Composable 
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        if (value != null) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        trailing()
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun StatDivider() {
+    androidx.compose.material3.HorizontalDivider(
+        color = MaterialTheme.colorScheme.outlineVariant
+    )
+}
+
+/** Parse the leading numeric token from a flow value like "120 km/h" or "--". */
+/** Speed converted to the user's units, as plain text. */
+@Composable
+private fun displaySpeed(kmh: Double, imperial: Boolean): String {
+    val display = Units.displaySpeed(kmh, imperial).toInt()
+    return if (imperial) {
+        stringResource(R.string.trip_speed_mph, display)
+    } else {
+        stringResource(R.string.trip_speed_kmh, display)
     }
 }

@@ -39,6 +39,8 @@
 - **DTC Reading**: Read stored, pending and permanent trouble codes (SAE J2012) from the vehicle.
 - **Bluetooth & WiFi**: Connect over classic Bluetooth SPP or WiFi TCP to ELM327-compatible adapters.
 - **Demo Mode**: Explore the full app with a simulated adapter — no car required.
+- **Saved scans**: The last assessment (including AI explanations) is kept on disk and can be reviewed offline, clearly labelled with when it was saved.
+- **Honest failures**: A drop or a failed read names its cause in plain language ("Broken pipe" demoted to the detail line) instead of showing a fake zero.
 - and more...
 
 ### 🤖 AI Assessments
@@ -48,10 +50,12 @@
 - and more...
 
 ### 📊 Live Data & Experience
+- **One-hub navigation**: Home is the single hub with a tile grid — no bottom bar, no rail — and every secondary screen has an in-layout back arrow.
+- **Material 3 Expressive + Liquid Glass**: Frosted hero surfaces on API 31+, tinted fallbacks below, and motion that honours the system reduce-motion setting.
 - **Real-Time Gauges**: Speedometer-style gauges for speed, RPM and coolant temperature.
 - **AI Voice Insight**: Spoken plain-text driving insight via TTS on the live-data screen.
 - **GPS Speed Source**: Use the OBD adapter or the phone's GPS for speed.
-- **5 Languages & 3 Themes**: English, Spanish, Arabic, Chinese + system/light/dark themes.
+- **4 translations & 3 themes**: English, Spanish, Arabic, Chinese (+ system language), with system/light/dark themes.
 - and more...
 
 ## 📋 Table of Contents
@@ -81,7 +85,7 @@ OBD2AI bridges the gap between raw OBD-II bytes and something a driver can actua
 On connect the app sends a fixed init sequence — `ATZ, ATE0, ATL0, ATS0, ATH0, ATSP0, ATAT1`. Spaces off and headers off make responses deterministic across ELM327 clones, which the parsers rely on. See [docs/OBD_CONNECTION.md](docs/OBD_CONNECTION.md).
 
 ### DTCs + AI
-Stored/pending/permanent codes are read from the vehicle, cached to `dtc_results.json`, and each code is assessed **in parallel** by the provider you picked in Settings. Parsing is deliberately lenient (strips code fences and prose) because local models ramble. Results without AI are marked `offline=true` instead of failing. See [docs/AI_PROVIDERS.md](docs/AI_PROVIDERS.md).
+Stored/pending/permanent codes are read from the vehicle, cached to `dtc_results.json` together with a save timestamp, and each code is assessed **in parallel** by the provider you picked in Settings. Parsing is deliberately lenient (strips code fences and prose) because local models ramble. Results without AI are marked `offline=true` instead of failing, and a restored cache is always labelled as a saved scan rather than a live reading. See [docs/AI_PROVIDERS.md](docs/AI_PROVIDERS.md).
 
 ---
 
@@ -135,7 +139,7 @@ Requirements: Android Studio, Java 17, Android SDK (compileSdk 37, build-tools 3
 ./gradlew assembleDebug
 ```
 
-The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. Full details (versions, tests, troubleshooting) in [docs/BUILD.md](docs/BUILD.md).
+Five Gradle modules (`:app` plus `:core:prefs`, `:core:diagnostics`, `:core:obd`, `:core:ai`), each with its own unit tests. The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. Full details (versions, per-module tests, troubleshooting) in [docs/BUILD.md](docs/BUILD.md); architecture and the navigation model in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/NAVIGATION.md](docs/NAVIGATION.md).
 
 ---
 

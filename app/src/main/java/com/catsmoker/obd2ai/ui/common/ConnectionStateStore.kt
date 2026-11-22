@@ -1,32 +1,43 @@
 package com.catsmoker.obd2ai.ui.common
 
 import com.catsmoker.obd2ai.obd.ObdHelper
-import com.catsmoker.obd2ai.prefs.NavStyle
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Shared observable navigation inputs for the single-activity Compose app.
- * The chrome (dock/rail) and the Home screen both derive from these instead
- * of each fragment keeping its own copy:
- *
- * - [state]: resolved [ConnectionState] — refreshed after demo/connect/
- *   disconnect changes and by [ObdHelper.onConnectionLost].
- * - [cardsMode]: the chosen navigation style; Settings writes it live.
+ * Shared observable connection state for the single-activity Compose app:
+ * Home, Connect and Diagnostics all read it instead of each keeping a copy.
+ * [state] is refreshed after demo/connect/disconnect changes and by
+ * [ObdHelper.onConnectionLost].
  */
 object ConnectionStateStore {
     val state = MutableStateFlow(ConnectionState.DISCONNECTED)
-    val cardsMode = MutableStateFlow(false)
+
+    private val _lossReason = MutableStateFlow<String?>(null)
+
+    /**
+     * Why a real adapter link died, so Home can explain the drop instead of
+     * only flipping the badge to "Offline". Null unless [reportLoss] set it and
+     * the app is still disconnected — the reason never outlives its failure.
+     */
+    val lossReason: StateFlow<String?> = _lossReason.asStateFlow()
 
     /** Re-read the resolved connection state from the live helper. */
     fun refresh(obdHelper: ObdHelper) {
-        state.value = ConnectionState.resolve(obdHelper.demoMode, obdHelper.isConnected)
+        val resolved = ConnectionState.resolve(obdHelper.demoMode, obdHelper.isConnected)
+        state.value = resolved
+        // Reconnecting (or leaving demo) invalidates an old failure message.
+        if (resolved != ConnectionState.DISCONNECTED) _lossReason.value = null
     }
 
-    fun setCardsMode(tag: String?) {
-        cardsMode.value = AppNav.isCardsMode(tag)
+    /** The transport died mid-session: show the link as gone, with the reason. */
+    fun reportLoss(reason: String?) {
+        state.value = ConnectionState.DISCONNECTED
+        _lossReason.value = reason?.takeIf { it.isNotBlank() }
     }
 
-    fun setNavStyle(style: NavStyle) {
-        cardsMode.value = style == NavStyle.CARDS
+    fun clearLoss() {
+        _lossReason.value = null
     }
 }
