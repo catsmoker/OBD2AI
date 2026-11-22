@@ -26,7 +26,7 @@
 
 [![Typing effect](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2800&pause=900&color=0EA5E9&center=true&vCenter=true&width=620&lines=Read+your+car.+Understand+every+code.;Live+OBD-II+data+with+AI+insight.;Bluetooth,+WiFi+or+demo+%E2%80%94+your+choice.)](https://github.com/catsmoker/OBD2AI)
 
-[Download](https://github.com/catsmoker/OBD2AI/releases) · [Report an issue](https://github.com/catsmoker/OBD2AI/issues)
+[Download](https://github.com/catsmoker/OBD2AI/releases) · [Release notes](RELEASE_NOTES.md) · [Report an issue](https://github.com/catsmoker/OBD2AI/issues)
 </div>
 
 **OBD2AI** connects to your car's OBD-II adapter over Bluetooth or WiFi, reads diagnostic trouble codes (DTCs) and live telemetry (speed, RPM, coolant temperature), and uses AI to turn cryptic fault codes into human-friendly assessments with severity and suggested actions.
@@ -67,6 +67,7 @@
 - [Device Compatibility](#-device-compatibility)
 - [Build From Source](#build-from-source)
 - [Star History](#-star-history)
+- [Release Notes](RELEASE_NOTES.md)
 - [License](#-license)
 - [Contributing & Support](#-contributing--support)
 
