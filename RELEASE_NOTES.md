@@ -1,8 +1,8 @@
 # Release notes
 
-## 1.3.1 (versionCode 4)
+## 1.3.2 (versionCode 5)
 
-The Compose rewrite lands as a finished product: one Home hub instead of dock
+1.3.2 is the first build after the Compose rewrite: one Home hub instead of dock
 tabs, a Material 3 Expressive design system with Liquid Glass, pure logic
 moved into testable modules, and a pass over every place the app used to show
 data it had not actually read.

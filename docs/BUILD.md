@@ -32,7 +32,7 @@ $env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"; $env:Path="$env:JA
 | Java          | 17                                       |
 | Navigation    | 2.10.2                                   |
 | kotlin-obd-api| 1.4.1 (via JitPack)                      |
-| Version       | 1.3.1 (code 4)                           |
+| Version       | 1.3.2 (code 5)                           |
 
 Modules: `:app` plus `:core:prefs`, `:core:diagnostics`, `:core:obd`,
 `:core:ai`. All dependency versions live in `gradle/libs.versions.toml` (version
