@@ -1,10 +1,12 @@
 # OBD2AI visual design
 
-[Home, Live dashboard, and a simulated fault report captured on an API 37 phone emulator](instrument-preview.webp)
+[Home, Live data and the fault report, captured on an API 37 phone emulator
+(1080x2400) against a simulated ELM327 adapter with no AI key configured —
+hence the offline assessments and the unknown voltage/fuel readings](instrument-preview.webp)
 
-About now lives at the bottom of Settings:
+Settings and About both open from the Home header icons:
 
-![Settings scrolled to its About row, and the About screen](about-in-settings.webp)
+![The Settings list and the About screen](about-in-settings.webp)
 
 The visual model is a rally instrument book: warm paper for reading, graphite
 instruments for measurements, and phosphor lettering for the main readout. The
